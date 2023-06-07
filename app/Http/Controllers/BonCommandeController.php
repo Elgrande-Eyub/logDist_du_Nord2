@@ -26,7 +26,10 @@ class BonCommandeController extends Controller
     {
         try {
 
-            $bonCommande = bonCommande::orderByDesc('Numero_bonCommande')->get();
+            $bonCommande = bonCommande::orderByDesc('Numero_bonCommande')
+            ->leftjoin('fournisseurs','bon_commandes.fournisseur_id','=','fournisseurs.id')
+            ->select('bon_commandes.*','fournisseurs.fournisseur')
+            ->get();
             // return bonCommandeResource::collection($bonCommande);
 
             return response()->json(['data'=>$bonCommande]);
