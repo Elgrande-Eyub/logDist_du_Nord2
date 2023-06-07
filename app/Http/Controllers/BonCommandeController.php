@@ -27,7 +27,9 @@ class BonCommandeController extends Controller
         try {
 
             $bonCommande = bonCommande::orderByDesc('Numero_bonCommande')->get();
-            return bonCommandeResource::collection($bonCommande);
+            // return bonCommandeResource::collection($bonCommande);
+
+            return response()->json(['data'=>$bonCommande]);
 
         } catch(Exception $e) {
 
