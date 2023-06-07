@@ -1,0 +1,18 @@
+[
+    {
+        "matricule": "ABC123",
+        "marque": "Ford",
+        "modele": "F-150",
+        "annee": 2020,
+        "etat": "En bon état",
+        "km": 50000
+    },
+    {
+        "matricule": "DEF456",
+        "marque": "Toyota",
+        "modele": "Camry",
+        "annee": 2018,
+        "etat": "Usagé",
+        "km": 80000
+    }
+]

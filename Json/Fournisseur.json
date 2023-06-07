@@ -1,0 +1,32 @@
+[
+    {
+      "code_fournisseur": "001",
+      "fournisseur": "Valencia",
+      "ICE": "123456789",
+      "IF": "987654321",
+      "RC": "RC-123",
+      "Adresse": "123 Main Street, City",
+      "email": "supplierA@example.com",
+      "Telephone": "123-456-7890"
+    },
+    {
+      "code_fournisseur": "002",
+      "fournisseur": "Ain Ifrane",
+      "ICE": "987654321",
+      "IF": "123456789",
+      "RC": "RC-456",
+      "Adresse": "456 Elm Street, City",
+      "email": "supplierB@example.com",
+      "Telephone": "987-654-3210"
+    },
+    {
+      "code_fournisseur": "003",
+      "fournisseur": "Milka",
+      "ICE": "567890123",
+      "IF": "543210987",
+      "RC": "RC-789",
+      "Adresse": "789 Oak Street, City",
+      "email": "supplierC@example.com",
+      "Telephone": "567-890-1234"
+    }
+  ]

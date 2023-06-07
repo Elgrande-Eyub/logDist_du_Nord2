@@ -1,0 +1,82 @@
+[
+    {
+      "depense": "Gasoil",
+      "depense_Tax": 10
+    },
+    {
+      "depense": "Eaux/Electricite",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Administration",
+      "depense_Tax": 20
+    },
+    {
+      "depense": "Frais bancaires",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Salaires",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Transport",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Loyer",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Reparation Vehicule",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "CNSS",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "La Perception",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Gasoil Cuelma",
+      "depense_Tax": 10
+    },
+    {
+      "depense": "Parking",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Gasoil Exterieur",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Reception Infraction",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Frais Autoroute",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Lavage",
+      "depense_Tax": 0
+    },
+    {
+      "depense": "Hotel Laarach et Loyer",
+      "depense_Tax": 20
+    },
+    {
+      "depense": "Gasoil Laarach",
+      "depense_Tax": 7
+    },
+    {
+      "depense": "Reparation Laarache",
+      "depense_Tax": 20
+    },
+    {
+      "depense": "Fourniture",
+      "depense_Tax": 0
+    }
+  ]

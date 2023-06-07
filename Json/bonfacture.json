@@ -1,0 +1,51 @@
+{
+    "numero_Facture": "F0003",
+    "Exercice": "2023",
+    "Mois": "05",
+    "EtatPaiement": "impaye",
+    "modePaiement": "banqueTransaction",
+    "Commentaire": "Payment terms: 30 days",
+    "date_Facture": "2023-05-25 14:00:00",
+    "Confirme": true,
+    "Total_HT": 3000.00,
+    "Total_TVA": 600.00,
+    "Total_TTC": 3600.00,
+    "Avance": true,
+    "Total_Regler": 1500.00,
+    "Total_Rester": 2100.00,
+    "fournisseur_id": 2,
+    "bonLivraisons_id": 2,
+    "journal_id": 5,
+    "num_transaction": "TR002",
+    "date_transaction": "2023-05-28",
+    "bank_id": 1,
+    "Articles": [
+      {
+        "article_id": 22,
+        "Quantity": 12,
+        "Prix_unitaire": 85,
+        "%TVA": 20,
+        "Total_HT": 1020,
+        "Total_TVA": 204,
+        "Total_TTC": 1224
+      },
+      {
+        "article_id": 21,
+        "Quantity": 18,
+        "Prix_unitaire": 42,
+        "%TVA": 20,
+        "Total_HT": 756,
+        "Total_TVA": 151.2,
+        "Total_TTC": 907.2
+      },
+      {
+        "article_id": 20,
+        "Quantity": 10,
+        "Prix_unitaire": 65,
+        "%TVA": 20,
+        "Total_HT": 650,
+        "Total_TVA": 130,
+        "Total_TTC": 780
+      }
+    ]
+  }

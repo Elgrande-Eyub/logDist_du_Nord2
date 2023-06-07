@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class transfertArticle extends Model
+{
+    use HasFactory;
+    use SoftDeletes;
+
+    public $timestamps = true;
+
+    protected $table = 'transfert_articles';
+    protected $fillable = [
+        'transfert_id',
+        'article_id',
+        'Quantity',
+
+    ];
+}

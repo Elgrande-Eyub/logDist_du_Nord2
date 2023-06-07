@@ -1,0 +1,43 @@
+{
+    "Numero_bonReception": "BR0002/2023",
+    "bonLivraison_id": 5,
+    "fournisseur_id": 2,
+    "Exercice": "2023",
+    "Mois": "05",
+    "Confirme": true,
+    "Etat": "Received",
+    "Commentaire": "Received items in good condition",
+    "date_BReception": "2023-05-10",
+    "Total_HT": 2500,
+    "Total_TVA": 500,
+    "Total_TTC": 3000,
+    "Articles": [
+      {
+        "article_id": 20,
+        "Quantity": 30,
+        "Prix_unitaire": 12,
+        "%TVA": 20,
+        "Total_HT": 360,
+        "Total_TVA": 72,
+        "Total_TTC": 432
+      },
+      {
+        "article_id": 21,
+        "Quantity": 20,
+        "Prix_unitaire": 78,
+        "%TVA": 20,
+        "Total_HT": 1560,
+        "Total_TVA": 312,
+        "Total_TTC": 1872
+      },
+      {
+        "article_id": 22,
+        "Quantity": 14,
+        "Prix_unitaire": 5,
+        "%TVA": 20,
+        "Total_HT": 70,
+        "Total_TVA": 14,
+        "Total_TTC": 84
+      }
+    ]
+  }

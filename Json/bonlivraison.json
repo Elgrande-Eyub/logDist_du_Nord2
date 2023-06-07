@@ -1,0 +1,31 @@
+{
+    "bonCommande_id": 1,
+    "Numero_bonLivraison": "BL-00001/2023",
+    "Exercice": "2023",
+    "Mois": 5,
+    "Etat": "En cours",
+    "Commentaire": "Items will be delivered in two batches.",
+     "Confirme": 1,
+    "date_BLivraison": "2023-05-13",
+    "Total_HT": 450,
+    "remise": 5,
+    "TVA": 20,
+    "Total_TVA": 90,
+    "Total_TTC": 535,
+    "fournisseur_id": 1,
+    "warehouse_id": 1,
+    "Articles": [
+        {
+            "article_id": 2,
+            "Quantity": 10,
+            "Prix_unitaire": 10,
+            "Total_HT": 100
+        },
+        {
+            "article_id": 3,
+            "Quantity": 30,
+            "Prix_unitaire": 5,
+            "Total_HT": 150
+        }
+    ]
+}

@@ -1,0 +1,50 @@
+[
+    {
+        "code_journal": "Vente",
+        "type": "Vente"
+    },
+    {
+        "code_journal": "Achat",
+        "type": "Achat"
+    },
+    {
+        "code_journal": "Banque AJW",
+        "type": "Banque"
+    },
+    {
+        "code_journal": "Espece Tetouan",
+        "type": "Espece"
+    },
+    {
+        "code_journal": "Divers",
+        "type": "Divers"
+    },
+    {
+        "code_journal": "compte associe Reda",
+        "type": "Espece"
+    },
+    {
+        "code_journal": "compte associe Bilal",
+        "type": "Espece"
+    },
+    {
+        "code_journal": "Solde",
+        "type": "Espece"
+    },
+    {
+        "code_journal": "Caisse Hoceima",
+        "type": "Espece"
+    },
+    {
+        "code_journal": "Sakina",
+        "type": "Espece"
+    },
+    {
+        "code_journal": "Banque B.P",
+        "type": "Banque"
+    },
+    {
+        "code_journal": "Caisse Laarach",
+        "type": "Espece"
+    }
+]

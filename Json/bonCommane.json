@@ -1,0 +1,72 @@
+
+{
+    "id": 5,
+    "Numero_bonCommande": "BC001",
+    "Exercice": "2023",
+    "Mois": "5",
+    "Etat": "Saisi",
+    "Commentaire": "Please deliver by end of the month.",
+    "date_BCommande": "2023-05-12 00:00:00",
+    "Confirme": 0,
+    "Total_HT": 450,
+    "remise": 5,
+    "TVA": 20,
+    "Total_TVA": 90,
+    "Total_TTC": 535,
+    "fournisseur_id": 1,
+    "created_at": "2023-05-12T15:17:20.000000Z",
+    "updated_at": "2023-05-12T15:17:20.000000Z",
+    "Articles": [
+        {
+            "article_id": 2,
+            "Quantity": 20,
+            "Prix_unitaire": 10,
+            "Total_HT": 200
+        },
+        {
+            "article_id": 3,
+            "Quantity": 50,
+            "Prix_unitaire": 5,
+            "Total_HT": 250
+        }
+    ]
+},
+{
+    "Numero_bonCommande": "00003/2023",
+    "Commentaire": "Bulk order",
+    "date_BCommande": "2023-05-03 11:15:00",
+    "Confirme": false,
+    "Total_HT": 2100,
+    "Total_TVA": 420,
+    "Total_TTC": 2520,
+    "fournisseur_id": 3,
+    "Articles": [
+      {
+        "article_id": 20,
+        "Quantity": 50,
+        "Prix_unitaire": 12,
+        "%TVA": 20,
+        "Total_HT": 600,
+        "Total_TVA": 120,
+        "Total_TTC": 720
+      },
+      {
+        "article_id": 22,
+        "Quantity": 10,
+        "Prix_unitaire": 5,
+        "%TVA": 20,
+        "Total_HT": 50,
+        "Total_TVA": 10,
+        "Total_TTC": 60
+      },
+      {
+        "article_id": 23,
+        "Quantity": 8,
+        "Prix_unitaire": 30,
+        "%TVA": 20,
+        "Total_HT": 240,
+        "Total_TVA": 48,
+        "Total_TTC": 288
+      }
+    ]
+  }

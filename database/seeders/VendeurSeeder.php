@@ -1,0 +1,45 @@
+<?php
+
+namespace Database\Seeders;
+
+use App\Models\Vendeur;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use Illuminate\Database\Seeder;
+
+class VendeurSeeder extends Seeder
+{
+
+    public function run()
+    {
+        $employees = [
+            [
+                "nomComplet" => "John Doe",
+                "cin" => "1234567890",
+                "dateEmbauche" => "2022-01-01",
+                "dateNaissance" => "1990-05-10",
+                "telephone" => "123456789",
+                "adresse" => "123 Main Street"
+            ],
+            [
+                "nomComplet" => "Jane Smith",
+                "cin" => "0987654321",
+                "dateEmbauche" => "2022-02-01",
+                "dateNaissance" => "1988-10-20",
+                "telephone" => "987654321",
+                "adresse" => "456 Elm Street"
+            ],
+            [
+                "nomComplet" => "Michael Johnson",
+                "cin" => "5678901234",
+                "dateEmbauche" => "2022-03-01",
+                "dateNaissance" => "1995-02-15",
+                "telephone" => "567890123",
+                "adresse" => "789 Oak Avenue"
+            ]
+        ];
+
+        foreach ($employees as $employee) {
+            Vendeur::create($employee);
+        }
+    }
+}
