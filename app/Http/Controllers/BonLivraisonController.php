@@ -30,10 +30,13 @@ class BonLivraisonController extends Controller
         try {
 
             $bonLivraison = bonLivraison::join('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
-            ->select('bon_livraisons.*', 'bon_commandes.Numero_bonCommande')
+            ->leftjoin('fournisseurs','bon_livraisons.fournisseur_id','=','fournisseurs.id')
+            ->select('bon_livraisons.*', 'bon_commandes.Numero_bonCommande','fournisseurs.fournisseur')
             ->get();
 
-            return bonLivraisonResource::collection($bonLivraison);
+            // return bonLivraisonResource::collection($bonLivraison);
+
+            return response()->json(['data'=>$bonLivraison]);
 
         } catch(Exception $e) {
             return response()->json([

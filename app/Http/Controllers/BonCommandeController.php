@@ -30,7 +30,7 @@ class BonCommandeController extends Controller
             ->leftjoin('fournisseurs','bon_commandes.fournisseur_id','=','fournisseurs.id')
             ->select('bon_commandes.*','fournisseurs.fournisseur')
             ->get();
-            // return bonCommandeResource::collection($bonCommande);
+
 
             return response()->json(['data'=>$bonCommande]);
 
