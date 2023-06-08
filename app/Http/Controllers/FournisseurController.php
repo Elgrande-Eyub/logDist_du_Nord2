@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Fournisseur;
 use Exception;
 use Illuminate\Http\Request;
@@ -97,7 +98,7 @@ class FournisseurController extends Controller
     {
         try {
             // Find the Fournisseur with the given ID
-            $FoundedFournisseur = Fournisseur::find($id);
+            $FoundedFournisseur = Fournisseur::withTrashed()->find($id);
 
             // Check if the Fournisseur was found
             if (!$FoundedFournisseur) {
@@ -187,10 +188,15 @@ class FournisseurController extends Controller
                       'message' => 'Fournisseur not found'
                   ], 404);
               }
+              $Articles = Article::where('fournisseur_id', $FournisseurFounded->id)->get();
+
+              // Delete each individual article
+              foreach ($Articles as $article) {
+                  $article->delete();
+              }
 
               // Delete the Fournisseur
               $FournisseurFounded->delete();
-
               // Return a success message with the deleted Fournisseur
               return response()->json([
                   'message' => 'Fournisseur deleted successfully',

@@ -133,7 +133,7 @@ class WithdrawController extends Controller
 
             if ($validator->fails()) {
                 return response()->json([
-                    'message' => $validator->errors()
+                    'message' => $validator->errors()->first()
                 ], 400);
             }
 

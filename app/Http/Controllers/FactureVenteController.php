@@ -361,7 +361,7 @@ class FactureVenteController extends Controller
               ->where('factureVente_id', $id)
               ->get();
 
-            $client = client::find($commande->client_id);
+            $client = client::withTrashed()->find($commande->client_id);
 
             $company = Company::get()->first();
 

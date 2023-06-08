@@ -19,11 +19,19 @@ class ArticleController extends Controller
     // This function returns all categories
     public function index()
     {
-        try {
+         try {
 
-            $Articles = Article::all();
-            return articleResource::collection($Articles);
-        } catch (Exception $e) {
+            $Articles = Article::join('fournisseurs','articles.fournisseur_id','=','fournisseurs.id')->withTrashed()
+            ->join('article_categories','articles.category_id','=','article_categories.id')
+            ->select('articles.*',
+            'fournisseurs.fournisseur',
+            'fournisseurs.id as fournisseur_id',
+            'article_categories.id as category_id',
+            'article_categories.category'
+            )->get();
+            return response()->json(['data'=>  $Articles]);
+            // return articleResource::collection($Articles);
+         } catch (Exception $e) {
 
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
@@ -128,6 +136,7 @@ class ArticleController extends Controller
                 'reference' => 'required',
                 'prix_unitaire' => 'required',
                 'category_id' => 'required',
+                'fournisseur_id' => 'required',
                 'unite' => 'required',
                 'prix_public' => 'required',
             ]);

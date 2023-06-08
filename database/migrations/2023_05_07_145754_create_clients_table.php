@@ -18,11 +18,11 @@ return new class extends Migration
 
             $table->string('nom_Client');
             $table->string('code_Client');
-            $table->string('CIN_Client');
-            $table->string('ICE_Client');
-            $table->string('RC_Client');
+            $table->string('CIN_Client')->nullable();
+            $table->string('ICE_Client')->nullable();
+            $table->string('RC_Client')->nullable();
             $table->string('telephone_Client');
-            $table->string('email_Client');
+            $table->string('email_Client')->nullable();
             $table->string('adresse_Client');
             $table->string('Pattent_Client');
 

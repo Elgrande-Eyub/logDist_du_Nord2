@@ -29,6 +29,7 @@ use App\Http\Controllers\InventoryController;
 use App\Http\Controllers\JournalController;
 use App\Http\Controllers\PaiementDepenseController;
 use App\Http\Controllers\SecteurController;
+use App\Http\Controllers\StatisticsController;
 use App\Http\Controllers\TransactionController;
 use App\Http\Controllers\TransfertController;
 use App\Http\Controllers\VendeurController;
@@ -278,3 +279,12 @@ Route::get('getnt',[TransfertController::class,'getNumeroT']);
 
 Route::get('getimage/{attachement}/{type}',[Controller::class,'getImage']);
 
+// statics
+
+Route::get('/fournisseur-count', [StatisticsController::class, 'getFournisseurCount']);
+Route::get('/client-count', [StatisticsController::class, 'getClientCount']);
+Route::get('/commande-count', [StatisticsController::class, 'getCommandeCount']);
+Route::get('/achat-payer', [StatisticsController::class, 'getAchatApayer']);
+Route::get('/vente-total', [StatisticsController::class, 'getVenteTotal']);
+Route::get('/cheque-retard', [StatisticsController::class, 'getChequeportfeuille']);
+Route::get('/revenue', [StatisticsController::class, 'getRevenue']);

@@ -23,10 +23,15 @@ class BonCommandeVenteController extends Controller
 {
     public function index()
     {
-        try {
+         try {
 
-            $bonCommande = bonCommandeVente::orderByDesc('Numero_bonCommandeVente')->get();
-            return bonCommandeVenteResource::collection($bonCommande);
+            $bonCommande = bonCommandeVente::orderByDesc('Numero_bonCommandeVente')
+            ->leftjoin('clients','bon_commande_ventes.client_id','=','clients.id')->withTrashed()
+            ->select('bon_commande_ventes.*','clients.nom_Client')
+            ->get();
+
+            // return bonCommandeVenteResource::collection($bonCommande);
+            return response()->json(['data'=>$bonCommande]);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
@@ -211,7 +216,7 @@ class BonCommandeVenteController extends Controller
                 ];
                 $articles[] = $article;
             }
-            $bonCommande = bonCommandeVente::join('clients', 'bon_commande_ventes.client_id', '=', 'clients.id')
+            $bonCommande = bonCommandeVente::leftjoin('clients', 'bon_commande_ventes.client_id', '=', 'clients.id')->withTrashed()
             ->leftJoin('bon_livraison_ventes', 'bon_commande_ventes.id', '=', 'bon_livraison_ventes.bonCommandeVente_id')
             ->select('bon_commande_ventes.*', 'clients.nom_Client', 'bon_livraison_ventes.id as bonLivraisonVente_id')
             ->where('bon_commande_ventes.id', $id)
@@ -329,7 +334,7 @@ class BonCommandeVenteController extends Controller
             ->where('bcVente_id', $id)
             ->get();
 
-        $client = client::find($commande->client_id);
+        $client = client::withTrashed()->find($commande->client_id);
 
         $company = Company::get()->first();
         /*  $bank = BankAccount::get()->first();

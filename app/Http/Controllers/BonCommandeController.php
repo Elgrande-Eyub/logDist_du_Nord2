@@ -213,7 +213,7 @@ class BonCommandeController extends Controller
             ->where('bon_commandes.id', $id)
             ->first(); */
             $bonCommande = bonCommande::leftJoin('bon_livraisons', 'bon_commandes.id', '=', 'bon_livraisons.bonCommande_id')
-            ->join('fournisseurs', 'bon_commandes.fournisseur_id', '=', 'fournisseurs.id')
+            ->join('fournisseurs', 'bon_commandes.fournisseur_id', '=', 'fournisseurs.id')->withTrashed()
             ->select('bon_commandes.*', 'fournisseurs.fournisseur', 'bon_livraisons.id as bonLivraison_id')
             ->where('bon_commandes.id', $id)
 
@@ -377,7 +377,7 @@ class BonCommandeController extends Controller
 
                 ->get();
 
-            $fournisseur = Fournisseur::find($commande->fournisseur_id);
+            $fournisseur = Fournisseur::withTrashed()->find($commande->fournisseur_id);
 
             $company = Company::get()->first();
             $bank = BankAccount::get()->first();

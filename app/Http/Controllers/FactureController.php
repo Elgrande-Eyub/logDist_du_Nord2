@@ -310,7 +310,7 @@ class FactureController extends Controller
                 ->where('facture_id', $id)
                 ->get();
 
-            $fournisseur = Fournisseur::find($commande->fournisseur_id);
+            $fournisseur = Fournisseur::withTrashed()->find($commande->fournisseur_id);
 
             $company = Company::get()->first();
 

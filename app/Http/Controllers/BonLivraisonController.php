@@ -441,7 +441,7 @@ public function getBonCommande()
                   ->get();
 
               $bank = BankAccount::get()->first();
-              $fournisseur = Fournisseur::find($commande->fournisseur_id);
+              $fournisseur = Fournisseur::withTrashed()->find($commande->fournisseur_id);
               $company = Company::get()->first();
 
 
@@ -497,7 +497,7 @@ public function getBonCommande()
                   ->get();
 
               $bank = BankAccount::get()->first();
-              $fournisseur = Fournisseur::find($commande->fournisseur_id);
+              $fournisseur = Fournisseur::withTrashed()->find($commande->fournisseur_id);
               $company = Company::get()->first();
 
 

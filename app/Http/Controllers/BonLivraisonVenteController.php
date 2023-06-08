@@ -28,11 +28,19 @@ class BonLivraisonVenteController extends Controller
     {
         try {
 
-            $bonLivraison = bonLivraisonVente::join('bon_commande_ventes', 'bon_livraison_ventes.bonCommandeVente_id', '=', 'bon_commande_ventes.id')
-            ->select('bon_livraison_ventes.*', 'bon_commande_ventes.Numero_bonCommandeVente')
+            $bonLivraison = bonLivraisonVente::leftjoin('bon_commande_ventes', 'bon_livraison_ventes.bonCommandeVente_id', '=', 'bon_commande_ventes.id')
+            ->leftjoin('clients','bon_livraison_ventes.client_id','=','clients.id')->withTrashed()
+            ->leftjoin('warehouses','bon_livraison_ventes.warehouse_id','=','warehouses.id')
+            ->select('bon_livraison_ventes.*',
+            'bon_commande_ventes.Numero_bonCommandeVente',
+            'bon_commande_ventes.id as bonCommandeVente_id',
+            'warehouses.nom_Warehouse',
+            'warehouses.id as warehouse_id',
+            'clients.nom_Client'
+            )
             ->get();
-
-            return bonLivraisonVenteResource::collection($bonLivraison);
+        return  response()->json(['data'=>$bonLivraison]);
+            // return bonLivraisonVenteResource::collection($bonLivraison);
 
         } catch(Exception $e) {
             return response()->json([
@@ -333,9 +341,9 @@ class BonLivraisonVenteController extends Controller
 
             //  $bonLivraisonArray = $bonLivraison->toArray();
 
-            $bonLivraison = bonLivraisonVente::join('clients', 'bon_livraison_ventes.client_id', '=', 'clients.id')
+            $bonLivraison = bonLivraisonVente::join('clients', 'bon_livraison_ventes.client_id', '=', 'clients.id')->withTrashed()
             ->join('bon_commande_ventes', 'bon_livraison_ventes.bonCommandeVente_id', '=', 'bon_commande_ventes.id')
-            ->join('warehouses', 'bon_livraison_ventes.warehouse_id', '=', 'warehouses.id')
+            ->join('warehouses', 'bon_livraison_ventes.warehouse_id', '=', 'warehouses.id')->withTrashed()
             ->leftjoin('facture_ventes','facture_ventes.bonLivraisonVente_id','=','bon_livraison_ventes.id')
             ->select('bon_livraison_ventes.*', 'warehouses.nom_Warehouse', 'bon_commande_ventes.Numero_bonCommandeVente', 'clients.nom_Client','facture_ventes.id as factureVente_id')
             ->where('bon_livraison_ventes.id', $id)
@@ -449,7 +457,7 @@ public function getNumeroBLV()
 
     public function printbonLivraisonVente($id, $isDownloaded)
     {
-        // try {
+         try {
 
 
             $commande = bonLivraisonVente::join('clients', 'bon_livraison_ventes.client_id', '=', 'clients.id')
@@ -467,7 +475,7 @@ public function getNumeroBLV()
                 ->get();
 
             $bank = BankAccount::get()->first();
-            $client = client::find($commande->client_id);
+            $client = client::withTrashed()->find($commande->client_id);
             $company = Company::get()->first();
 
 
@@ -498,10 +506,10 @@ public function getNumeroBLV()
 
 
 
-        /* } catch (Exception $e) {
+         } catch (Exception $e) {
             abort(404);
 
-        } */
+        }
     }
 
     public function printbonReceptionVente($id, $isDownloaded)
@@ -524,7 +532,7 @@ public function getNumeroBLV()
             ->get();
 
             $bank = BankAccount::get()->first();
-            $client = client::find($commande->client_id);
+            $client = client::withTrashed()->find($commande->client_id);
             $company = Company::get()->first();
 
 

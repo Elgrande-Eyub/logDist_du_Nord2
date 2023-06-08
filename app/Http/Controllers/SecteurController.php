@@ -18,7 +18,7 @@ class SecteurController extends Controller
             ->select('secteurs.*','warehouses.nom_Warehouse')
             ->get();
 
-return response()->json($secteurs);
+            return response()->json($secteurs);
         } catch (Exception $e) {
             return response()->json([
                 'message' => 'Quelque chose a mal tourné. Veuillez réessayer plus tard.'
@@ -30,8 +30,6 @@ return response()->json($secteurs);
     {
         DB::beginTransaction();
         try {
-
-            // $validatedData = $request->validated();
 
             $validator = Validator::make($request->all(), [
                 'secteur' => 'required',
@@ -77,4 +75,127 @@ return response()->json($secteurs);
             ], 400);
         }
     }
+
+    public function show($id)
+    {
+
+        try {
+
+            $founded = Secteur::find($id);
+
+            if(!$founded) {
+                return response()->json([
+                    'message' => 'Secteur introuvable
+                    '
+                ], 400);
+            }
+
+            $secteur = Secteur::join('warehouses','secteurs.warehouseDistrubtion_id','=','warehouses.id')
+            ->select('secteurs.*','warehouses.nom_Warehouse')
+            ->where('secteurs.id',$id)
+            ->first();
+
+
+            return response()->json([
+                'secteur' => $secteur
+            ], 200);
+
+        } catch(Exception $e) {
+
+            return response()->json([
+                'message' => 'Something went wrong. Please try again later.'
+            ], 400);
+        }
+    }
+
+
+
+
+    public function update(Request $request, $id)
+    {
+        DB::beginTransaction();
+
+
+        try {
+
+            $validator = Validator::make($request->all(), [
+                'secteur' => 'required',
+                'warehouseDistrubtion_id' => 'required',
+            ]);
+
+            if ($validator->fails()) {
+                return response()->json([
+                    'message' => $validator->errors()->first()
+                ], 400);
+            }
+
+            $Secteur = Secteur::find($id);
+
+            if (!$Secteur) {
+                return response()->json([
+                    'message' => 'Secteur introuvable'
+                ], 404);
+            }
+
+            $existingSecteur = Secteur::where('secteur', $request->secteur)
+                ->where('id', '!=', $id)
+                ->exists();
+
+            if ($existingSecteur) {
+                return response()->json([
+                    'message' => 'Secteur est déjà existe'
+                ], 400);
+            }
+
+            $Secteur->update([
+                'secteur' => $request->secteur,
+                'warehouseDistrubtion_id' => $request->warehouseDistrubtion_id,
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Secteur updated successfully',
+                'id' => $Secteur->id
+            ], 200);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Something went wrong. Please try again later.'
+            ], 400);
+        }
+    }
+
+
+
+public function destroy($id)
+{
+    DB::beginTransaction();
+
+    try {
+        $Secteur = Secteur::find($id);
+
+        if (!$Secteur) {
+            return response()->json([
+                'message' => 'Secteur introuvable'
+            ], 404);
+        }
+
+        $Secteur->delete();
+
+        DB::commit();
+
+        return response()->json([
+            'message' => 'Secteur n`est plus disponible
+            '
+        ], 200);
+
+    } catch (Exception $e) {
+        DB::rollBack();
+        return response()->json([
+            'message' => 'Something went wrong. Please try again later.'
+        ], 400);
+    }
+}
 }

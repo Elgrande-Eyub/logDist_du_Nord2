@@ -30,10 +30,7 @@ class ClientController extends Controller
             $validator = Validator::make($request->all(), [
                 'nom_Client' => 'required',
                 'code_Client' => 'required|unique:clients',
-                'CIN_Client' => 'required',
-                'ICE_Client' => 'required',
-                'RC_Client' => 'required',
-                'Pattent_Client' => 'required',
+
             ]);
 
             if ($validator->fails()) {
@@ -68,7 +65,7 @@ class ClientController extends Controller
     public function show($id)
     {
         try {
-            $client = Client::find($id);
+            $client = Client::withTrashed()->find($id);
 
             if (!$client) {
                 return response()->json([
