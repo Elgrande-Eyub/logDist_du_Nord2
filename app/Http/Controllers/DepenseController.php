@@ -6,6 +6,7 @@ use App\Models\depense;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class DepenseController extends Controller
 {
@@ -25,13 +26,20 @@ class DepenseController extends Controller
     {
         DB::beginTransaction();
         try {
-            if (!$request->filled(['depense', 'depense_Tax'])) {
+
+            $validator = Validator::make($request->all(), [
+                'depense' => 'required',
+                'depense_Tax' => 'required',
+
+            ]);
+
+            if ($validator->fails()) {
                 return response()->json([
-                    'message' => 'Please fill all required fields.'
+                    'message' => $validator->errors()->first()
                 ], 400);
             }
 
-            if($request->depense_Tax <= 0) {
+            if($request->depense_Tax < 0) {
                 return response()->json([
                     'message' => 'TVA doit être egale ou supérieur à 0%'
                 ], 400);
@@ -62,6 +70,7 @@ class DepenseController extends Controller
                 'message' => 'Depense added successfully',
                 'id' => $added->id
             ], 200);
+
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -96,9 +105,15 @@ class DepenseController extends Controller
     {
         DB::beginTransaction();
         try {
-            if (!$request->filled(['depense', 'depense_Tax'])) {
+            $validator = Validator::make($request->all(), [
+                'depense' => 'required',
+                'depense_Tax' => 'required',
+
+            ]);
+
+            if ($validator->fails()) {
                 return response()->json([
-                    'message' => 'Please fill all required fields.'
+                    'message' => $validator->errors()->first()
                 ], 400);
             }
 
@@ -106,17 +121,17 @@ class DepenseController extends Controller
 
             if (!$depense) {
                 return response()->json([
-                    'message' => 'Depense not found'
+                    'message' => 'Depense introuvable'
                 ], 404);
             }
 
-            $existingDepense = Depense::where('depense_Tax', $request->depense_Tax)
+            $existingDepense = Depense::where('depense', $request->depense)
                 ->where('id', '!=', $id)
                 ->exists();
 
-            if (!$existingDepense) {
+            if ($existingDepense) {
                 return response()->json([
-                    'message' => 'Depense not Found'
+                    'message' => 'depense ne peut pas être dupliqué'
                 ], 400);
             }
 

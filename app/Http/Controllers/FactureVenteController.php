@@ -386,10 +386,10 @@ class FactureVenteController extends Controller
 
 
             if($isDownloaded === 'true') {
-                return $pdf->download('Facture_Nº'.$commande->numero_Facture.'.pdf');
+                return $pdf->download('Facture_Nº'.$commande->numero_FactureVente.'.pdf');
             }
 
-            return $pdf->stream('Facture_'.$commande->numero_Facture.'.pdf');
+            return $pdf->stream('Facture_'.$commande->numero_FactureVente.'.pdf');
 
 
         } catch (Exception $e) {

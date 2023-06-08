@@ -491,10 +491,10 @@ public function getNumeroBLV()
 
 
             if($isDownloaded === 'true') {
-                return $pdf->download('Bon_Livriason_'.$commande->Numero_bonLivraison.'.pdf');
+                return $pdf->download('Bon_Livriason_'.$commande->Numero_bonLivraisonVente.'.pdf');
             }
 
-            return $pdf->stream('Bon_Livriason_'.$commande->Numero_bonLivraison.'.pdf');
+            return $pdf->stream('Bon_Livriason_'.$commande->Numero_bonLivraisonVente.'.pdf');
 
 
 
@@ -506,7 +506,7 @@ public function getNumeroBLV()
 
     public function printbonReceptionVente($id, $isDownloaded)
     {
-        // try {
+        try {
 
 
             $commande = bonLivraisonVente::join('clients', 'bon_livraison_ventes.client_id', '=', 'clients.id')
@@ -548,16 +548,16 @@ public function getNumeroBLV()
 
 
             if($isDownloaded === 'true') {
-                return $pdf->download('Bon_Livriason_'.$commande->Numero_bonLivraison.'.pdf');
+                return $pdf->download('Bon_Reception_de_'.$commande->Numero_bonLivraisonVente.'.pdf');
             }
 
-            return $pdf->stream('Bon_Livriason_'.$commande->Numero_bonLivraison.'.pdf');
+            return $pdf->stream('Bon_reception_de_'.$commande->Numero_bonLivraisonVente.'.pdf');
 
 
 
-       /*  } catch (Exception $e) {
+         } catch (Exception $e) {
             abort(404);
 
-        } */
+        }
     }
 }

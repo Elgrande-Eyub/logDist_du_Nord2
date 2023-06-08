@@ -521,10 +521,10 @@ public function getBonCommande()
 
 
               if($isDownloaded === 'true') {
-                  return $pdf->download('Bon_Livriason_'.$commande->Numero_bonLivraison.'.pdf');
+                  return $pdf->download('Bon_Reception_de'.$commande->Numero_bonLivraison.'.pdf');
               }
 
-              return $pdf->stream('Bon_Livriason_'.$commande->Numero_bonLivraison.'.pdf');
+              return $pdf->stream('Bon_Reception_de'.$commande->Numero_bonLivraison.'.pdf');
 
 
 
