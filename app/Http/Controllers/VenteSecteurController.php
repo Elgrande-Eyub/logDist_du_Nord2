@@ -59,7 +59,7 @@ class VenteSecteurController extends Controller
 
         DB::beginTransaction();
 
-         try {
+        //  try {
             $validator = Validator::make($request->all(), [
                 'dateEntree' => 'required',
                 'kilometrageFait' => 'required',
@@ -156,12 +156,12 @@ class VenteSecteurController extends Controller
                     'id' => $Added->id
                 ]);
 
-         } catch(Exception $e) {
+        /*  } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
-        }
+        } */
     }
 
     public function markAsConfirmed($id)
