@@ -59,11 +59,8 @@ class VenteSecteurController extends Controller
 
         DB::beginTransaction();
 
-        try {
-
-
+         try {
             $validator = Validator::make($request->all(), [
-
                 'dateEntree' => 'required',
                 'kilometrageFait' => 'required',
                 'Total_HT' => 'required',
@@ -71,8 +68,6 @@ class VenteSecteurController extends Controller
                 'Total_TVA' => 'required',
                 'Total_TTC' => 'required',
                 'bonSortie_id' => 'required',
-
-
             ]);
 
             if ($validator->fails()) {
@@ -81,7 +76,6 @@ class VenteSecteurController extends Controller
                 ], 400);
             }
 
-            // Check if the Bon Reception already exists
             $found = venteSecteur::where('reference', $request->reference)->exists();
 
             if ($found) {
@@ -90,14 +84,13 @@ class VenteSecteurController extends Controller
                 ], 400);
             }
 
-
             $bonSortie = bonSortie::find($request->bonSortie_id);
-            // Check if the Bon Commande filled is existe
             if(!$bonSortie) {
                 return response()->json([
                         'message' => 'Le Bon de Sortie introuvable'
                 ], 400);
             }
+
             $camion = Camion::find($bonSortie->camion_id);
             if(!$camion) {
                 return response()->json([
@@ -132,16 +125,13 @@ class VenteSecteurController extends Controller
                 'warehouse_id' => $bonSortie->warehouse_id,
             ]);
 
-            // Check if the Bon Commande was successfully created
             if (!$Added) {
                 DB::rollBack();
-
                 return response()->json([
                     'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
                 ], 400);
             }
 
-            // Add the bon Articles Related to bon Commande
             foreach($request->Articles as $article) {
                 venteSecteurArticle::create([
                    'venteSecteur_id' => $Added->id,
@@ -153,22 +143,20 @@ class VenteSecteurController extends Controller
                    'qte_gratuit' => $article['qte_gratuit'],
                    'qte_credit' => $article['qte_credit'],
                    'qte_vendu' => $article['qte_vendu'],
-
                    'Prix_unitaire' => $article['Prix_unitaire'],
                    'Total_Vendu' => $article['Total_Vendu'],
            ]);
 
-
             }
 
             DB::commit();
-            // Return a success message and the new Bon Commande ID
+
             return response()->json([
                     'message' => 'Création réussie de Bon de vente secteur',
                     'id' => $Added->id
                 ]);
 
-        } catch(Exception $e) {
+         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
@@ -219,14 +207,10 @@ class VenteSecteurController extends Controller
                     ['actual_stock' => DB::raw('actual_stock + ' . $article['qte_retourV'])]
                 );
 
-
             }
 
             DB::commit();
             return response()->json(['message' => 'confirmè avec succès'], 200);
-
-
-
 
         } catch(Exception $e) {
             DB::rollBack();
@@ -236,7 +220,6 @@ class VenteSecteurController extends Controller
         }
 
     }
-
 
     public function getbonSortie()
     {
@@ -257,8 +240,6 @@ class VenteSecteurController extends Controller
         }
 
     }
-
-
 
     public function show($id)
     {
@@ -293,7 +274,6 @@ class VenteSecteurController extends Controller
                 $articles[] = $article;
             }
 
-
             $factures = venteSecteur::join('warehouses', 'vente_secteurs.warehouse_id', '=', 'warehouses.id')
             ->join('camions', 'vente_secteurs.camion_id', '=', 'camions.id')
             ->join('secteurs', 'vente_secteurs.secteur_id', '=', 'secteurs.id')
@@ -303,7 +283,6 @@ class VenteSecteurController extends Controller
             ->leftjoin('bon_sorties', 'bon_sorties.id', '=', 'vente_secteurs.bonSortie_id')
             ->select(
                 'vente_secteurs.*',
-                // 'vente_secteurs.id as vente_secteurs_ID',
                 'warehouses.nom_Warehouse',
                 'secteurs.secteur',
                 'camions.matricule',
@@ -313,16 +292,13 @@ class VenteSecteurController extends Controller
                 'vendeur2.nomComplet as nomComplet2',
                 'vendeur3.nomComplet as nomComplet3'
             )
-            ->where('bon_sorties.id', $id)
+            ->where('vente_secteurs.id', $id)
             ->first();
 
             $factureArray = $factures->toArray();
             $factureArray['Articles'] = $articles;
 
-
-
             return response()->json(['data' => $factureArray], 200);
-
 
         } catch(Exception) {
             return response()->json([
@@ -341,7 +317,7 @@ class VenteSecteurController extends Controller
         try {
 
             $commande = venteSecteur::join('warehouses', 'vente_secteurs.warehouse_id', '=', 'warehouses.id')
-            ->select('vente_secteurs.*', 'warehouses.nom_Warehouse')
+            ->select('vente_secteurs.*', 'warehouses.nom_Warehouse')->withTrashed()
             ->find($id);
 
             if (!$commande) {
@@ -350,21 +326,21 @@ class VenteSecteurController extends Controller
                 ], 409);
             }
 
-            $articles = venteSecteurArticle::select('vente_secteur_articles.*', 'articles.reference', 'articles.article_libelle', 'articles.unite')
+            $articles = venteSecteurArticle::withTrashed()->select('vente_secteur_articles.*', 'articles.reference', 'articles.article_libelle', 'articles.unite')
                 ->join('articles', 'vente_secteur_articles.article_id', '=', 'articles.id')
                 ->where('venteSecteur_id', $commande->id)
                 ->get();
 
-            $vendeur1 = Vendeur::where('id', $commande->vendeur_id)->first();
-            $vendeur2 = Vendeur::where('id', $commande->aideVendeur_id)->first();
-            $vendeur3 = Vendeur::where('id', $commande->aideVendeur2_id)->first();
+            $vendeur1 = Vendeur::withTrashed()->where('id', $commande->vendeur_id)->first();
+            $vendeur2 = Vendeur::withTrashed()->where('id', $commande->aideVendeur_id)->first();
+            $vendeur3 = Vendeur::withTrashed()->where('id', $commande->aideVendeur2_id)->first();
 
             $company = Company::get()->first();
 
-            $secteur = Secteur::where('id', $commande->secteur_id) ->first();
+            $secteur = Secteur::withTrashed()->where('id', $commande->secteur_id) ->first();
             $dateTirage = Carbon::now();
 
-            $camion = camion::where('id', $commande->camion_id)->first();
+            $camion = camion::withTrashed()->where('id', $commande->camion_id)->first();
             $pdf = app('dompdf.wrapper');
 
             //############ Permitir ver imagenes si falla ################################
@@ -378,18 +354,13 @@ class VenteSecteurController extends Controller
             $pdf->setPaper('A4', 'landscape');
             $pdf->getDomPDF()->setHttpContext($contxt);
 
-
             $pdf->loadView('Prints.vente.VenteSecteur', compact('commande', 'articles', 'company', 'pdf', 'vendeur1', 'vendeur2', 'vendeur3', 'secteur', 'dateTirage', 'camion'));
-
-
-
 
             if($isDownloaded === 'true') {
                 return $pdf->download('Vente_Secteur_Nº'.$commande->reference.'.pdf');
             }
 
             return $pdf->stream('Vente_Secteur_Nº'.$commande->reference.'.pdf');
-
 
         } catch (Exception $e) {
 

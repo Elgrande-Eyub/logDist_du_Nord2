@@ -29,7 +29,7 @@ class BonLivraisonVenteController extends Controller
         try {
 
             $bonLivraison = bonLivraisonVente::leftjoin('bon_commande_ventes', 'bon_livraison_ventes.bonCommandeVente_id', '=', 'bon_commande_ventes.id')
-            ->leftjoin('clients','bon_livraison_ventes.client_id','=','clients.id')->withTrashed()
+            ->leftjoin('clients','bon_livraison_ventes.client_id','=','clients.id')
             ->leftjoin('warehouses','bon_livraison_ventes.warehouse_id','=','warehouses.id')
             ->select('bon_livraison_ventes.*',
             'bon_commande_ventes.Numero_bonCommandeVente',
@@ -40,11 +40,10 @@ class BonLivraisonVenteController extends Controller
             )
             ->get();
         return  response()->json(['data'=>$bonLivraison]);
-            // return bonLivraisonVenteResource::collection($bonLivraison);
 
         } catch(Exception $e) {
             return response()->json([
-                            'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
 
         }

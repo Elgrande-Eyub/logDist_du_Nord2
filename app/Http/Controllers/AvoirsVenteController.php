@@ -192,9 +192,6 @@ class AvoirsVenteController extends Controller
 
     }
 
-
-
-
     public function show($id)
     {
         try {
@@ -210,7 +207,7 @@ class AvoirsVenteController extends Controller
             $articles = [];
 
             foreach($detailsfacture as $detail) {
-                $articl= Article::find($detail->article_id);
+                $articl= Article::withTrashed()->find($detail->article_id);
                 $article = [
                     'article_id' => $detail->article_id,
                     'reference' => $articl->reference,
@@ -223,7 +220,7 @@ class AvoirsVenteController extends Controller
                 $articles[] = $article;
             }
 
-            $Avoirs = avoirsVente::join('facture_ventes', 'avoirs_ventes.factureVente_id', '=', 'facture_ventes.id')
+            $Avoirs = avoirsVente::withTrashed()->join('facture_ventes', 'avoirs_ventes.factureVente_id', '=', 'facture_ventes.id')
             ->join('clients', 'avoirs_ventes.client_id', '=', 'clients.id')
             ->leftJoin('bonretour_ventes', 'bonretour_ventes.bonLivraison_id', '=', 'facture_ventes.bonLivraisonVente_id')
             ->select('avoirs_ventes.*', 'facture_ventes.numero_FactureVente', 'facture_ventes.id as factureVente_id', 'clients.nom_Client', 'bonretour_ventes.Numero_bonRetour', 'bonretour_ventes.id as bonRetourVente_id')
@@ -284,8 +281,8 @@ class AvoirsVenteController extends Controller
 
     public function avoirePrint($id, $isDownloaded)
     {
-         try {
-           $commande = avoirsVente::join('facture_ventes', 'avoirs_ventes.factureVente_id', '=', 'facture_ventes.id')
+        try {
+            $commande = avoirsVente::withTrashed()->join('facture_ventes', 'avoirs_ventes.factureVente_id', '=', 'facture_ventes.id')
         ->leftjoin('bon_livraison_ventes', 'facture_ventes.bonLivraisonVente_id', '=', 'bon_livraison_ventes.id')
         ->leftjoin('bon_commande_ventes', 'bon_livraison_ventes.bonCommandeVente_id', '=', 'bon_commande_ventes.id')
         ->join('clients', 'avoirs_ventes.client_id', '=', 'clients.id')
@@ -306,45 +303,39 @@ class AvoirsVenteController extends Controller
         ->where('avoirs_ventes.id', $id)
         ->first();
 
-        $bank = BankAccount::get()->first();
+            $bank = BankAccount::get()->first();
 
-        $articles = avoirsVenteArticle::select('avoirs_vente_articles.*', 'articles.*')
-          ->join('articles', 'avoirs_vente_articles.article_id', '=', 'articles.id')
-          ->where('avoirsVente_id', $id)
-          ->get();
+            $articles = avoirsVenteArticle::withTrashed()->select('avoirs_vente_articles.*', 'articles.*')
+              ->join('articles', 'avoirs_vente_articles.article_id', '=', 'articles.id')
+              ->where('avoirsVente_id', $id)
+              ->get();
 
-        $client = client::find($commande->client_id);
+            $client = client::withTrashed()->find($commande->client_id);
 
-        $company = Company::get()->first();
+            $company = Company::get()->first();
 
-        $pdf = app('dompdf.wrapper');
+            $pdf = app('dompdf.wrapper');
 
-        //############ Permitir ver imagenes si falla ################################
-        $contxt = stream_context_create([
-          'ssl' => [
-              'verify_peer' => false,
-              'verify_peer_name' => false,
-              'allow_self_signed' => true,
-          ]
+            $contxt = stream_context_create([
+              'ssl' => [
+                  'verify_peer' => false,
+                  'verify_peer_name' => false,
+                  'allow_self_signed' => true,
+              ]
       ]);
 
-        $pdf->setPaper('A4', 'portrait');
-        $pdf->getDomPDF()->setHttpContext($contxt);
+            $pdf->setPaper('A4', 'portrait');
+            $pdf->getDomPDF()->setHttpContext($contxt);
 
+            $pdf->loadView('Prints.vente.AvoirsVente', compact('commande', 'articles', 'client', 'bank', 'company', 'pdf'));
 
+            if($isDownloaded === 'true') {
+                return $pdf->download('Facture_Nº'.$commande->numero_Facture.'.pdf');
+            }
 
-        $pdf->loadView('Prints.vente.AvoirsVente', compact('commande', 'articles', 'client', 'bank', 'company', 'pdf'));
+            return $pdf->stream('Facture_'.$commande->numero_Facture.'.pdf');
 
-
-
-        if($isDownloaded === 'true') {
-            return $pdf->download('Facture_Nº'.$commande->numero_Facture.'.pdf');
-        }
-
-        return $pdf->stream('Facture_'.$commande->numero_Facture.'.pdf');
-
-
-         } catch (Exception $e) {
+        } catch (Exception $e) {
             abort(404);
 
         }

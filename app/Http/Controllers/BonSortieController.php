@@ -56,12 +56,13 @@ class BonSortieController extends Controller
         }
 
     }
+
     public function store(Request $request)
     {
         DB::beginTransaction();
 
         try {
-            // Check if fields are not empty
+
             $validator = Validator::make($request->all(), [
                 'reference' => 'required',
                 'vendeur_id' => 'required',
@@ -76,7 +77,6 @@ class BonSortieController extends Controller
                 ], 400);
             }
 
-            // Check if the Bon Commande already exists
             $found = bonSortie::where('reference', $request->reference)->exists();
             if ($found) {
                 return response()->json([

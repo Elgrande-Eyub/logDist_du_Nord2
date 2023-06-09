@@ -21,7 +21,7 @@ class ArticleController extends Controller
     {
          try {
 
-            $Articles = Article::join('fournisseurs','articles.fournisseur_id','=','fournisseurs.id')->withTrashed()
+            $Articles = Article::join('fournisseurs','articles.fournisseur_id','=','fournisseurs.id')
             ->join('article_categories','articles.category_id','=','article_categories.id')
             ->select('articles.*',
             'fournisseurs.fournisseur',
@@ -30,7 +30,7 @@ class ArticleController extends Controller
             'article_categories.category'
             )->get();
             return response()->json(['data'=>  $Articles]);
-            // return articleResource::collection($Articles);
+
          } catch (Exception $e) {
 
             return response()->json([
@@ -38,8 +38,6 @@ class ArticleController extends Controller
             ], 400);
         }
     }
-
-
 
     public function insertArticles(Request $request)
     {
@@ -64,11 +62,8 @@ class ArticleController extends Controller
         return response()->json(['message' => 'Création réussie de L`Articles']);
     }
 
-
-
     public function articleFr($id)
     {
-
         try {
 
             $found = Fournisseur::where('id', $id)->exists();
@@ -95,7 +90,6 @@ class ArticleController extends Controller
 
     public function articleWarehouse($id)
     {
-
          try {
 
             $secteur = Secteur::where('id', $id)->first();
@@ -151,7 +145,7 @@ class ArticleController extends Controller
             $found = Article::where('reference', $request->reference)->exists();
             if ($found) {
                 return response()->json([
-                    'message' => 'Article cannot be duplicated'
+                    'message' => 'L’article ne peut pas être dupliqué'
                 ], 400);
             }
 
@@ -171,7 +165,6 @@ class ArticleController extends Controller
 
             ]);
 
-
             if (!$Added) {
                 Log::error('Failed to create Article');
                 return response()->json([
@@ -179,9 +172,8 @@ class ArticleController extends Controller
                 ], 400);
             }
 
-
             return response()->json([
-                'message' => 'Article created successfully',
+                'message' => 'Article créé avec succès',
                 'id' => $Added->id
             ]);
         } catch (Exception $e) {
@@ -216,13 +208,6 @@ class ArticleController extends Controller
         }
     }
 
-
-    public function edit($id)
-    {
-    }
-
-
-
     public function update(Request $request, $id)
     {
         try {
@@ -242,17 +227,13 @@ class ArticleController extends Controller
                 ], 400);
             }
 
-
-
             $ArticleFounded = Article::find($id);
-
 
             if (!$ArticleFounded) {
                 return response()->json([
-                    'message' => 'Article not found'
+                    'message' => 'Article introuvable'
                 ], 404);
             }
-
 
             $ArticleFounded->article_libelle = $request->article_libelle;
             $ArticleFounded->reference = $request->reference;
@@ -268,7 +249,7 @@ class ArticleController extends Controller
             $ArticleFounded->save();
 
             return response()->json([
-                'message' => 'Article updated successfully',
+                'message' => 'Article mis à jour avec succès',
                 'id' => $ArticleFounded->id
             ]);
         } catch (Exception $e) {
@@ -283,17 +264,16 @@ class ArticleController extends Controller
         try {
             $ArticleFounded = Article::find($id);
 
-
             if (!$ArticleFounded) {
                 return response()->json([
-                    'message' => 'Article not found'
+                    'message' => 'Article introuvable'
                 ], 404);
             }
 
             $ArticleFounded->delete();
 
             return response()->json([
-                'message' => 'Article deleted successfully',
+                'message' => 'Article supprimé avec succès',
                 'id' => $ArticleFounded->id
             ]);
         } catch (Exception $e) {

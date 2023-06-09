@@ -143,7 +143,6 @@ class AvoirsAchatController extends Controller
                    'Prix_unitaire' => $article['Prix_unitaire'],
                    'Total_HT' => $article['Total_HT'],
                    'avoirsAchat_id' => $Added->id
-
             ]);
             }
 
@@ -226,7 +225,7 @@ class AvoirsAchatController extends Controller
             $articles = [];
 
             foreach($detailsfacture as $detail) {
-                $articl= Article::find($detail->article_id);
+                $articl= Article::withTrashed()->find($detail->article_id);
                 $article = [
                     'article_id' => $detail->article_id,
                     'reference' => $articl->reference,
@@ -239,7 +238,7 @@ class AvoirsAchatController extends Controller
                 $articles[] = $article;
             }
 
-            $Avoirs = avoirsAchat::join('factures', 'avoirs_achats.factureAchat_id', '=', 'factures.id')
+            $Avoirs = avoirsAchat::withTrashed()->join('factures', 'avoirs_achats.factureAchat_id', '=', 'factures.id')
             ->join('fournisseurs','avoirs_achats.fournisseur_id','=','fournisseurs.id')
             ->leftJoin('bonretour_achats', 'bonretour_achats.bonLivraison_id', '=', 'factures.bonLivraison_id')
             ->select('avoirs_achats.*',  'factures.numero_Facture','factures.id as facture_id','fournisseurs.fournisseur','bonretour_achats.Numero_bonRetour','bonretour_achats.id as bonRetourAchat_id')

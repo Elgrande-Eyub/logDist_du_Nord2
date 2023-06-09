@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->dateTime('dateEntree')->default(Carbon::now());
             $table->string('EtatPaiement')->nullable()->default('impaye');
-            $table->float('kilometrageFait',5,2);
+            $table->bigInteger('kilometrageFait');
             $table->boolean('Confirme')->default(false);
             $table->float('Total_HT',8,2)->nullable();
             $table->integer('TVA')->nullable();

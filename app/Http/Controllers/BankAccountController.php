@@ -27,13 +27,6 @@ class BankAccountController extends Controller
         }
     }
 
-
-    public function create()
-    {
-
-    }
-
-
     public function store(Request $request)
     {
         try {
@@ -44,8 +37,6 @@ class BankAccountController extends Controller
                 'telephone' => 'nullable|string',
                 'numero_compt' => 'required|string',
                 'rib_compt' => 'required|string',
-                // 'solde' => 'required|numeric',
-
             ]);
 
             if ($validator->fails()) {
@@ -72,10 +63,8 @@ class BankAccountController extends Controller
              'Commentaire' => $request->Commentaire,
         ]);
 
-            // Check if the Bank Account was successfully created
             if (!$Added) {
                 DB::rollBack();
-                Log::error('Failed to create bank');
                 return response()->json([
                     'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
                 ], 400);
@@ -83,9 +72,8 @@ class BankAccountController extends Controller
 
             DB::commit();
 
-            // Return a success message and the bank ID
             return response()->json([
-                'message' => 'bank Account created successfully',
+                'message' => 'Compte bancaire créé avec succès',
                 'id' => $Added->id
             ]);
 
@@ -108,7 +96,7 @@ class BankAccountController extends Controller
             $BankAccount = BankAccount::find($id);
             if(!$BankAccount) {
                 return response()->json([
-                    'message' => 'BankAccount not found'
+                    'message' => 'La Bank introuvable'
                 ], 404);
             }
 
@@ -124,13 +112,6 @@ class BankAccountController extends Controller
         }
     }
 
-
-    public function edit(BankAccount $bankAccount)
-    {
-
-    }
-
-
     public function update(Request $request, $id)
     {
 
@@ -140,7 +121,6 @@ class BankAccountController extends Controller
             'telephone' => 'nullable|string',
             'numero_compt' => 'required|string',
             'rib_compt' => 'required|string',
-            // 'solde' => 'required|numeric',
             'Commentaire' => 'nullable|string'
         ]);
 
@@ -155,7 +135,7 @@ class BankAccountController extends Controller
 
             if(!$BankAccountFounded) {
                 return response()->json([
-                    'message' => 'Bon Commande not found'
+                    'message' => 'La Bank introuvable'
                 ], 400);
             }
 
@@ -170,7 +150,7 @@ class BankAccountController extends Controller
             ]);
 
             return response()->json([
-               'message' => 'BankAccount updated successfully.',
+               'message' => 'Mise à jour du compte bancaire réussie.',
                'BankAccount_id' => $id
            ]);
 
@@ -189,14 +169,14 @@ class BankAccountController extends Controller
 
             if(!$BankAccountFounded) {
                 return response()->json([
-                    'message' => 'BankAccount not found'
+                    'message' => 'La Bank introuvable'
                 ], 400);
             }
 
             $BankAccountFounded->delete();
 
             return response()->json([
-               'message' => 'BankAccount deleted successfully.',
+               'message' => 'BankAccount supprimé avec succès.',
                'BankAccount_id' => $id,
                200
            ]);

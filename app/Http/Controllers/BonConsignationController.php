@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\bonConsignation;
 use App\Models\bonConsignationArticle;
 use App\Models\facture;
@@ -17,6 +18,16 @@ class BonConsignationController extends Controller
 
     public function index()
     {
+        try {
+        $bons =  bonConsignation::join('factures','bon_consignations.facture_id','=','factures.id')
+        ->select('bon_consignations.*','factures.numero_Facture')
+        ->get();
+    } catch(Exception $e) {
+        DB::rollBack();
+        return response()->json([
+           'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+        ], 404);
+    }
 
     }
 
@@ -26,7 +37,6 @@ class BonConsignationController extends Controller
         DB::beginTransaction();
 
          try {
-            // Check if the Bon Reception is empty
 
             $validator = Validator::make($request->all(), [
                 'facture_id' => 'required',
@@ -49,8 +59,6 @@ class BonConsignationController extends Controller
                 ], 400);
             }
 
-
-
             $facture = facture::where('id', $request->facture_id)->exists();
             if(!$facture) {
                 return response()->json([
@@ -58,13 +66,11 @@ class BonConsignationController extends Controller
                 ], 400);
             }
 
-
-
             $Added = bonConsignation::create([
                 'facture_id' => $request->facture_id,
                 'numero_bonConsignation' => $request->numero_bonConsignation,
                 'Total_Emballages' => $request->Total_Emballages,
-                'etat' =>   'dérouler',//$request->etat,
+                'etat' =>   'dérouler', //$request->etat,
                 'representant' =>$request->representant,
                 'Commentaire' =>$request->Commentaire,
                 'transporteur' =>$request->transporteur,
@@ -72,8 +78,6 @@ class BonConsignationController extends Controller
                 'conditionPaiement' =>$request->conditionPaiement,
 
             ]);
-
-
 
             if (!$Added) {
                 DB::rollBack();
@@ -125,19 +129,51 @@ class BonConsignationController extends Controller
 
     }
 
-    public function show(bonConsignation $bonConsignation)
+    public function show($id)
     {
+        try {
 
+            $bonConsignation = bonConsignation::find($id);
+            if(!$bonConsignation) {
+                return response()->json([
+                    'message' => 'Bon Commande introuvable'
+                ], 404);
+            }
+
+            $detailsCommande = bonConsignationArticle::where('bonConsignation_id', $bonConsignation->id)->withTrashed()->get();
+
+            $articles = [];
+
+            foreach($detailsCommande as $detail) {
+
+
+                $article = [
+                    'reference' => $detail->reference,
+                    'article_libelle' => $detail->article_libelle,
+                    'Prix_unitaire' => $detail->Prix_unitaire,
+                    'Quantity' => $detail->Quantity,
+                    'Total' => $detail->Total,
+                ];
+                $articles[] = $article;
+            }
+
+            $bonConsignation = bonConsignation::withTrashed()->join('factures','bon_consignations.facture_id','=','factures.id')
+            ->select('bon_consignations.*','factures.numero_Facture')
+            ->where('bon_consignations.id',$id)
+            ->first();
+
+            $bonConsignationArray = $bonConsignation->toArray();
+            $bonConsignationArray['Articles'] = $articles;
+
+            return response()->json($bonConsignationArray);
+
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
+            ], 404);
+        }
     }
-
-
-
-
-    public function update(Request $request, bonConsignation $bonConsignation)
-    {
-
-    }
-
 
     public function destroy(bonConsignation $bonConsignation)
     {

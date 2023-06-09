@@ -26,7 +26,7 @@ class BonCommandeVenteController extends Controller
          try {
 
             $bonCommande = bonCommandeVente::orderByDesc('Numero_bonCommandeVente')
-            ->leftjoin('clients','bon_commande_ventes.client_id','=','clients.id')->withTrashed()
+            ->leftjoin('clients','bon_commande_ventes.client_id','=','clients.id')
             ->select('bon_commande_ventes.*','clients.nom_Client')
             ->get();
 
@@ -202,7 +202,7 @@ class BonCommandeVenteController extends Controller
 
             foreach($detailsCommande as $detail) {
 
-                $articl = Article::where('id', $detail->article_id)->first();
+                $articl = Article::withTrashed()->where('id', $detail->article_id)->first();
 
 
                 $article = [
@@ -216,7 +216,7 @@ class BonCommandeVenteController extends Controller
                 ];
                 $articles[] = $article;
             }
-            $bonCommande = bonCommandeVente::leftjoin('clients', 'bon_commande_ventes.client_id', '=', 'clients.id')->withTrashed()
+            $bonCommande = bonCommandeVente::withTrashed()->leftjoin('clients', 'bon_commande_ventes.client_id', '=', 'clients.id')->withTrashed()
             ->leftJoin('bon_livraison_ventes', 'bon_commande_ventes.id', '=', 'bon_livraison_ventes.bonCommandeVente_id')
             ->select('bon_commande_ventes.*', 'clients.nom_Client', 'bon_livraison_ventes.id as bonLivraisonVente_id')
             ->where('bon_commande_ventes.id', $id)
