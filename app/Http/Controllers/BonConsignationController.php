@@ -175,8 +175,33 @@ class BonConsignationController extends Controller
         }
     }
 
-    public function destroy(bonConsignation $bonConsignation)
+    public function destroy($id)
     {
+        DB::beginTransaction();
+        try {
 
+            $bonConsignation = bonConsignation::find($id);
+
+            if (!$bonConsignation) {
+                return response()->json([
+                    'message' => 'Le Bon Consignation de vente introuvable'
+                ], 404);
+            }
+
+            bonConsignationArticle::where('bonConsignation_id', $bonConsignation->id)->delete();
+
+            $bonConsignation->delete();
+            DB::commit();
+            return response()->json([
+                'message' => 'Le Bon Consignation a ete supprimer avec succès.',
+                'id' => $bonConsignation->id
+            ]);
+
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
+            ], 404);
+        }
     }
 }

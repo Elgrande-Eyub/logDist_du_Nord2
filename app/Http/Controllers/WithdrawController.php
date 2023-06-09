@@ -129,6 +129,7 @@ class WithdrawController extends Controller
                 'solde' => 'required',
                 'mode' => 'required',
                 'motif' => 'required',
+                'journal_id' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -156,7 +157,7 @@ class WithdrawController extends Controller
                 'mode' => $request->mode,
                 'motif' => $request->motif,
                 'journal_id' => $request->journal_id,
-                'depense_id' => $request->depense_id,
+                // 'depense_id' => $request->depense_id,
             ]);
 
             if (!$Added) {

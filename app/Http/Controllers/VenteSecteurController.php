@@ -307,9 +307,39 @@ class VenteSecteurController extends Controller
         }
     }
 
-    public function destroy(venteSecteur $venteSecteur)
+    public function destroy($id)
     {
+        DB::beginTransaction();
+        try {
+            $venteSecteur = venteSecteur::find($id);
 
+            if (!$venteSecteur) {
+                return response()->json([
+                    'message' => 'Bon Secteur de vente introuvable'
+                ], 404);
+            }
+
+            if($venteSecteur->Confirme == true) {
+                return response()->json([
+                    'message' => 'Bon Secteur Confirmé, ne peut pas être supprimé'
+                ], 409);
+            }
+
+            venteSecteurArticle::where('blVente_id', $venteSecteur->id)->delete();
+            $venteSecteur->delete();
+
+            DB::commit();
+            return response()->json([
+                'message' => 'Le Bon Secteur de Vente nest plus disponible',
+                'id' => $venteSecteur->id
+
+            ]);
+        } catch (Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
     }
 
     public function printvs($id, $isDownloaded)

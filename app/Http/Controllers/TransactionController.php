@@ -90,6 +90,7 @@ class TransactionController extends Controller
             ], 404);
         }
     }
+
     public function paymentAvoirsAchatRest($id)
     {
         try {
@@ -918,10 +919,14 @@ class TransactionController extends Controller
              } elseif($type === 'avoirsachat') {
                  $factureModel = 'avoirsAchat_id';
                  $facture = avoirsAchat::findOrFail($id)->first();
-             } elseif ($type === 'depense') {
-                 $factureModel = 'paiementDepense_id';
-                 $facture = paiementDepense::findOrFail($id)->first();
-             } else {
+             } elseif ($type === 'ventesecteur') {
+                 $factureModel = 'venteSecteur_id';
+                 $facture = venteSecteur::findOrFail($id)->first();
+             }elseif ($type === 'depense') {
+                $factureModel = 'paiementDepense_id';
+                $facture = paiementDepense::findOrFail($id)->first();
+            }
+             else {
                  return abort(404);
              }
 

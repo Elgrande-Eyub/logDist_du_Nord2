@@ -120,13 +120,6 @@ class FournisseurController extends Controller
         }
     }
 
-
-    public function edit($id)
-    {
-
-    }
-
-
       // Update an Fournisseur Fournisseur
       public function update(Request $request, $id)
       {

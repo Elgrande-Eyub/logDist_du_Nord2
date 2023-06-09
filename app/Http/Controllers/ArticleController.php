@@ -22,7 +22,7 @@ class ArticleController extends Controller
          try {
 
             $Articles = Article::join('fournisseurs','articles.fournisseur_id','=','fournisseurs.id')
-            ->join('article_categories','articles.category_id','=','article_categories.id')
+            ->leftjoin('article_categories','articles.category_id','=','article_categories.id')
             ->select('articles.*',
             'fournisseurs.fournisseur',
             'fournisseurs.id as fournisseur_id',
@@ -129,10 +129,9 @@ class ArticleController extends Controller
                 'article_libelle' => 'required',
                 'reference' => 'required',
                 'prix_unitaire' => 'required',
-                'category_id' => 'required',
                 'fournisseur_id' => 'required',
                 'unite' => 'required',
-                'prix_public' => 'required',
+                // 'prix_public' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -216,9 +215,9 @@ class ArticleController extends Controller
                 'article_libelle' => 'required',
                 'reference' => 'required',
                 'prix_unitaire' => 'required',
-                'category_id' => 'required',
+                'fournisseur_id' => 'required',
                 'unite' => 'required',
-                'prix_public' => 'required',
+                // 'prix_public' => 'required',
             ]);
 
             if (!$validator->passes()) {

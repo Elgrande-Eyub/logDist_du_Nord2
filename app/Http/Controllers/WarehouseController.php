@@ -28,7 +28,7 @@ class WarehouseController extends Controller
         try {
             $validator = Validator::make($request->all(), [
                 'nom_Warehouse' => 'required',
-                'email' => 'email',
+                'city' => 'required',
             ]);
 
             if ($validator->fails()) {
@@ -95,10 +95,6 @@ class WarehouseController extends Controller
                 'message' => 'Something went wrong. Please try again later.'
             ], 400);
         }
-    }
-    public function edit(warehouse $warehouse)
-    {
-
     }
 
     public function update(Request $request, $id)

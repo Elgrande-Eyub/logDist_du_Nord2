@@ -117,6 +117,12 @@ class DepenseController extends Controller
                 ], 400);
             }
 
+            if($request->depense_Tax < 0) {
+                return response()->json([
+                    'message' => 'TVA doit être egale ou supérieur à 0%'
+                ], 400);
+            }
+
             $depense = Depense::find($id);
 
             if (!$depense) {

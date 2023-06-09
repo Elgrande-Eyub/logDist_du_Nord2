@@ -24,13 +24,13 @@ return new class extends Migration
             // For Depense Charges
 
             $table->unsignedBigInteger('depense_id')->nullable();
-            $table->foreign('depense_id')->nullable()->references('id')->on('depenses')->onDelete('restrict');
+            $table->foreign('depense_id')->references('id')->on('depenses')->onDelete('restrict');
             $table->string('attachement')->nullable();
 
             // For Depense Charges
 
             $table->unsignedBigInteger('journal_id')->nullable();
-            $table->foreign('journal_id')->nullable()->references('id')->on('journals')->onDelete('restrict');
+            $table->foreign('journal_id')->references('id')->on('journals')->onDelete('restrict');
 
             $table->timestamps();
             $table->softDeletes();

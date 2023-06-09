@@ -15,7 +15,7 @@ return new class extends Migration
             $table->integer('reference');
             $table->float('prix_unitaire',8,2);
             $table->float('prix_public',5,2);
-            $table->float('prix_achat',5,2);
+            $table->float('prix_achat',5,2)->nullable();
             $table->float('client_Fedele',5,2)->nullable();
             $table->float('demi_grossiste',5,2)->nullable();
             $table->string('unite');
