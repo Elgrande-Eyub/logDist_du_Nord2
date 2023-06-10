@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\avoirsVente;
 use App\Models\avoirsVenteArticle;
 use App\Models\BankAccount;
+use App\Models\bonretourVenteArticle;
 use App\Models\client;
 use App\Models\Company;
 use App\Models\factureVente;
@@ -45,9 +46,10 @@ class AvoirsVenteController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'numero_avoirsVente' => 'required',
-                 'factureVente_id' => 'required',
+                'factureVente_id' => 'required',
                 'date_avoirs' => 'required',
                 'Total_HT' => 'required',
+                'Total_TVA' => 'required',
                 'Total_TTC' => 'required',
             ]);
 
@@ -79,9 +81,10 @@ class AvoirsVenteController extends Controller
                 'client_id' => $facture->client_id,
                 'Exercice' => $date->format('Y'),
                 'Mois' =>  $date->format('n'),
-                // 'EtatPayment' => $request->EtatPayment, // impaye , en cour , paye
                 'Confirme' => 0,
                 'Commentaire' => $request->Commentaire,
+                'conditionPaiement'=> $request->conditionPaiement,
+                'raison'=> $request->raison,
                 'date_avoirs' => $request->date_avoirs,
                 'Total_HT' => $request->Total_HT,
                 'remise' => $request->remise,
@@ -124,6 +127,55 @@ class AvoirsVenteController extends Controller
                 ]);
 
         } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+               'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+    }
+
+    public function getFactures()
+    {
+        try {
+            $linkedFacture = avoirsVente::pluck('factureVente_id')->toArray();
+            $Facture = factureVente::where('Confirme', 1)
+                                ->whereNotIn('id', $linkedFacture)
+                                ->get();
+
+            return response()->json($Facture);
+
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+               'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+    }
+
+    public function getArticlesBonRetour($id)
+    {
+        try {
+
+            $bonretour = factureVente::leftjoin('bon_livraison_ventes', 'facture_ventes.bonLivraisonVente_id', '=', 'bon_livraison_ventes.id')
+                        ->leftJoin('bonretour_ventes', 'bon_livraison_ventes.id', '=', 'bonretour_ventes.bonLivraison_id')
+                        ->select('bonretour_ventes.*')
+                        ->where('facture_ventes.id', $id)
+                        ->first();
+
+            if($bonretour->id == null){
+                return response()->json([
+                    'message' => 'Cet Facture navrois pas un bon Retour'
+                ], 404);
+
+            }
+
+            $articles = bonretourVenteArticle::where('bonretourVente_id', $bonretour->id)->get();
+            $bonretourArray = $bonretour->toArray();
+            $bonretourArray['Articles'] = $articles;
+            return response()->json($bonretourArray);
+
+
+         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'

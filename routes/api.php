@@ -253,13 +253,16 @@ Route::put('bonretourvente/confirme/{id}',[BonretourVenteController::class,'mark
 Route::apiResource('avoirsachat',AvoirsAchatController::class);
 Route::put('avoirsachat/confirme/{id}',[AvoirsAchatController::class,'markAsConfirmed']);
 Route::get('getfactures',[AvoirsAchatController::class,'getFactures']);
+Route::get('getarticlesbr/{id}',[AvoirsAchatController::class,'getArticlesBonRetour']);
 
 // Avoirs Vente Routes ----------------------------------------------------------------------------
 
 Route::apiResource('avoirsvente',AvoirsVenteController::class);
 Route::put('avoirsvente/confirme/{id}',[AvoirsVenteController::class,'markAsConfirmed']);
 Route::get('getnav',[AvoirsVenteController::class,'getNumeroAvoirs']);
+Route::get('getfv',[AvoirsVenteController::class,'getFactures']);
 Route::get('printav/{id}/{isDownloaded}',[AvoirsVenteController::class,'avoirePrint']);
+Route::get('getarticlesbrv/{id}',[AvoirsVenteController::class,'getArticlesBonRetour']);
 
 // Paiement des depense Routes ----------------------------------------------------------------------------
 

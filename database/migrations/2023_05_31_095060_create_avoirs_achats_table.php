@@ -42,10 +42,6 @@ return new class extends Migration
             $table->unsignedBigInteger('factureAchat_id')->nullable();
             $table->foreign('factureAchat_id')->references('id')->on('factures')->onDelete('restrict');
 
-           /*  $table->unsignedBigInteger('bonretourAchat_id')->nullable();
-            $table->foreign('bonretourAchat_id')->references('id')->on('bonretour_achats')->onDelete('restrict');
- */
-
             $table->timestamps();
             $table->softDeletes();
         });

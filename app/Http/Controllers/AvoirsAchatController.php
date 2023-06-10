@@ -6,6 +6,7 @@ use App\Models\Article;
 use App\Models\avoirsAchat;
 use App\Models\avoirsAchatArticle;
 use App\Models\bonretourAchat;
+use App\Models\bonretourAchatArticle;
 use App\Models\facture;
 use Carbon\Carbon;
 use Exception;
@@ -16,21 +17,20 @@ use Illuminate\Support\Facades\Validator;
 
 class AvoirsAchatController extends Controller
 {
-
     public function index()
     {
 
-         try {
+        try {
 
             $Avoirs = avoirsAchat::join('factures', 'avoirs_achats.factureAchat_id', '=', 'factures.id')
-            ->join('fournisseurs','avoirs_achats.fournisseur_id','=','fournisseurs.id')
+            ->join('fournisseurs', 'avoirs_achats.fournisseur_id', '=', 'fournisseurs.id')
             ->leftJoin('bonretour_achats', 'bonretour_achats.bonLivraison_id', '=', 'factures.bonLivraison_id')
-            ->select('avoirs_achats.*',  'factures.numero_Facture','factures.id as facture_id','fournisseurs.fournisseur','bonretour_achats.Numero_bonRetour','bonretour_achats.id as bonRetourAchat_id')
+            ->select('avoirs_achats.*', 'factures.numero_Facture', 'factures.id as facture_id', 'fournisseurs.fournisseur', 'bonretour_achats.Numero_bonRetour', 'bonretour_achats.id as bonRetourAchat_id')
             ->get();
 
-             return response()->json(['data'=>$Avoirs]);
+            return response()->json(['data'=>$Avoirs]);
 
-         } catch(Exception $e) {
+        } catch(Exception $e) {
             return response()->json([
                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
@@ -42,7 +42,7 @@ class AvoirsAchatController extends Controller
     {
         DB::beginTransaction();
 
-         try {
+        try {
 
             $validator = Validator::make($request->all(), [
                 'numero_avoirsAchat' => 'required',
@@ -51,8 +51,6 @@ class AvoirsAchatController extends Controller
                 'Total_HT' => 'required',
                 'Total_TVA' => 'required',
                 'Total_TTC' => 'required',
-                'raison'=> 'required',
-                // 'bonretourAchat_id' => 'required',
                 'attachement' => 'nullable|mimes:jpeg,png,jpg,pdf',
             ]);
 
@@ -82,26 +80,25 @@ class AvoirsAchatController extends Controller
                 ], 400);
             }
 
-            $bonretourAchat = bonretourAchat::find($request->bonretourAchat_id);
+            /* $bonretourAchat = bonretourAchat::where('id',$request->bonretourAchat_id)->exists();
             if (!$bonretourAchat) {
                 return response()->json([
                     'message' => 'Bon Retour introuvable'
                 ], 400);
-            }
+            } */
 
             $date = Carbon::parse($request->date_avoirs);
 
             $Added = avoirsAchat::create([
                 'numero_avoirsAchat' => $request->numero_avoirsAchat,
                 'factureAchat_id' => $request->factureAchat_id,
-                'bonretourAchat_id' => $request->bonretourAchat_id,
                 'raison' => $request->raison,
                 'fournisseur_id' => $facture->fournisseur_id,
                 'Exercice' => $date->format('Y'),
                 'Mois' =>  $date->format('n'),
-                'EtatPayment' => $request->EtatPayment, // impaye , en cour , paye
                 'Confirme' => 0,
                 'Commentaire' => $request->Commentaire,
+                'conditionPaiement'=> $request->conditionPaiement,
                 'date_avoirs' => $request->date_avoirs,
                 'Total_HT' => $request->Total_HT,
                 'remise' => $request->remise,
@@ -207,12 +204,42 @@ class AvoirsAchatController extends Controller
                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
         }
+    }
 
+    public function getArticlesBonRetour($id)
+    {
+        try {
+
+            $bonretour = facture::leftjoin('bon_livraisons', 'factures.bonLivraison_id', '=', 'bon_livraisons.id')
+                        ->leftJoin('bonretour_achats', 'bon_livraisons.id', '=', 'bonretour_achats.bonLivraison_id')
+                        ->select('bonretour_achats.*')
+                        ->where('factures.id', $id)
+                        ->first();
+
+            if($bonretour->id == null){
+                return response()->json([
+                    'message' => 'Cet Facture navrois pas un bon Retour'
+                ], 404);
+
+            }
+
+            $articles = bonretourAchatArticle::where('bonretourAchat_id', $bonretour->id)->get();
+            $bonretourArray = $bonretour->toArray();
+            $bonretourArray['Articles'] = $articles;
+            return response()->json($bonretourArray);
+
+
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+               'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
     }
 
     public function show($id)
     {
-         try {
+        try {
 
             $Avoirs = avoirsAchat::find($id);
 
@@ -239,9 +266,9 @@ class AvoirsAchatController extends Controller
             }
 
             $Avoirs = avoirsAchat::withTrashed()->join('factures', 'avoirs_achats.factureAchat_id', '=', 'factures.id')
-            ->join('fournisseurs','avoirs_achats.fournisseur_id','=','fournisseurs.id')
+            ->join('fournisseurs', 'avoirs_achats.fournisseur_id', '=', 'fournisseurs.id')
             ->leftJoin('bonretour_achats', 'bonretour_achats.bonLivraison_id', '=', 'factures.bonLivraison_id')
-            ->select('avoirs_achats.*',  'factures.numero_Facture','factures.id as facture_id','fournisseurs.fournisseur','bonretour_achats.Numero_bonRetour','bonretour_achats.id as bonRetourAchat_id')
+            ->select('avoirs_achats.*', 'factures.numero_Facture', 'factures.id as facture_id', 'fournisseurs.fournisseur', 'bonretour_achats.Numero_bonRetour', 'bonretour_achats.id as bonRetourAchat_id')
             ->where('avoirs_achats.id', $id)
             ->first();
 
@@ -250,7 +277,7 @@ class AvoirsAchatController extends Controller
 
             return response()->json(['data' => $factureArray], 200);
 
-         } catch(Exception) {
+        } catch(Exception) {
             return response()->json([
                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
@@ -270,7 +297,7 @@ class AvoirsAchatController extends Controller
                 ], 404);
             }
 
-            if($avoirsAchat->Confirme == true){
+            if($avoirsAchat->Confirme == true) {
                 return response()->json([
                     'message' => 'Avoirs est Confirmé, ne peut pas être supprimé'
                 ], 400);
