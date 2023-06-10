@@ -155,7 +155,6 @@ class AvoirsVenteController extends Controller
     public function getArticlesBonRetour($id)
     {
         try {
-
             $bonretour = factureVente::leftjoin('bon_livraison_ventes', 'facture_ventes.bonLivraisonVente_id', '=', 'bon_livraison_ventes.id')
                         ->leftJoin('bonretour_ventes', 'bon_livraison_ventes.id', '=', 'bonretour_ventes.bonLivraison_id')
                         ->select('bonretour_ventes.*')
@@ -166,14 +165,13 @@ class AvoirsVenteController extends Controller
                 return response()->json([
                     'message' => 'Cet Facture navrois pas un bon Retour'
                 ], 404);
-
             }
 
             $articles = bonretourVenteArticle::where('bonretourVente_id', $bonretour->id)->get();
             $bonretourArray = $bonretour->toArray();
             $bonretourArray['Articles'] = $articles;
-            return response()->json($bonretourArray);
 
+            return response()->json($bonretourArray);
 
          } catch(Exception $e) {
             DB::rollBack();
