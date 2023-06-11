@@ -81,7 +81,7 @@ class AvoirsVenteController extends Controller
                 'client_id' => $facture->client_id,
                 'Exercice' => $date->format('Y'),
                 'Mois' =>  $date->format('n'),
-                'Confirme' => 0,
+                'Confirme' => $request->Confirme,
                 'Commentaire' => $request->Commentaire,
                 'conditionPaiement'=> $request->conditionPaiement,
                 'raison'=> $request->raison,

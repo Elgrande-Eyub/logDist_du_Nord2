@@ -80,13 +80,6 @@ class AvoirsAchatController extends Controller
                 ], 400);
             }
 
-            /* $bonretourAchat = bonretourAchat::where('id',$request->bonretourAchat_id)->exists();
-            if (!$bonretourAchat) {
-                return response()->json([
-                    'message' => 'Bon Retour introuvable'
-                ], 400);
-            } */
-
             $date = Carbon::parse($request->date_avoirs);
 
             $Added = avoirsAchat::create([
@@ -96,7 +89,7 @@ class AvoirsAchatController extends Controller
                 'fournisseur_id' => $facture->fournisseur_id,
                 'Exercice' => $date->format('Y'),
                 'Mois' =>  $date->format('n'),
-                'Confirme' => 0,
+                'Confirme' => $request->Confirme,
                 'Commentaire' => $request->Commentaire,
                 'conditionPaiement'=> $request->conditionPaiement,
                 'date_avoirs' => $request->date_avoirs,
@@ -106,7 +99,6 @@ class AvoirsAchatController extends Controller
                 'Total_TVA' => $request->Total_TVA,
                 'Total_TTC' => $request->Total_TTC,
                 'Total_Rester' => $request->Total_TTC,
-
             ]);
 
             if (!$Added) {

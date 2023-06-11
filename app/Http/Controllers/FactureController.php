@@ -82,7 +82,7 @@ class FactureController extends Controller
 
             $validator = Validator::make($request->all(), [
                 'numero_Facture' => 'required',
-                'fournisseur_id' => 'required',
+                // 'fournisseur_id' => 'required',
                 'Confirme' => 'required',
                 'date_Facture' => 'required',
                 'Total_HT' => 'required',
@@ -105,15 +105,24 @@ class FactureController extends Controller
                 ], 400);
             }
 
+            $foundBL = bonLivraison::where('id', $request->bonLivraison_id)->exists();
+
+            if (!$foundBL) {
+                return response()->json([
+                    'message' => 'Bon Livriason introuvable'
+                ], 400);
+            }
+
+            $bonLivraison = bonLivraison::find($request->bonLivraison_id);
+
             $date = Carbon::parse($request->date_Facture);
 
             $Added = facture::create([
                 'numero_Facture' => $request->numero_Facture,
                 'bonLivraison_id' => $request->bonLivraison_id,
-                'fournisseur_id' => $request->fournisseur_id,
+                'fournisseur_id' => $bonLivraison->fournisseur_id,
                 'Exercice' => $date->format('Y'),
                 'Mois' =>  $date->format('n'),
-                // 'EtatPayment' => $request->EtatPayment, // impaye , en cour , paye
                 'Confirme' => $request->Confirme,
                 'Commentaire' => $request->Commentaire,
                 'date_Facture' => $request->date_Facture,
@@ -123,7 +132,6 @@ class FactureController extends Controller
                 'Total_TVA' => $request->Total_TVA,
                 'Total_TTC' => $request->Total_TTC,
                 'Total_Rester' => $request->Total_TTC,
-
             ]);
 
             if (!$Added) {

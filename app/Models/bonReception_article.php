@@ -18,7 +18,7 @@ class bonReception_article extends Model
         'Prix_unitaire',
         'Quantity',
         'Total_HT',
-        '%TVA',
+        'TVA',
         'Total_TVA',
         'Total_TTC',
     ];

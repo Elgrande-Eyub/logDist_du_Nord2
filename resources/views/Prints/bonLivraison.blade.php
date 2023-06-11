@@ -231,12 +231,6 @@
                 <td colspan="1" class="total-heading">{{ number_format($commande['Total_HT'], 2, ',', ' ') }} Dhs
                 </td>
             </tr>
-            {{--  <tr>
-                <td colspan="3" style="border: rgba(255, 255, 255, 0.01) solid 1px; " class="total-heading"></td>
-
-                <td colspan="2" class="total-heading">TVA :</td>
-                <td colspan="1" class="total-heading">{{  $commande->TVA }}%</td>
-            </tr> --}}
             <tr>
                 <td colspan="3" style="border: rgba(255, 255, 255, 0.01) solid 1px; " class="total-heading"></td>
 
@@ -244,7 +238,13 @@
                 <td colspan="1" class="total-heading"> {{ number_format($commande['Total_TVA'], 2, ',', ' ') }} Dhs
                 </td>
             </tr>
+            <tr>
+                <td colspan="3" style="border: rgba(255, 255, 255, 0.01) solid 1px; " class="total-heading"></td>
 
+                <td colspan="2" class="total-heading">Remise :</td>
+                <td colspan="1" class="total-heading"> {{ number_format($commande['remise'], 2, ',', ' ') }} Dhs
+                </td>
+            </tr>
             <tr>
                 <td colspan="3" style="border: rgba(255, 255, 255, 0.01) solid 1px; " class="total-heading"></td>
                 <td colspan="2" class="total-heading">Total <small>Inc. TTC</small> :</td>

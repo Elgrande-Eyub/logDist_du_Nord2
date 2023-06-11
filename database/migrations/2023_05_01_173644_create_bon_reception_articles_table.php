@@ -27,7 +27,7 @@ return new class extends Migration
             $table->float('Prix_unitaire',8,2);
             $table->Integer('Quantity');
             $table->float('Total_HT',8,2);
-            $table->integer('%TVA');
+            $table->integer('TVA');
             $table->float('Total_TVA',8,2);
             $table->float('Total_TTC',8,2);
 

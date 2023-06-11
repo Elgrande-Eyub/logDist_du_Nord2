@@ -1,0 +1,120 @@
+"Bon Retour Achat" {
+    "bonLivraison_id":1,
+    "Numero_bonRetour": "R-00002/2023",
+    "Exercice": "2023",
+    "raison": "Damage",
+    "Commentaire": "Items will be delivered in two batches.",
+    "date_BRetour": "2023-05-13",
+    "Confirme" : 0,
+    "Total_HT": 200,
+    "remise": 20,
+    "TVA": 20,
+    "Total_TVA": 40,
+    "Total_TTC": 220,
+
+    "Articles": [
+        {
+            "article_id": 2,
+            "Quantity": 10,
+            "Prix_unitaire": 100,
+            "Total_HT": 100
+        },
+        {
+            "article_id": 3,
+            "Quantity": 10,
+            "Prix_unitaire": 5,
+            "Total_HT": 100
+        }
+    ]
+}
+
+"Bon Retour Vente" {
+    "bonLivraison_id":1,
+    "Numero_bonRetour": "R-00003/2023",
+    "Exercice": "2023",
+    "Mois": 5,
+    "raison": "Damage",
+    "Commentaire": "Items will be delivered in two batches.",
+    "date_BRetour": "2023-05-13",
+    "Confirme" : 0,
+    "Total_HT": 2250,
+    "remise": 250,
+    "TVA": 20,
+    "Total_TVA": 450,
+    "Total_TTC": 1000,
+    "attachement" : "sift tswira hna",
+    "Articles": [
+        {
+            "article_id": 2,
+            "Quantity": 50,
+            "Prix_unitaire": 100,
+            "Total_HT": 2000
+        },
+        {
+            "article_id": 3,
+            "Quantity": 50,
+            "Prix_unitaire": 5,
+            "Total_HT": 250
+        }
+    ]
+}
+
+
+"Avoirs Achat" {
+    "numero_avoirsAchat": "A-00005/2023",
+    "factureAchat_id": 1,
+    "date_avoirs": "2023-05-25 14:00:00",
+    "Total_HT": 1000,
+    "remise": 100,
+    "TVA": 20,
+    "Total_TVA": 200,
+    "Total_TTC": 1100,
+    "Confirme" : 0,
+    "conditionPaiement": 60,
+    "attachement":"tswira",
+    "raison": "sadl,asdsadasdsad",
+    "Articles": [
+        {
+            "article_id": 2,
+            "Quantity": 50,
+            "Prix_unitaire": 100,
+            "Total_HT": 2000
+        },
+        {
+            "article_id": 3,
+            "Quantity": 50,
+            "Prix_unitaire": 5,
+            "Total_HT": 250
+        }
+]
+
+}
+
+"Avoirs vente" {
+    "numero_avoirsVente": "A-00005/2023",
+    "factureVente_id": 1,
+    "date_avoirs": "2023-05-25 14:00:00",
+    "Total_HT": 1000,
+    "remise": 100,
+    "TVA": 20,
+    "Total_TVA": 200,
+    "Total_TTC": 1100,
+    "Confirme" : 0,
+    "conditionPaiement": 60,
+    "raison": "sadl,asdsadasdsad",
+    "Articles": [
+        {
+            "article_id": 2,
+            "Quantity": 50,
+            "Prix_unitaire": 100,
+            "Total_HT": 2000
+        },
+        {
+            "article_id": 3,
+            "Quantity": 50,
+            "Prix_unitaire": 5,
+            "Total_HT": 250
+        }
+]
+
+}

@@ -68,15 +68,12 @@ class BonReceptionController extends Controller
         DB::beginTransaction();
 
         try {
-            // Check if the Bon Reception is empty
             if (!$request->filled(['fournisseur_id','Numero_bonReception','Commentaire','date_BReception','Confirme','Total_HT','Total_TVA','Total_TTC'])) {
                 return response()->json([
                     'message' => 'Please fill all fields required'
                 ], 400);
             }
 
-
-            // Check if the Bon Reception already exists
             $found = BonReception::where('Numero_bonReception', $request->Numero_bonReception)->exists();
 
             if ($found) {
@@ -85,10 +82,8 @@ class BonReceptionController extends Controller
                 ], 400);
             }
 
-            // Check if the Bon Commande is Filled or not
             if($request->bonCommande_id) {
                 $bonCommande = bonCommande::where('id', $request->bonCommande_id)->exists();
-                // Check if the Bon Commande filled is existe
                 if(!$bonCommande) {
                     return response()->json([
                         'message' => 'Bon Commande Entered not Found'
@@ -96,18 +91,13 @@ class BonReceptionController extends Controller
                 }
             }
 
-
-            // Parse Date to get Month and years of the Bon Reception
             $date = Carbon::parse($request->date_BReception);
-            // if the Commande is Confirmed then Status of the commande is Recu Otherwise is Saisi
             if($request->Confirme == true) {
                 $Etat = 'Recu';
-
             } else {
                 $Etat = 'saisi';
             }
 
-            // Create the new Bon Commande
             $Added = BonReception::create([
                 'Numero_bonReception' => $request->Numero_bonReception,
                 'bonCommande_id' => $request->bonCommande_id,
@@ -123,7 +113,6 @@ class BonReceptionController extends Controller
                 'Total_TTC' => $request->Total_TTC,
             ]);
 
-            // Check if the Bon Commande was successfully created
             if (!$Added) {
                 DB::rollBack();
                 Log::error('Failed to create Bon Reception');
@@ -132,37 +121,27 @@ class BonReceptionController extends Controller
                 ], 400);
             }
 
-            // Add the bon Articles Related to bon Commande
             foreach($request->Articles as $article) {
                 bonReception_article::create([
                    'bonReception_id' => $Added->id,
                    'article_id' => $article['article_id'],
                    'Quantity' => $article['Quantity'],
                    'Prix_unitaire' => $article['Prix_unitaire'],
-                   '%TVA' => $article['%TVA'],
+                   'TVA' => $article['TVA'],
                    'Total_HT' => $article['Total_HT'],
                    'Total_TVA' => $article['Total_TVA'],
                    'Total_TTC' => $article['Total_TTC'],
-
-
                ]);
 
-
                 if($request->Confirme == true) {
-
-
                     Inventory::updateOrCreate(
                         ['article_id' => $article['article_id']],
                         ['actual_stock' => DB::raw('actual_stock + ' . $article['Quantity'])]
                     );
-
                 }
-
-
             }
 
             DB::commit();
-            // Return a success message and the new Bon Commande ID
             return response()->json([
                     'message' => 'Bon Recception created successfully',
                     'id' => $Added->id
@@ -177,12 +156,9 @@ class BonReceptionController extends Controller
 
     }
 
-
     public function show(BonReception $bonReception, $id)
     {
         try {
-
-
 
             $bonReception = BonReception::find($id);
             if(!$bonReception) {
@@ -200,7 +176,7 @@ class BonReceptionController extends Controller
                     'article_id' => $detail->article_id,
                     'Quantity' => $detail->Quantity,
                     'Prix_unitaire' => $detail->Prix_unitaire,
-                    '%TVA' => $detail->TVA,
+                    'TVA' => $detail->TVA,
                     'Total_HT' => $detail->Total_HT,
                     'Total_TVA' => $detail->Total_TVA,
                     'Total_TTC' => $detail->Total_TTC
@@ -213,7 +189,6 @@ class BonReceptionController extends Controller
 
             return response()->json($bonReceptionArray);
 
-
         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -221,10 +196,6 @@ class BonReceptionController extends Controller
             ], 404);
         }
     }
-
-
-
-
 
     public function update(Request $request, BonReception $bonReception, $id)
     {
@@ -252,7 +223,7 @@ class BonReceptionController extends Controller
                       'article_id' => $article['article_id'],
                       'Quantity' => $article['Quantity'],
                       'Prix_unitaire' => $article['Prix_unitaire'],
-                      '%TVA' => $article['%TVA'],
+                      'TVA' => $article['TVA'],
                       'Total_HT' => $article['Total_HT'],
                       'Total_TVA' => $article['Total_TVA'],
                       'Total_TTC' => $article['Total_TTC'],
@@ -267,9 +238,7 @@ class BonReceptionController extends Controller
 
             $date = Carbon::parse($request->date_BReception);
 
-
             $bonReception->update([
-
                 'Numero_bonReception' => $request->Numero_bonReception,
                 'bonCommande_id' => $request->bonCommande_id,
                 'fournisseur_id' => $request->fournisseur_id,
@@ -283,7 +252,6 @@ class BonReceptionController extends Controller
                 'Total_TVA' => $request->Total_TVA,
                 'Total_TTC' => $request->Total_TTC,
             ]);
-
 
             DB::commit();
             return response()->json([
@@ -301,7 +269,6 @@ class BonReceptionController extends Controller
 
     public function markAsConfirmed($id)
     {
-
         try {
             $bonReception = BonReception::find($id);
 
@@ -327,8 +294,6 @@ class BonReceptionController extends Controller
 
             }
 
-
-
         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
@@ -338,45 +303,37 @@ class BonReceptionController extends Controller
 
     }
 
-
     public function destroy(BonReception $bonReception, $id)
     {
         DB::beginTransaction();
         try {
-            // Find the Bon Reception  with the given ID
             $BReception_Founded = BonReception::find($id);
-
-            // If the Bon Reception  doesn't exist, return an error
             if (!$BReception_Founded) {
                 return response()->json([
                     'message' => 'Bon Reception not found'
                 ], 404);
             }
-            // Check if the Bon Reception was Confirmed
+
             if($BReception_Founded->Confirme == true) {
                 $BReception_Articles = bonReception_article::where('bonReception_id', $BReception_Founded->id)->get();
                 foreach ($BReception_Articles as $article) {
+
                     $quantity = $article->Quantity;
 
-                    // Update the inventory
                     Inventory::where('article_id', $article->article_id)
                         ->update(['actual_stock' => DB::raw('actual_stock - ' . $quantity)]);
                 }
+
             }
 
-            // Delete the Bon Reception
             $BReception_Founded->delete();
-            // Delete all articles related to Bon Reception
             bonReception_article::where('bonReception_id', $BReception_Founded->id)->delete();
 
-            // Return a success message with the deleted Article
             return response()->json([
                 'message' => 'Bon Reception deleted successfully',
                 'id' => $BReception_Founded->id
-
             ]);
         } catch (Exception $e) {
-            // Return an error message for any other exceptions
             DB::rollBack();
             return response()->json([
                 'message' => 'Something went wrong. Please try again later.'
@@ -386,7 +343,6 @@ class BonReceptionController extends Controller
 
     public function printbonReception($id)
     {
-
         $commande = bonReception::find($id);
         $articles = bonReception_article::select('bon_reception_articles.*', 'articles.*')
             ->join('articles', 'bon_reception_articles.article_id', '=', 'articles.id')
@@ -397,6 +353,5 @@ class BonReceptionController extends Controller
         $pdf = FacadePdf::loadView('Prints.bonReceptionPre', compact(['commande','articles','fournisseur']));
 
         return $pdf->download('print.pdf');
-
     }
 }

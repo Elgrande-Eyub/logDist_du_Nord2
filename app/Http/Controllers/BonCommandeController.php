@@ -227,6 +227,12 @@ class BonCommandeController extends Controller
                 ], 400);
             }
 
+            if($bonCommande->Confirme){
+                return response()->json([
+                    'message' => 'Bon de Commande est déjà Confirmé'
+                ], 400);
+            }
+
             $bonCommande->update([
                 'Confirme' => true,
                 'Etat' => 'Recu',

@@ -31,8 +31,8 @@ return new class extends Migration
             $table->unsignedBigInteger('fournisseur_id')->nullable();
             $table->foreign('fournisseur_id')->nullable()->references('id')->on('fournisseurs')->onDelete('restrict');
 
-            $table->unsignedBigInteger('bonCommande_id')->nullable();
-            $table->foreign('bonCommande_id')->references('id')->on('bon_commandes')->onDelete('restrict');
+            $table->unsignedBigInteger('bonLivraison_id')->nullable();
+            $table->foreign('bonLivraison_id')->references('id')->on('bon_livraisons')->onDelete('restrict');
 
             $table->softDeletes();
             $table->timestamps();

@@ -372,7 +372,6 @@ class BonLivraisonController extends Controller
       {
           try {
 
-
               $commande  = bonLivraison::withTrashed()->join('fournisseurs', 'bon_livraisons.fournisseur_id', '=', 'fournisseurs.id')
               ->join('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
               ->join('warehouses', 'bon_livraisons.warehouse_id', '=', 'warehouses.id')

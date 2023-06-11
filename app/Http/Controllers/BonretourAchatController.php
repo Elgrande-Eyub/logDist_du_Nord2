@@ -116,7 +116,6 @@ class BonretourAchatController extends Controller
                 ], 400);
             }
 
-
             // Add the bon Articles Related to bon Commande
             foreach($request->Articles as $article) {
 
