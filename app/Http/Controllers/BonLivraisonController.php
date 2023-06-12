@@ -31,7 +31,8 @@ class BonLivraisonController extends Controller
 
             $bonLivraison = bonLivraison::join('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
             ->leftjoin('fournisseurs', 'bon_livraisons.fournisseur_id', '=', 'fournisseurs.id')
-            ->select('bon_livraisons.*', 'bon_commandes.Numero_bonCommande', 'fournisseurs.fournisseur')
+            ->leftjoin('bonretour_achats','bonretour_achats.bonLivraison_id','bon_livraisons.id')
+            ->select('bon_livraisons.*', 'bon_commandes.Numero_bonCommande', 'fournisseurs.fournisseur','bonretour_achats.id as bonretour_id','bonretour_achats.Numero_bonRetour',)
             ->get();
             return response()->json(['data'=>$bonLivraison]);
 
