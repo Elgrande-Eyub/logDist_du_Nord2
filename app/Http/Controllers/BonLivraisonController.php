@@ -212,7 +212,8 @@ class BonLivraisonController extends Controller
                 ->join('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
                 ->join('warehouses', 'bon_livraisons.warehouse_id', '=', 'warehouses.id')
                 ->leftJoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
-                ->select('bon_livraisons.*', 'fournisseurs.fournisseur', 'warehouses.nom_Warehouse', 'bon_commandes.Numero_bonCommande', 'factures.id as facture_id')
+                ->leftjoin('bonretour_achats','bonretour_achats.bonLivraison_id','bon_livraisons.id')
+                ->select('bon_livraisons.*', 'fournisseurs.fournisseur', 'warehouses.nom_Warehouse', 'bon_commandes.Numero_bonCommande', 'factures.id as facture_id','bonretour_achats.id as bonretour_id','bonretour_achats.Numero_bonRetour')
                 ->where('bon_livraisons.id', $id)
                 ->first();
 
