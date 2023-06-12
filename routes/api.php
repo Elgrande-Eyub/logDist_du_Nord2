@@ -110,6 +110,7 @@ Route::apiResource('facture',FactureController::class);
 Route::get('/printf/{id}/{isDownloaded}',[FactureController::class,'facturePrint']);
 Route::put('facture/confirme/{id}',[FactureController::class,'markAsConfirmed']); // Confirme facture
 Route::get('/getblf',[FactureController::class,'getBonLivraison']);
+Route::put('/markaspaid-facture/{id}',[FactureController::class,'markAsPaid']);
 
 // Bon Consignation Routes ----------------------------------------------------------------------------
 
@@ -209,6 +210,7 @@ Route::put('facturevente/confirme/{id}',[FactureVenteController::class,'markAsCo
 Route::get('getnf',[FactureVenteController::class,'getNumeroFacture']); // get the Number Generated for the Invioce
 Route::get('/printfv/{id}/{isDownloaded}',[FactureVenteController::class,'facturePrint']); // Print the iniovce
 Route::get('getblv',[FactureVenteController::class,'getBonLivraisonVente']); // get Bon Livraison Are not linked to A invioce
+Route::put('/markaspaid-facturevent/{id}',[FactureVenteController::class,'markAsPaid']);
 
 // Transactions Routes ----------------------------------------------------------------------------
 
@@ -254,6 +256,7 @@ Route::apiResource('avoirsachat',AvoirsAchatController::class);
 Route::put('avoirsachat/confirme/{id}',[AvoirsAchatController::class,'markAsConfirmed']);
 Route::get('getfactures',[AvoirsAchatController::class,'getFactures']);
 Route::get('getarticlesbr/{id}',[AvoirsAchatController::class,'getArticlesBonRetour']);
+Route::put('/markaspaid-avoirsachat/{id}',[AvoirsAchatController::class,'markAsPaid']);
 
 // Avoirs Vente Routes ----------------------------------------------------------------------------
 
@@ -263,6 +266,7 @@ Route::get('getnav',[AvoirsVenteController::class,'getNumeroAvoirs']);
 Route::get('getfv',[AvoirsVenteController::class,'getFactures']);
 Route::get('printav/{id}/{isDownloaded}',[AvoirsVenteController::class,'avoirePrint']);
 Route::get('getarticlesbrv/{id}',[AvoirsVenteController::class,'getArticlesBonRetour']);
+Route::put('/markaspaid-avoirsvente/{id}',[AvoirsVenteController::class,'markAsPaid']);
 
 // Paiement des depense Routes ----------------------------------------------------------------------------
 
@@ -270,13 +274,12 @@ Route::apiResource('paiementdepense',PaiementDepenseController::class);
 Route::put('paiementdepense/confirme/{id}',[PaiementDepenseController::class,'markAsConfirmed']);
 Route::get('paiementdepense/paymentrest/{id}',[TransactionController::class,'paymentDepenseRest']);
 
-// Bon Sortie Routes ----------------------------------------------------------------------------
+// transfert Routes ----------------------------------------------------------------------------
 
 Route::apiResource('transfert',TransfertController::class);
 Route::put('transfert/confirme/{id}',[TransfertController::class,'markAsConfirmed']);
 Route::get('printt/{id}/{isDownloaded}',[TransfertController::class,'printt']);
 Route::get('getnt',[TransfertController::class,'getNumeroT']);
-
 
 // image Routes ----------------------------------------------------------------------------
 

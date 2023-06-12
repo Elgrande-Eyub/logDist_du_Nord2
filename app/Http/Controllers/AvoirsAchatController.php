@@ -180,6 +180,44 @@ class AvoirsAchatController extends Controller
 
     }
 
+    public function markAsPaid($id)
+    {
+        DB::beginTransaction();
+        try {
+            $facture = avoirsAchat::find($id);
+
+            if(!$facture) {
+                return response()->json([
+                    'message' => 'L`Avoirs introuvable'
+                ], 400);
+            }
+
+            if($facture->Confirme == false) {
+                return response()->json([
+                    'message' => 'L`Avoirs doit être mis en œuvre Confirmé'
+                ], 400);
+            }
+
+            $facture->update([
+                'EtatPaiement' => 'Paye',
+                'Total_Regler' => $facture->Total_TTC,
+                'Total_Rester'=> 0
+            ]);
+
+            DB::commit();
+            return response()->json([
+                'message' => 'L`Avoirs est marquée comme payée',
+            ]);
+
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+
+    }
+
     public function getFactures()
     {
         try {
