@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('transporteur')->nullable();
             $table->string('matriculeCamion')->nullable();
             $table->integer('conditionPaiement')->nullable();
+            $table->string('Commentaire')->nullable();
 
             $table->float('Total_Emballages',8,2);
             $table->string('etat')->default(false); // retourne , paye , dans l'entrepot

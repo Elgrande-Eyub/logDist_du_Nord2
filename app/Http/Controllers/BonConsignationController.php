@@ -19,9 +19,11 @@ class BonConsignationController extends Controller
     public function index()
     {
         try {
-        $bons =  bonConsignation::join('factures','bon_consignations.facture_id','=','factures.id')
+        $bonConsignation =  bonConsignation::join('factures','bon_consignations.facture_id','=','factures.id')
         ->select('bon_consignations.*','factures.numero_Facture')
         ->get();
+
+        return response()->json($bonConsignation);
     } catch(Exception $e) {
         DB::rollBack();
         return response()->json([
@@ -76,7 +78,6 @@ class BonConsignationController extends Controller
                 'transporteur' =>$request->transporteur,
                 'matriculeCamion' =>$request->matriculeCamion,
                 'conditionPaiement' =>$request->conditionPaiement,
-
             ]);
 
             if (!$Added) {
@@ -85,6 +86,7 @@ class BonConsignationController extends Controller
                     'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
                 ], 400);
             }
+
             if ($request->hasFile('attachement')) {
                 $image = $request->file('attachement');
                 $imageName =  Carbon::now()->timestamp.'.'.$image->getClientOriginalExtension();
