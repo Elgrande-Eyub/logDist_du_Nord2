@@ -244,11 +244,13 @@ Route::apiResource('bonretourachat',BonretourAchatController::class);
 Route::get('printbretour/{id}/{isDownloaded}',[BonretourAchatController::class,'printbonRetour']);
 Route::put('bonretourachat/confirme/{id}',[BonretourAchatController::class,'markAsConfirmed']);
 Route::get('getnbretour',[BonretourAchatController::class,'getNumerobr']);
+Route::get('getblr',[BonretourAchatController::class,'getBonLivraison']);
 
 // bon Retour Vente Routes ----------------------------------------------------------------------------
 
 Route::apiResource('bonretourvente',BonretourVenteController::class);
 Route::put('bonretourvente/confirme/{id}',[BonretourVenteController::class,'markAsConfirmed']);
+Route::get('getblrv',[BonretourVenteController::class,'getBonLivraison']);
 
 // Avoirs Achat Routes ----------------------------------------------------------------------------
 

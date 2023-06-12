@@ -151,6 +151,24 @@ class BonretourAchatController extends Controller
         }
     }
 
+    public function getBonLivraison()
+    {
+        try {
+            $linkedBonLivraison = bonretourAchat::pluck('bonLivraison_id')->toArray();
+            $bonLivraison = bonLivraison::where('Confirme', 1)
+                                ->whereNotIn('id', $linkedBonLivraison)
+                                ->get();
+
+            return response()->json($bonLivraison);
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+               'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+
+    }
+
     public function markAsConfirmed($id, Request $request)
     {
 
