@@ -348,7 +348,11 @@ class BonLivraisonVenteController extends Controller
             ->join('bon_commande_ventes', 'bon_livraison_ventes.bonCommandeVente_id', '=', 'bon_commande_ventes.id')
             ->join('warehouses', 'bon_livraison_ventes.warehouse_id', '=', 'warehouses.id')->withTrashed()
             ->leftjoin('facture_ventes','facture_ventes.bonLivraisonVente_id','=','bon_livraison_ventes.id')
-            ->select('bon_livraison_ventes.*', 'warehouses.nom_Warehouse', 'bon_commande_ventes.Numero_bonCommandeVente', 'clients.nom_Client','facture_ventes.id as factureVente_id')
+            ->leftjoin('bonretour_ventes','bonretour_ventes.bonLivraison_id','bon_livraison_ventes.id')
+
+            ->select('bon_livraison_ventes.*', 'warehouses.nom_Warehouse', 'bon_commande_ventes.Numero_bonCommandeVente', 'clients.nom_Client','facture_ventes.id as factureVente_id',
+            'bonretour_ventes.id as bonretour_id',
+            'bonretour_ventes.Numero_bonRetour')
             ->where('bon_livraison_ventes.id', $id)
             ->first();
 
