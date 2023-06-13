@@ -20,22 +20,6 @@ class TransfertController extends Controller
     public function index()
     {
         try {
-            $detailsCommande = transfertArticle::get();
-
-            $articles = [];
-
-            foreach($detailsCommande as $detail) {
-
-                $articl = Article::where('id', $detail->article_id)->first();
-                $article = [
-                    'article_id' => $detail->article_id,
-                    'Quantity' => $detail->Quantity,
-                    'reference' => $articl->reference,
-                    'article_libelle' => $articl->article_libelle,
-                    'unite' => $articl->unite,
-                ];
-                $articles[] = $article;
-            }
 
             $Transfert = Transfert::join('warehouses as warehousesFrom', 'transferts.from', '=', 'warehousesFrom.id')
             ->join('warehouses as warehouseTo', 'transferts.to', '=', 'warehouseTo.id')
@@ -50,11 +34,7 @@ class TransfertController extends Controller
             )
             ->get();
 
-            $TransfertArray = $Transfert->toArray();
-            $TransfertArray['Articles'] = $articles;
-
-            return response()->json($TransfertArray);
-
+            return response()->json($Transfert);
 
         } catch(Exception $e) {
             DB::rollBack();
