@@ -17,11 +17,9 @@ class SendAlertNotificationMail
     }
 
 
-    public function handle(AlertStockProcessed $event)
+    public function handle()
     {
-        $inventoryData = $event->Inventory;
-
         Mail::to('ayoub.baraoui.02@gmail.com')
-            ->send(new AlerStockChecker());
+        ->send(new AlerStockChecker());
     }
 }

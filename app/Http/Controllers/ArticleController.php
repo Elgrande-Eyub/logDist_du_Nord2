@@ -35,7 +35,7 @@ class ArticleController extends Controller
 
             /*  Mail::to('ayoub.baraoui.02@gmail.com')
              ->send(new AlerStockChecker()); */
-            event(new AlertStockProcessed($Articles));
+            // event(new AlertStockProcessed());
 
             return response()->json(['data'=>  $Articles]);
 

@@ -20,6 +20,9 @@ class EventServiceProvider extends ServiceProvider
             SendEmailVerificationNotification::class,
             SendAlertNotificationMail::class
         ],
+        AlertStockProcessed::class => [
+            SendAlertNotificationMail::class,
+        ],
     ];
 
     /**

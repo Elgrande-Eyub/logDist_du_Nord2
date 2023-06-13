@@ -2,6 +2,8 @@
 
 namespace App\Events;
 
+use App\Listeners\SendAlertNotificationMail;
+use App\Mail\AlerStockChecker;
 use App\Models\Article;
 use App\Models\Inventory;
 use Illuminate\Broadcasting\Channel;
@@ -11,16 +13,17 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Mail;
 
 class AlertStockProcessed
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $Inventory;
-
-    public function __construct(Article $articles)
+    public function __construct()
     {
-        $this->Inventory = $articles;
+
+        Mail::to('ayoub.baraoui.02@gmail.com')
+        ->send(new AlerStockChecker());
     }
 
     public function broadcastOn()
