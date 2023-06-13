@@ -282,6 +282,7 @@ Route::apiResource('transfert',TransfertController::class);
 Route::put('transfert/confirme/{id}',[TransfertController::class,'markAsConfirmed']);
 Route::get('printt/{id}/{isDownloaded}',[TransfertController::class,'printt']);
 Route::get('getnt',[TransfertController::class,'getNumeroT']);
+Route::get('getartbyware/{id}',[TransfertController::class,'getInventoryBywarehouse']);
 
 // image Routes ----------------------------------------------------------------------------
 

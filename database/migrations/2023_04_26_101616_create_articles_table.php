@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('article_libelle');
-            $table->integer('reference');
+            $table->string('reference');
             $table->float('prix_unitaire',8,2);
             $table->float('prix_public',5,2);
             $table->float('prix_achat',5,2)->nullable();

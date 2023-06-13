@@ -340,6 +340,22 @@ class TransfertController extends Controller
         }
     }
 
+    public function getInventoryBywarehouse($id){
+       try{
+
+        $inventoryArticles = Inventory::join('articles','inventories.article_id','=','articles.id')
+                        ->where('warehouse_id',$id)
+                        ->select('inventories.*','articles.reference','articles.article_libelle')
+                        ->get();
+
+        return $inventoryArticles;
+
+       }catch(Exception $e){
+
+       }
+    }
+
+
     public function getNumeroT()
     {
         try {
