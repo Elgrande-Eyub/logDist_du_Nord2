@@ -33,8 +33,8 @@ class ArticleController extends Controller
             'article_categories.category'
             )->get();
 
-            // Mail::to('ayoub.baraoui.02@gmail.com')
-            // ->send(new AlerStockChecker());
+            /*  Mail::to('ayoub.baraoui.02@gmail.com')
+             ->send(new AlerStockChecker()); */
             event(new AlertStockProcessed($Articles));
 
             return response()->json(['data'=>  $Articles]);

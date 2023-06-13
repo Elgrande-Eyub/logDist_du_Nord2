@@ -2,6 +2,7 @@
 
 namespace App\Events;
 
+use App\Models\Article;
 use App\Models\Inventory;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
@@ -17,9 +18,9 @@ class AlertStockProcessed
 
     public $Inventory;
 
-    public function __construct()
+    public function __construct(Article $articles)
     {
-
+        $this->Inventory = $articles;
     }
 
     public function broadcastOn()
