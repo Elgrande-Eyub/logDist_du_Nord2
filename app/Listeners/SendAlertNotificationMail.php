@@ -3,29 +3,23 @@
 namespace App\Listeners;
 
 use App\Events\AlertStockProcessed;
+use App\Mail\AlerStockChecker;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class SendAlertNotificationMail
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
+
     public function __construct()
     {
-        //
+
     }
 
-    /**
-     * Handle the event.
-     *
-     * @param  \App\Events\AlertStockProcessed  $event
-     * @return void
-     */
+
     public function handle(AlertStockProcessed $event)
     {
-        //
+        Mail::to('ayoub.baraoui.02@gmail.com')
+            ->send(new AlerStockChecker());
     }
 }

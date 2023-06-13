@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AlertStockProcessed;
 use App\Http\Resources\articleResource;
+use App\Mail\AlerStockChecker;
 use App\Models\Article;
 use App\Models\Fournisseur;
 use App\Models\Inventory;
@@ -12,6 +14,7 @@ use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class ArticleController extends Controller
@@ -19,7 +22,7 @@ class ArticleController extends Controller
     // This function returns all categories
     public function index()
     {
-         try {
+        //  try {
 
             $Articles = Article::join('fournisseurs','articles.fournisseur_id','=','fournisseurs.id')
             ->leftjoin('article_categories','articles.category_id','=','article_categories.id')
@@ -29,14 +32,19 @@ class ArticleController extends Controller
             'article_categories.id as category_id',
             'article_categories.category'
             )->get();
+
+            // Mail::to('ayoub.baraoui.02@gmail.com')
+            // ->send(new AlerStockChecker());
+            event(new AlertStockProcessed($Articles));
+
             return response()->json(['data'=>  $Articles]);
 
-         } catch (Exception $e) {
+       /*   } catch (Exception $e) {
 
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
             ], 400);
-        }
+        } */
     }
 
     public function insertArticles(Request $request)
@@ -196,9 +204,19 @@ class ArticleController extends Controller
                 ], 404);
             }
 
-            return response()->json([
-                'Article Requested' => new articleResource($FoundedArticle)
-            ], 200);
+            $Articles = Article::leftjoin('fournisseurs','articles.fournisseur_id','=','fournisseurs.id')
+            ->leftjoin('article_categories','articles.category_id','=','article_categories.id')
+            ->select('articles.*',
+            'fournisseurs.fournisseur',
+            'fournisseurs.id as fournisseur_id',
+            'article_categories.id as category_id',
+            'article_categories.category')
+            ->where('articles.id',$id)
+            ->first();
+
+            return response()->json(['Article Requested'=>  $Articles]);
+
+
         } catch (Exception $e) {
 
             return response()->json([
