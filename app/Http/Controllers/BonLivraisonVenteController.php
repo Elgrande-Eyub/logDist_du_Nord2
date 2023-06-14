@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AlertStockProcessed;
 use App\Http\Resources\bonLivraisonVenteResource;
 use App\Models\Article;
 use App\Models\BankAccount;
@@ -29,21 +30,22 @@ class BonLivraisonVenteController extends Controller
         try {
 
             $bonLivraison = bonLivraisonVente::leftjoin('bon_commande_ventes', 'bon_livraison_ventes.bonCommandeVente_id', '=', 'bon_commande_ventes.id')
-            ->leftjoin('clients','bon_livraison_ventes.client_id','=','clients.id')
-            ->leftjoin('warehouses','bon_livraison_ventes.warehouse_id','=','warehouses.id')
-            ->leftjoin('bonretour_ventes','bonretour_ventes.bonLivraison_id','bon_livraison_ventes.id')
+            ->leftjoin('clients', 'bon_livraison_ventes.client_id', '=', 'clients.id')
+            ->leftjoin('warehouses', 'bon_livraison_ventes.warehouse_id', '=', 'warehouses.id')
+            ->leftjoin('bonretour_ventes', 'bonretour_ventes.bonLivraison_id', 'bon_livraison_ventes.id')
 
-            ->select('bon_livraison_ventes.*',
-            'bon_commande_ventes.Numero_bonCommandeVente',
-            'bon_commande_ventes.id as bonCommandeVente_id',
-            'warehouses.nom_Warehouse',
-            'warehouses.id as warehouse_id',
-            'clients.nom_Client',
-            'bonretour_ventes.id as bonretour_id',
-            'bonretour_ventes.Numero_bonRetour'
+            ->select(
+                'bon_livraison_ventes.*',
+                'bon_commande_ventes.Numero_bonCommandeVente',
+                'bon_commande_ventes.id as bonCommandeVente_id',
+                'warehouses.nom_Warehouse',
+                'warehouses.id as warehouse_id',
+                'clients.nom_Client',
+                'bonretour_ventes.id as bonretour_id',
+                'bonretour_ventes.Numero_bonRetour'
             )
             ->get();
-        return  response()->json(['data'=>$bonLivraison]);
+            return  response()->json(['data'=>$bonLivraison]);
 
         } catch(Exception $e) {
             return response()->json([
@@ -57,7 +59,7 @@ class BonLivraisonVenteController extends Controller
     public function store(Request $request)
     {
         DB::beginTransaction();
-         try {
+        try {
 
             $validator = Validator::make($request->all(), [
              'Numero_bonLivraisonVente' => 'required',
@@ -173,7 +175,7 @@ class BonLivraisonVenteController extends Controller
             // Add the bon Articles Related to bon Commande
             foreach($request->Articles as $article) {
 
-                if($article['Quantity'] <= 0 ){
+                if($article['Quantity'] <= 0) {
                     DB::rollBack();
                     return response()->json([
                         'message' => 'la quantité doit être supérieure à 0'
@@ -258,7 +260,7 @@ class BonLivraisonVenteController extends Controller
 
 
             $Articles =  bonLivraisonVenteArticle::where('blVente_id', $id)->get();
-
+            $isAlerted = false;
             foreach($Articles as $article) {
 
                 $CheckStock = Inventory::where('article_id', $article['article_id'])
@@ -287,6 +289,10 @@ class BonLivraisonVenteController extends Controller
                  'actual_stock' => $CheckStock->actual_stock - $article['Quantity'],
                 ]);
 
+                if($produit->alert_stock >= $CheckStock->actual_stock) {
+                    $isAlerted = true;
+                }
+
             }
 
             $bonLivraison->update([
@@ -295,6 +301,10 @@ class BonLivraisonVenteController extends Controller
                 ]);
 
             DB::commit();
+
+            if($isAlerted) {
+                event(new AlertStockProcessed());
+            }
 
             return response()->json([
                 'message' => 'Le bon Livraison de Vente se confirme avec succès , et le stock a ete mise ajoure avec succes'
@@ -347,12 +357,18 @@ class BonLivraisonVenteController extends Controller
             $bonLivraison = bonLivraisonVente::join('clients', 'bon_livraison_ventes.client_id', '=', 'clients.id')->withTrashed()
             ->join('bon_commande_ventes', 'bon_livraison_ventes.bonCommandeVente_id', '=', 'bon_commande_ventes.id')
             ->join('warehouses', 'bon_livraison_ventes.warehouse_id', '=', 'warehouses.id')->withTrashed()
-            ->leftjoin('facture_ventes','facture_ventes.bonLivraisonVente_id','=','bon_livraison_ventes.id')
-            ->leftjoin('bonretour_ventes','bonretour_ventes.bonLivraison_id','bon_livraison_ventes.id')
+            ->leftjoin('facture_ventes', 'facture_ventes.bonLivraisonVente_id', '=', 'bon_livraison_ventes.id')
+            ->leftjoin('bonretour_ventes', 'bonretour_ventes.bonLivraison_id', 'bon_livraison_ventes.id')
 
-            ->select('bon_livraison_ventes.*', 'warehouses.nom_Warehouse', 'bon_commande_ventes.Numero_bonCommandeVente', 'clients.nom_Client','facture_ventes.id as factureVente_id',
-            'bonretour_ventes.id as bonretour_id',
-            'bonretour_ventes.Numero_bonRetour')
+            ->select(
+                'bon_livraison_ventes.*',
+                'warehouses.nom_Warehouse',
+                'bon_commande_ventes.Numero_bonCommandeVente',
+                'clients.nom_Client',
+                'facture_ventes.id as factureVente_id',
+                'bonretour_ventes.id as bonretour_id',
+                'bonretour_ventes.Numero_bonRetour'
+            )
             ->where('bon_livraison_ventes.id', $id)
             ->first();
 
@@ -414,23 +430,23 @@ class BonLivraisonVenteController extends Controller
 
 
     public function getBonCommandeVente()
-{
-    try {
+    {
+        try {
 
-        $linkedBonCommandesVente = bonLivraisonVente::pluck('bonCommandeVente_id')->toArray();
-        $bonCommandesVente = bonCommandeVente::where('Confirme', 1)
-                        ->whereNotIn('id', $linkedBonCommandesVente)
-                        ->get();
+            $linkedBonCommandesVente = bonLivraisonVente::pluck('bonCommandeVente_id')->toArray();
+            $bonCommandesVente = bonCommandeVente::where('Confirme', 1)
+                            ->whereNotIn('id', $linkedBonCommandesVente)
+                            ->get();
 
-        return response()->json($bonCommandesVente);
-    } catch(Exception $e) {
-        DB::rollBack();
-        return response()->json([
-           'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
-        ], 404);
+            return response()->json($bonCommandesVente);
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+               'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+
     }
-
-}
 public function getNumeroBLV()
 {
     try {
@@ -464,7 +480,7 @@ public function getNumeroBLV()
 
     public function printbonLivraisonVente($id, $isDownloaded)
     {
-         try {
+        try {
 
 
             $commande = bonLivraisonVente::join('clients', 'bon_livraison_ventes.client_id', '=', 'clients.id')
@@ -513,7 +529,7 @@ public function getNumeroBLV()
 
 
 
-         } catch (Exception $e) {
+        } catch (Exception $e) {
             abort(404);
 
         }
@@ -533,10 +549,10 @@ public function getNumeroBLV()
 
 
 
-        $articles = bonLivraisonVenteArticle::select('bon_livraison_vente_articles.*', 'articles.*')
-            ->join('articles', 'bon_livraison_vente_articles.article_id', '=', 'articles.id')
-            ->where('blVente_id', $id)
-            ->get();
+            $articles = bonLivraisonVenteArticle::select('bon_livraison_vente_articles.*', 'articles.*')
+                ->join('articles', 'bon_livraison_vente_articles.article_id', '=', 'articles.id')
+                ->where('blVente_id', $id)
+                ->get();
 
             $bank = BankAccount::get()->first();
             $client = client::withTrashed()->find($commande->client_id);
@@ -570,7 +586,7 @@ public function getNumeroBLV()
 
 
 
-         } catch (Exception $e) {
+        } catch (Exception $e) {
             abort(404);
 
         }

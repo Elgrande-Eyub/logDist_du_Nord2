@@ -10,16 +10,16 @@ use Illuminate\Support\Facades\Mail;
 
 class SendAlertNotificationMail
 {
-
-    public function __construct()
+    // public $articles;
+    public function __construct($articles)
     {
-
+        // $this->$articles;
     }
 
 
     public function handle()
     {
-        Mail::to('ayoub.baraoui.02@gmail.com')
-        ->send(new AlerStockChecker());
+
     }
+
 }

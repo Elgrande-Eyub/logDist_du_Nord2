@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AlertStockProcessed;
 use App\Http\Resources\invetoriesResource;
 use App\Models\Article;
 use App\Models\Inventory;
@@ -65,16 +66,17 @@ class InventoryController extends Controller
                 'actual_stock'=>$request->actual_stock,
             ]);
 
-            /* $added= Inventory::updateOrCreate(
-                ['article_id' => $request['article_id'], 'warehouse_id' => $request->warehouse_id],
-                ['actual_stock' => DB::raw('actual_stock + ' . $request['Quantity'])]
-            ); */
-
             if(!$added) {
                 DB::rollBack();
                 return response()->json([
                     'message' => 'Produit non ajouté . un problème quelque part'
                  ], 400);
+            }
+
+            //send Email alert if the Stock has a problem
+            $Article = Article::where('id',$request->article_id)->first();
+            if($Article->alert_stock >= $request->actual_stock){
+                event(new AlertStockProcessed());
             }
 
             DB::commit();
@@ -146,12 +148,16 @@ class InventoryController extends Controller
                 ], 404);
             }
 
-            /*   $inventory->article_id = $request->article_id;
-              $inventory->warehouse_id = $request->warehouse_id; */
             $inventory->actual_stock = $request->actual_stock;
             $inventory->save();
 
             DB::commit();
+
+             //send Email alert if the Stock has a problem
+             $Article = Article::where('id',$inventory->article_id)->first();
+             if($Article->alert_stock >= $inventory->actual_stock){
+                 event(new AlertStockProcessed());
+             }
 
             return response()->json([
                 'message' => 'Inventaire mis à jour avec succès'

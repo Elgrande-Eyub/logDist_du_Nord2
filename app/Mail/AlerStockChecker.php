@@ -13,10 +13,17 @@ class AlerStockChecker extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $RaptureDeStock;
+    public $AlertDeStock;
+    public $NormalDeStock;
+    public $ArticleNotInStock;
 
-    public function __construct()
+    public function __construct($RaptureDeStock,$AlertDeStock,$NormalDeStock,$ArticleNotInStock)
     {
-
+        $this->RaptureDeStock = $RaptureDeStock;
+        $this->AlertDeStock = $AlertDeStock;
+        $this->NormalDeStock = $NormalDeStock;
+        $this->ArticleNotInStock = $ArticleNotInStock;
     }
 
 
@@ -32,6 +39,7 @@ class AlerStockChecker extends Mailable
     {
         return new Content(
             view: 'mail.AlertStock',
+
         );
     }
 

@@ -31,8 +31,8 @@ class BonLivraisonController extends Controller
 
             $bonLivraison = bonLivraison::join('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
             ->leftjoin('fournisseurs', 'bon_livraisons.fournisseur_id', '=', 'fournisseurs.id')
-            ->leftjoin('bonretour_achats','bonretour_achats.bonLivraison_id','bon_livraisons.id')
-            ->select('bon_livraisons.*', 'bon_commandes.Numero_bonCommande', 'fournisseurs.fournisseur','bonretour_achats.id as bonretour_id','bonretour_achats.Numero_bonRetour')
+            ->leftjoin('bonretour_achats', 'bonretour_achats.bonLivraison_id', 'bon_livraisons.id')
+            ->select('bon_livraisons.*', 'bon_commandes.Numero_bonCommande', 'fournisseurs.fournisseur', 'bonretour_achats.id as bonretour_id', 'bonretour_achats.Numero_bonRetour')
             ->get();
             return response()->json(['data'=>$bonLivraison]);
 
@@ -125,6 +125,8 @@ class BonLivraisonController extends Controller
                 ]);
             }
 
+
+
             foreach($request->Articles as $article) {
 
                 if($article['Quantity'] <= 0) {
@@ -143,6 +145,7 @@ class BonLivraisonController extends Controller
                ]);
 
             }
+
 
             DB::commit();
             return response()->json([
@@ -212,8 +215,8 @@ class BonLivraisonController extends Controller
                 ->join('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
                 ->join('warehouses', 'bon_livraisons.warehouse_id', '=', 'warehouses.id')
                 ->leftJoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
-                ->leftjoin('bonretour_achats','bonretour_achats.bonLivraison_id','bon_livraisons.id')
-                ->select('bon_livraisons.*', 'fournisseurs.fournisseur', 'warehouses.nom_Warehouse', 'bon_commandes.Numero_bonCommande', 'factures.id as facture_id','bonretour_achats.id as bonretour_id','bonretour_achats.Numero_bonRetour')
+                ->leftjoin('bonretour_achats', 'bonretour_achats.bonLivraison_id', 'bon_livraisons.id')
+                ->select('bon_livraisons.*', 'fournisseurs.fournisseur', 'warehouses.nom_Warehouse', 'bon_commandes.Numero_bonCommande', 'factures.id as facture_id', 'bonretour_achats.id as bonretour_id', 'bonretour_achats.Numero_bonRetour')
                 ->where('bon_livraisons.id', $id)
                 ->first();
 
@@ -266,6 +269,7 @@ class BonLivraisonController extends Controller
                 );
 
             }
+
 
             DB::commit();
             return response()->json(['message' => 'confirmè avec succès'], 200);

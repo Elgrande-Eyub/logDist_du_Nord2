@@ -22,29 +22,26 @@ class ArticleController extends Controller
     // This function returns all categories
     public function index()
     {
-        //  try {
+        try {
 
-            $Articles = Article::join('fournisseurs','articles.fournisseur_id','=','fournisseurs.id')
-            ->leftjoin('article_categories','articles.category_id','=','article_categories.id')
-            ->select('articles.*',
-            'fournisseurs.fournisseur',
-            'fournisseurs.id as fournisseur_id',
-            'article_categories.id as category_id',
-            'article_categories.category'
+            $Articles = Article::join('fournisseurs', 'articles.fournisseur_id', '=', 'fournisseurs.id')
+            ->leftjoin('article_categories', 'articles.category_id', '=', 'article_categories.id')
+            ->select(
+                'articles.*',
+                'fournisseurs.fournisseur',
+                'fournisseurs.id as fournisseur_id',
+                'article_categories.id as category_id',
+                'article_categories.category'
             )->get();
-
-            /*  Mail::to('ayoub.baraoui.02@gmail.com')
-             ->send(new AlerStockChecker()); */
-            // event(new AlertStockProcessed());
 
             return response()->json(['data'=>  $Articles]);
 
-       /*   } catch (Exception $e) {
+        } catch (Exception $e) {
 
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
             ], 400);
-        } */
+        }
     }
 
     public function insertArticles(Request $request)
@@ -98,7 +95,7 @@ class ArticleController extends Controller
 
     public function articleWarehouse($id)
     {
-         try {
+        try {
 
             $secteur = Secteur::where('id', $id)->first();
             if (!$secteur) {
@@ -110,7 +107,7 @@ class ArticleController extends Controller
             $articleWarehouses = Inventory::where('warehouse_id', $secteur->warehouseDistrubtion_id)->get();
             $articlesDetails = [];
 
-            foreach($articleWarehouses as $Article){
+            foreach($articleWarehouses as $Article) {
                 $article = Article::find($Article->article_id);
 
                 if ($article) {
@@ -120,7 +117,7 @@ class ArticleController extends Controller
 
             return response()->json($articlesDetails, 200);
 
-         } catch (Exception $e) {
+        } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
@@ -204,14 +201,16 @@ class ArticleController extends Controller
                 ], 404);
             }
 
-            $Articles = Article::leftjoin('fournisseurs','articles.fournisseur_id','=','fournisseurs.id')
-            ->leftjoin('article_categories','articles.category_id','=','article_categories.id')
-            ->select('articles.*',
-            'fournisseurs.fournisseur',
-            'fournisseurs.id as fournisseur_id',
-            'article_categories.id as category_id',
-            'article_categories.category')
-            ->where('articles.id',$id)
+            $Articles = Article::leftjoin('fournisseurs', 'articles.fournisseur_id', '=', 'fournisseurs.id')
+            ->leftjoin('article_categories', 'articles.category_id', '=', 'article_categories.id')
+            ->select(
+                'articles.*',
+                'fournisseurs.fournisseur',
+                'fournisseurs.id as fournisseur_id',
+                'article_categories.id as category_id',
+                'article_categories.category'
+            )
+            ->where('articles.id', $id)
             ->first();
 
             return response()->json(['Article Requested'=>  $Articles]);

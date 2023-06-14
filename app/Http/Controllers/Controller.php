@@ -9,13 +9,13 @@ use Illuminate\Routing\Controller as BaseController;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
-
-
-    public function getImage($attachement,$type){
-        $storagePath = '/storage/attachements/'.$type.'/' . $attachement;
+    use AuthorizesRequests;
+    use DispatchesJobs;
+    use ValidatesRequests;
+    public function getImage($type, $attachement)
+    {
+        $storagePath = 'storage/attachements/'.$type.'/' . $attachement;
         $link = public_path($storagePath);
         return response()->file($link);
-
     }
 }

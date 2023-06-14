@@ -286,7 +286,7 @@ Route::get('getartbyware/{id}',[TransfertController::class,'getInventoryBywareho
 
 // image Routes ----------------------------------------------------------------------------
 
-Route::get('getimage/{attachement}/{type}',[Controller::class,'getImage']);
+Route::get('getimage/{type}/{attachement}',[Controller::class,'getImage']);
 
 // statics
 

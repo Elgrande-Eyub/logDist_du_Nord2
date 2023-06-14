@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\AlertStockProcessed;
 use App\Models\Article;
 use App\Models\BankAccount;
 use App\Models\bonLivraison;
@@ -72,7 +73,7 @@ class BonretourAchatController extends Controller
             }
 
 
-            $bonRetour = bonretourAchat::where('Numero_bonRetour',$request->Numero_bonRetour)->exists();
+            $bonRetour = bonretourAchat::where('Numero_bonRetour', $request->Numero_bonRetour)->exists();
 
             if($bonRetour) {
                 return response()->json([
@@ -191,16 +192,24 @@ class BonretourAchatController extends Controller
             $Articles =   bonretourAchatArticle::where('bonretourAchat_id', $bonretourAchat->id)->get();
 
             foreach($Articles as $article) {
-                Inventory::updateOrCreate(
+                $CheckStock = Inventory::updateOrCreate(
                     ['article_id' => $article['article_id'], 'warehouse_id' => $bonretourAchat->warehouse_id],
                     ['actual_stock' => DB::raw('actual_stock - ' . $article['Quantity'])]
                 );
+
+                if($article->alert_stock >= $CheckStock->actual_stock) {
+                    $isAlerted = true;
+                }
             }
 
             $bonretourAchat->update([
                 'Confirme' => true,
                 'Etat' => 'Recu',
             ]);
+
+            if($isAlerted) {
+                event(new AlertStockProcessed());
+            }
 
             DB::commit();
             return response()->json(['message' => 'confirmè avec succès'], 200);
