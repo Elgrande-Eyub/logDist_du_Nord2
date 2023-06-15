@@ -40,6 +40,20 @@ return new class extends Migration
             $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('restrict');
 
+            $table->unsignedBigInteger('camion_id')->nullable();
+            $table->foreign('camion_id')->references('id')->on('camions')->onDelete('restrict');
+
+            $table->unsignedBigInteger('transporteur_id')->nullable();
+            $table->foreign('transporteur_id')->references('id')->on('employees')->onDelete('restrict')->onUpdate('restrict');
+
+
+            // for the Bon retour Case
+            $table->boolean('isChange')->default(false);
+
+            // $table->unsignedBigInteger('bonretourAchat_id')->nullable();
+            // $table->foreign('bonretourAchat_id')->references('id')->on('bonretour_achats')->onDelete('restrict');
+            // $table->foreignId('bonretourAchat_id')->constrained('bonretour_achats');
+
             $table->timestamps();
             $table->softDeletes();
 

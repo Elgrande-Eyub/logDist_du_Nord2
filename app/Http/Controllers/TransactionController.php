@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\avoirsAchat;
 use App\Models\BankAccount;
 use App\Models\Caisse;
+use App\Models\credit;
 use App\Models\depenseFacture;
 use App\Models\facture;
 use App\Models\factureVente;
@@ -32,12 +33,6 @@ class TransactionController extends Controller
              ], 404);
         }
 
-
-    }
-
-
-    public function create()
-    {
 
     }
 
@@ -184,7 +179,7 @@ class TransactionController extends Controller
                 'factureAchat_id' => $request->factureAchat_id,
                 'paiementDepense_id' => $request->paiementDepense_id,
                 'venteSecteur_id' => $request->venteSecteur_id,
-                'avoirsAchat_id'=> $request->avoirsAchat_id,
+                'Credit_id'=> $request->Credit_id,
                 'modePaiement' => $request->modePaiement,// escpece , virement , cheque , trait
                 'journal_id' => $request->journal_id,
             ]);
@@ -737,28 +732,28 @@ class TransactionController extends Controller
                 ]);
             }
 
-            if($request->avoirsAchat_id) {
+            if($request->Credit_id) {
 
-                $facture = avoirsAchat::find($request->avoirsAchat_id);
+                $facture = credit::find($request->Credit_id);
                 $bank = BankAccount::first();
                 if (!$facture) {
                     DB::rollBack();
                     return response()->json([
-                        'message' => 'L`Avoirs introuvable'
+                        'message' => 'Credit introuvable'
                     ], 400);
                 }
 
                 if($facture->Confirme == false) {
                     DB::rollBack();
                     return response()->json([
-                        'message' => 'La Facture nest pas Confirmé'
+                        'message' => 'Credit nest pas Confirmé'
                     ], 400);
                 }
 
                 if($facture->EtatPaiement == "Paye") {
                     DB::rollBack();
                     return response()->json([
-                        'message' => 'L`Avoirs est deja Paye'
+                        'message' => 'Credit est deja Paye'
                     ], 400);
                 }
 
@@ -776,14 +771,15 @@ class TransactionController extends Controller
                         ], 400);
                     }
 
-                    $payementResterResponse = $this->paymentAvoirsAchatRest($facture->id);
+                    /* $payementResterResponse = $this->paymentAvoirsAchatRest($facture->id);
                     $payementRester = json_decode($payementResterResponse->getContent(), true)['rest'];
+                    */
 
-                    if($request->montant >  $payementRester) {
+                    if($request->montant >  $facture->Total_Rester) {
                         DB::rollBack();
                         return response()->json([
                             'message' => 'Le montant payé est supérieur au montant requis',
-                            'montant rest'=>$payementRester
+                            'montant rest'=> $facture->Total_Rester
                         ], 400);
                     }
 
@@ -839,10 +835,11 @@ class TransactionController extends Controller
 
                 }
 
-                $payementResterResponse = $this->paymentAvoirsAchatRest($facture->id);
+                /* $payementResterResponse = $this->paymentAvoirsAchatRest($facture->id);
                 $payementRester = json_decode($payementResterResponse->getContent(), true)['rest'];
+                */
 
-                if($request->montant > $payementRester) {
+                if($request->montant > $facture->Total_Rester) {
                     DB::rollBack();
                     return response()->json([
                         'message' => 'Le montant payé est supérieur au montant requis '
@@ -855,7 +852,7 @@ class TransactionController extends Controller
                 }
 
                 $modePaiement->update([
-                    'solde' => $modePaiement->solde + $request->montant,
+                    'solde' => $modePaiement->solde - $request->montant,
                 ]);
 
                 $facture->update([
@@ -868,7 +865,7 @@ class TransactionController extends Controller
 
                 DB::commit();
                 return response()->json([
-                    'message' => 'Création réussie de Transaction Achat',
+                    'message' => 'Création réussie de Transaction Credit',
                     'data' => $Added,
                     'EtatPaiement' => $etat
                 ]);
@@ -916,9 +913,9 @@ class TransactionController extends Controller
              } elseif($type === 'vente') {
                  $factureModel = 'factureVente_id';
                  $facture = factureVente::findOrFail($id)->first();
-             } elseif($type === 'avoirsachat') {
-                 $factureModel = 'avoirsAchat_id';
-                 $facture = avoirsAchat::findOrFail($id)->first();
+             } elseif($type === 'credit') {
+                 $factureModel = 'Credit_id';
+                 $facture = credit::findOrFail($id)->first();
              } elseif ($type === 'ventesecteur') {
                  $factureModel = 'venteSecteur_id';
                  $facture = venteSecteur::findOrFail($id)->first();

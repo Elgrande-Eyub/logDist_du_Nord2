@@ -35,12 +35,15 @@ return new class extends Migration
             $table->unsignedBigInteger('venteSecteur_id')->nullable()->default(null);
             $table->foreign('VenteSecteur_id')->references('id')->on('vente_secteurs')->onDelete('restrict');
 
-            $table->unsignedBigInteger('avoirsAchat_id')->nullable()->default(null);
+            $table->unsignedBigInteger('Credit_id')->nullable()->default(null);
+            $table->foreign('Credit_id')->references('id')->on('credits')->onDelete('restrict');
+
+            /* $table->unsignedBigInteger('avoirsAchat_id')->nullable()->default(null);
             $table->foreign('avoirsAchat_id')->references('id')->on('avoirs_achats')->onDelete('restrict');
 
             $table->unsignedBigInteger('avoirsVente_id')->nullable()->default(null);
             $table->foreign('avoirsVente_id')->references('id')->on('avoirs_ventes')->onDelete('restrict');
-
+            */
 
             $table->unsignedBigInteger('journal_id')->nullable();
             $table->foreign('journal_id')->references('id')->on('journals')->onDelete('restrict');

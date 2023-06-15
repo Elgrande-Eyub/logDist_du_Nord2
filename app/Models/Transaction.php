@@ -22,8 +22,9 @@ class Transaction extends Model
         'factureVente_id',
         'paiementDepense_id',
         'venteSecteur_id',
-        'avoirsVente_id',
-        'avoirsAchat_id',
+        'Credit_id',
+       /*  'avoirsVente_id',
+        'avoirsAchat_id', */
         'modePaiement',
         'numero_cheque',
         'delais_cheque',

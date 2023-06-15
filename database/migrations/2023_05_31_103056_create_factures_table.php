@@ -14,35 +14,39 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('avoirs_ventes', function (Blueprint $table) {
+        Schema::create('factures', function (Blueprint $table) {
             $table->id();
 
-            $table->string('numero_avoirsVente')->unique();
+            $table->string('numero_Facture')->unique();
 
             $table->string('Exercice')->nullable();
             $table->string('Mois')->nullable();
             $table->string('EtatPaiement')->nullable()->default('impaye'); // impaye - paye - en cours
             $table->string('Commentaire')->nullable();
-            $table->dateTime('date_avoirs')->default(Carbon::now()->format('Y-m-d H:i:s'))->nullable();
+            $table->dateTime('date_Facture')->default(Carbon::now()->format('Y-m-d H:i:s'))->nullable();
             $table->boolean('Confirme')->default(false)->nullable();
-            $table->integer('conditionPaiement')->nullable();
             $table->float('Total_HT',8,2)->nullable();
             $table->integer('TVA')->nullable();
             $table->float('remise',8,2)->nullable();
             $table->float('Total_TVA',8,2)->nullable();
             $table->float('Total_TTC',8,2)->nullable();
-            $table->string('raison')->nullable();
+            $table->string('attachement')->nullable();
+            $table->integer('conditionPaiement')->nullable();
             $table->float('Total_Regler',8,2)->nullable()->default(0);
             $table->float('Total_Rester',8,2)->nullable();
 
-            $table->unsignedBigInteger('client_id')->nullable();
-            $table->foreign('client_id')->nullable()->references('id')->on('clients')->onDelete('restrict');
+            $table->unsignedBigInteger('fournisseur_id')->nullable();
+            $table->foreign('fournisseur_id')->nullable()->references('id')->on('fournisseurs')->onDelete('restrict');
 
-            $table->unsignedBigInteger('factureVente_id')->nullable();
-            $table->foreign('factureVente_id')->references('id')->on('facture_ventes')->onDelete('restrict');
+            $table->unsignedBigInteger('bonLivraison_id')->nullable();
+            $table->foreign('bonLivraison_id')->references('id')->on('bon_livraisons')->onDelete('restrict');
 
-            $table->timestamps();
+            // if facture has Avoirs
+            $table->boolean('hasAvoirs')->default(false);
+
+
             $table->softDeletes();
+            $table->timestamps();
         });
     }
 
@@ -53,6 +57,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('avoirs_ventes');
+        Schema::dropIfExists('factures');
     }
 };

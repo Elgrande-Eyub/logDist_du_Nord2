@@ -19,6 +19,7 @@ use App\Http\Controllers\CamionController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\CreditController;
 use App\Http\Controllers\DepenseController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeRoleController;
@@ -82,41 +83,6 @@ Route::get('/categories/{id}/get',[ArticleCategoryController::class,'getCategory
 
 Route::apiResource('fournisseurs',FournisseurController::class);
 
-// Bon Commande Routes ----------------------------------------------------------------------------
-
-Route::apiResource('boncommande',BonCommandeController::class);
-Route::get('/printbc/{id}/{condition}/{isDownloaded}',[BonCommandeController::class,'printbonCommande']);// print bonCommande
-Route::get('/getnbc',[BonCommandeController::class,'getNumeroBC']);
-Route::get('boncommande/month/{MonthId}',[BonCommandeController::class,'getByMonth']); // get bonCommandes by Month
-Route::put('boncommande/confirme/{id}',[BonCommandeController::class,'markAsConfirmed']); // Confirme BonCommande
-
-// Bon livraison Routes ----------------------------------------------------------------------------
-
-Route::apiResource('bonlivraison',BonLivraisonController::class);
-Route::get('/getbc',[BonLivraisonController::class,'getBonCommande']); // get all bonCommandes confirmed and not linnked to a bon Livraison
-Route::put('bonlivraison/confirme/{id}',[BonLivraisonController::class,'markAsConfirmed']);
-Route::get('/printbl/{id}/{isDownloaded}',[BonLivraisonController::class,'printbonLivraison']);
-Route::get('/printbr/{id}/{isDownloaded}',[BonLivraisonController::class,'printbonReception']);
-
-// Bon Reception Routes ----------------------------------------------------------------------------
-
-Route::apiResource('bonreception',BonReceptionController::class);
-// Route::get('/printbr/{id}',[BonReceptionController::class,'printbonReception']);
-// Route::get('/getblr',[BonReceptionController::class,'getBonLivraison']);
-
-// facture Routes ----------------------------------------------------------------------------
-
-Route::apiResource('facture',FactureController::class);
-Route::get('/printf/{id}/{isDownloaded}',[FactureController::class,'facturePrint']);
-Route::put('facture/confirme/{id}',[FactureController::class,'markAsConfirmed']); // Confirme facture
-Route::get('/getblf',[FactureController::class,'getBonLivraison']);
-Route::put('/markaspaid-facture/{id}',[FactureController::class,'markAsPaid']);
-
-// Bon Consignation Routes ----------------------------------------------------------------------------
-
-Route::apiResource('bonconsignation',BonConsignationController::class);
-
-
 // bank Routes ----------------------------------------------------------------------------
 
 Route::apiResource('bank',BankAccountController::class);
@@ -176,17 +142,59 @@ Route::apiResource('secteur',SecteurController::class);
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////////////////
-// withdraw Routes ----------------------------------------------------------------------------
 
 
-Route::apiResource('withdraw',WithdrawController::class);
-Route::get('opbank',[WithdrawController::class,'OperationBancaire']);
-Route::get('opcaisse',[WithdrawController::class,'OperationCaisse']);
-Route::get('trbank',[WithdrawController::class,'TransactionBancaire']);
-Route::get('trcaisse',[WithdrawController::class,'TransactionCaisse']);
+// Bon Commande Routes ----------------------------------------------------------------------------
 
-Route::get('getclientcredit/{id}',[BonCommandeVenteController::class,'CheckClientCredit']);
-Route::get('getvendeurcredit/{id}',[BonSortieController::class,'CheckVendeurCredit']);
+Route::apiResource('boncommande',BonCommandeController::class);
+Route::get('/printbc/{id}/{condition}/{isDownloaded}',[BonCommandeController::class,'printbonCommande']);// print bonCommande
+Route::get('/getnbc',[BonCommandeController::class,'getNumeroBC']);
+Route::get('boncommande/month/{MonthId}',[BonCommandeController::class,'getByMonth']); // get bonCommandes by Month
+Route::put('boncommande/confirme/{id}',[BonCommandeController::class,'markAsConfirmed']); // Confirme BonCommande
+
+// Bon livraison Routes ----------------------------------------------------------------------------
+
+Route::apiResource('bonlivraison',BonLivraisonController::class);
+Route::put('/bonlivraison-addattachement/{id}',[BonLivraisonController::class,'addAttachement']);
+Route::get('/getbc',[BonLivraisonController::class,'getBonCommande']); // get all bonCommandes confirmed and not linnked to a bon Livraison
+Route::put('bonlivraison/confirme/{id}',[BonLivraisonController::class,'markAsConfirmed']);
+Route::get('/printbl/{id}/{isDownloaded}',[BonLivraisonController::class,'printbonLivraison']);
+Route::get('/printbr/{id}/{isDownloaded}',[BonLivraisonController::class,'printbonReception']);
+
+
+// bon Retour Achat Achat Routes ----------------------------------------------------------------------------
+
+Route::apiResource('bonretourachat',BonretourAchatController::class);
+Route::get('printbretour/{id}/{isDownloaded}',[BonretourAchatController::class,'printbonRetour']);
+Route::put('bonretourachat/confirme/{id}',[BonretourAchatController::class,'markAsConfirmed']);
+Route::get('getnbretour',[BonretourAchatController::class,'getNumerobr']);
+Route::get('getblr',[BonretourAchatController::class,'getBonLivraison']);
+
+// Bon Reception Routes ----------------------------------------------------------------------------
+
+Route::apiResource('bonreception',BonReceptionController::class);
+// Route::get('/printbr/{id}',[BonReceptionController::class,'printbonReception']);
+// Route::get('/getblr',[BonReceptionController::class,'getBonLivraison']);
+
+// facture Routes ----------------------------------------------------------------------------
+
+Route::apiResource('facture',FactureController::class);
+Route::get('/printf/{id}/{isDownloaded}',[FactureController::class,'facturePrint']);
+Route::put('facture/confirme/{id}',[FactureController::class,'markAsConfirmed']); // Confirme facture
+Route::get('/getblf',[FactureController::class,'getBonLivraison']);
+Route::put('/markaspaid-facture/{id}',[FactureController::class,'markAsPaid']);
+
+// Avoirs Achat Routes ----------------------------------------------------------------------------
+
+Route::apiResource('avoirsachat',AvoirsAchatController::class);
+Route::put('avoirsachat/confirme/{id}',[AvoirsAchatController::class,'markAsConfirmed']);
+Route::get('getfactures',[AvoirsAchatController::class,'getFactures']);
+Route::get('getarticlesbr/{id}',[AvoirsAchatController::class,'getArticlesBonRetour']);
+Route::put('/markaspaid-avoirsachat/{id}',[AvoirsAchatController::class,'markAsPaid']);
+
+// Bon Consignation Routes ----------------------------------------------------------------------------
+
+Route::apiResource('bonconsignation',BonConsignationController::class);
 
 // bon Commande Ventes Routes ----------------------------------------------------------------------------
 
@@ -212,17 +220,23 @@ Route::get('/printfv/{id}/{isDownloaded}',[FactureVenteController::class,'factur
 Route::get('getblv',[FactureVenteController::class,'getBonLivraisonVente']); // get Bon Livraison Are not linked to A invioce
 Route::put('/markaspaid-facturevent/{id}',[FactureVenteController::class,'markAsPaid']);
 
-// Transactions Routes ----------------------------------------------------------------------------
+// bon Retour Vente Routes ----------------------------------------------------------------------------
 
-Route::apiResource('transaction',TransactionController::class);
-Route::get('facture/transactions/{id}/{type}',[TransactionController::class,'transactionByFacture']); // get All transaction linked to Invioce
+Route::apiResource('bonretourvente',BonretourVenteController::class);
+Route::put('bonretourvente/confirme/{id}',[BonretourVenteController::class,'markAsConfirmed']);
+Route::get('getblrv',[BonretourVenteController::class,'getBonLivraison']);
 
-Route::get('factureachat/paymentrest/{id}',[TransactionController::class,'paymentAchatRest']); // the rest of an Invioce Achat
-Route::get('facturevente/paymentrest/{id}',[TransactionController::class,'paymentVenteRest']);// the rest of an invioce Vente
 
-Route::get('transactions/get',[TransactionController::class,'getNumeroTR']); // Get Number Generated for the Transaction
-Route::put('transactions/confirme/{id}',[TransactionController::class,'confirmeCheque']); // Confirmed Transation Type Cheque
 
+// Avoirs Vente Routes ----------------------------------------------------------------------------
+
+Route::apiResource('avoirsvente',AvoirsVenteController::class);
+Route::put('avoirsvente/confirme/{id}',[AvoirsVenteController::class,'markAsConfirmed']);
+Route::get('getnav',[AvoirsVenteController::class,'getNumeroAvoirs']);
+Route::get('getfv',[AvoirsVenteController::class,'getFactures']);
+Route::get('printav/{id}/{isDownloaded}',[AvoirsVenteController::class,'avoirePrint']);
+Route::get('getarticlesbrv/{id}',[AvoirsVenteController::class,'getArticlesBonRetour']);
+Route::put('/markaspaid-avoirsvente/{id}',[AvoirsVenteController::class,'markAsPaid']);
 
 // Bon Sortie Routes ----------------------------------------------------------------------------
 
@@ -238,37 +252,6 @@ Route::put('ventesecteur/confirme/{id}',[VenteSecteurController::class,'markAsCo
 Route::get('printvs/{id}/{isDownloaded}',[VenteSecteurController::class,'printvs']);
 Route::get('getbs',[VenteSecteurController::class,'getbonSortie']);
 
-// bon Retour Achat Achat Routes ----------------------------------------------------------------------------
-
-Route::apiResource('bonretourachat',BonretourAchatController::class);
-Route::get('printbretour/{id}/{isDownloaded}',[BonretourAchatController::class,'printbonRetour']);
-Route::put('bonretourachat/confirme/{id}',[BonretourAchatController::class,'markAsConfirmed']);
-Route::get('getnbretour',[BonretourAchatController::class,'getNumerobr']);
-Route::get('getblr',[BonretourAchatController::class,'getBonLivraison']);
-
-// bon Retour Vente Routes ----------------------------------------------------------------------------
-
-Route::apiResource('bonretourvente',BonretourVenteController::class);
-Route::put('bonretourvente/confirme/{id}',[BonretourVenteController::class,'markAsConfirmed']);
-Route::get('getblrv',[BonretourVenteController::class,'getBonLivraison']);
-
-// Avoirs Achat Routes ----------------------------------------------------------------------------
-
-Route::apiResource('avoirsachat',AvoirsAchatController::class);
-Route::put('avoirsachat/confirme/{id}',[AvoirsAchatController::class,'markAsConfirmed']);
-Route::get('getfactures',[AvoirsAchatController::class,'getFactures']);
-Route::get('getarticlesbr/{id}',[AvoirsAchatController::class,'getArticlesBonRetour']);
-Route::put('/markaspaid-avoirsachat/{id}',[AvoirsAchatController::class,'markAsPaid']);
-
-// Avoirs Vente Routes ----------------------------------------------------------------------------
-
-Route::apiResource('avoirsvente',AvoirsVenteController::class);
-Route::put('avoirsvente/confirme/{id}',[AvoirsVenteController::class,'markAsConfirmed']);
-Route::get('getnav',[AvoirsVenteController::class,'getNumeroAvoirs']);
-Route::get('getfv',[AvoirsVenteController::class,'getFactures']);
-Route::get('printav/{id}/{isDownloaded}',[AvoirsVenteController::class,'avoirePrint']);
-Route::get('getarticlesbrv/{id}',[AvoirsVenteController::class,'getArticlesBonRetour']);
-Route::put('/markaspaid-avoirsvente/{id}',[AvoirsVenteController::class,'markAsPaid']);
 
 // Paiement des depense Routes ----------------------------------------------------------------------------
 
@@ -283,6 +266,41 @@ Route::put('transfert/confirme/{id}',[TransfertController::class,'markAsConfirme
 Route::get('printt/{id}/{isDownloaded}',[TransfertController::class,'printt']);
 Route::get('getnt',[TransfertController::class,'getNumeroT']);
 Route::get('getartbyware/{id}',[TransfertController::class,'getInventoryBywarehouse']);
+
+
+// Credit Routes ----------------------------------------------------------------------------
+
+Route::apiResource('credit',CreditController::class); // declaration old credit
+Route::put('credit/confirme/{id}',[CreditController::class,'markAsConfirmed']); // Confirme Credit
+Route::get('credit-fournisseur',[CreditController::class,'getCreditFournisseurs']); // get all Credit fournisseur
+Route::get('credit-client',[CreditController::class,'getCreditClients']); // get All Credit Client
+Route::get('credit-fournisseur/{id}',[CreditController::class,'getCreditFournisseur']); // get detail of credit fournissuer
+Route::get('credit-client/{id}',[CreditController::class,'getCreditClient']);// get detail of credit client
+
+// Transactions Routes ----------------------------------------------------------------------------
+
+Route::apiResource('transaction',TransactionController::class);
+Route::get('facture/transactions/{id}/{type}',[TransactionController::class,'transactionByFacture']); // get All transaction linked to Invioce
+
+Route::get('factureachat/paymentrest/{id}',[TransactionController::class,'paymentAchatRest']); // the rest of an Invioce Achat
+Route::get('facturevente/paymentrest/{id}',[TransactionController::class,'paymentVenteRest']);// the rest of an invioce Vente
+
+Route::get('transactions/get',[TransactionController::class,'getNumeroTR']); // Get Number Generated for the Transaction
+Route::put('transactions/confirme/{id}',[TransactionController::class,'confirmeCheque']); // Confirmed Transation Type Cheque
+
+
+// withdraw Routes ----------------------------------------------------------------------------
+
+
+Route::apiResource('withdraw',WithdrawController::class);
+Route::get('opbank',[WithdrawController::class,'OperationBancaire']);
+Route::get('opcaisse',[WithdrawController::class,'OperationCaisse']);
+Route::get('trbank',[WithdrawController::class,'TransactionBancaire']);
+Route::get('trcaisse',[WithdrawController::class,'TransactionCaisse']);
+
+Route::get('getclientcredit/{id}',[BonCommandeVenteController::class,'CheckClientCredit']);
+Route::get('getvendeurcredit/{id}',[BonSortieController::class,'CheckVendeurCredit']);
+
 
 // image Routes ----------------------------------------------------------------------------
 

@@ -136,7 +136,8 @@ class ArticleController extends Controller
                 'prix_unitaire' => 'required',
                 'fournisseur_id' => 'required',
                 'unite' => 'required',
-                // 'prix_public' => 'required',
+                'alert_stock' => 'required',
+                'prix_public' => 'required',
             ]);
 
             if ($validator->fails()) {

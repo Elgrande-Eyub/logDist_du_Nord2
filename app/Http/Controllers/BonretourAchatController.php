@@ -174,7 +174,7 @@ class BonretourAchatController extends Controller
     {
 
         DB::beginTransaction();
-        try {
+        // try {
             $bonretourAchat = bonretourAchat::find($id);
 
             if(!$bonretourAchat) {
@@ -190,8 +190,9 @@ class BonretourAchatController extends Controller
             }
 
             $Articles =   bonretourAchatArticle::where('bonretourAchat_id', $bonretourAchat->id)->get();
-
+            $isAlerted = false;
             foreach($Articles as $article) {
+
                 $CheckStock = Inventory::updateOrCreate(
                     ['article_id' => $article['article_id'], 'warehouse_id' => $bonretourAchat->warehouse_id],
                     ['actual_stock' => DB::raw('actual_stock - ' . $article['Quantity'])]
@@ -214,12 +215,12 @@ class BonretourAchatController extends Controller
             DB::commit();
             return response()->json(['message' => 'confirmè avec succès'], 200);
 
-        } catch(Exception $e) {
+      /*   } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Quelque chose a mal tourné. Veuillez réessayer plus tard.'
             ], 404);
-        }
+        } */
 
     }
 
@@ -268,8 +269,7 @@ class BonretourAchatController extends Controller
             $articles = [];
 
             foreach($detailsCommande as $detail) {
-
-                $articl = Article::where('id', $detail->article_id)->first();
+                $articl = Article::withTrashed()->where('id', $detail->article_id)->first();
                 $article = [
                     'article_id' => $detail->article_id,
                     'reference' => $articl->reference,
@@ -277,11 +277,12 @@ class BonretourAchatController extends Controller
                     'Quantity' => $detail->Quantity,
                     'Prix_unitaire' => $detail->Prix_unitaire,
                     'Total_HT' => $detail->Total_HT,
+
                 ];
                 $articles[] = $article;
             }
 
-            $bonretourAchat  = bonretourAchat::join('fournisseurs', 'bonretour_achats.fournisseur_id', '=', 'fournisseurs.id')
+            $bonretourAchat  = bonretourAchat::leftjoin('fournisseurs', 'bonretour_achats.fournisseur_id', '=', 'fournisseurs.id')->withTrashed()
             ->join('bon_livraisons', 'bonretour_achats.bonLivraison_id', '=', 'bon_livraisons.id')
             ->join('warehouses', 'bonretour_achats.warehouse_id', '=', 'warehouses.id')
             ->select('bonretour_achats.*', 'fournisseurs.fournisseur', 'warehouses.nom_Warehouse', 'bon_livraisons.Numero_bonLivraison')

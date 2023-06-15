@@ -54,7 +54,7 @@ class BonLivraisonController extends Controller
                 'date_Blivraison' => 'required',
                 'Total_HT' => 'required',
                 'Total_TTC' => 'required',
-                // 'attachement' => 'nullable|mimes:jpeg,png,jpg,pdf',
+                'attachement' => 'nullable|mimes:jpeg,png,jpg,pdf',
             ]);
 
             if ($validator->fails()) {
@@ -180,6 +180,53 @@ class BonLivraisonController extends Controller
         }
 
     }
+   /*  public function addAttachement($id, Request $request)
+    {
+        // try {
+            DB::beginTransaction();
+
+            $bonLivraison = bonLivraison::find($id);
+            if(!$bonLivraison) {
+                return response()->json([
+                    'message' => 'Bon de Livraison introuvable'
+                ], 404);
+            }
+
+            if($bonLivraison->attachement !=null) {
+                return response()->json([
+                    'message' => 'ce bon est déjà à une pièce jointe'
+                ], 404);
+            }
+
+            if(!$request->hasFile('attachement')) {
+                return response()->json([
+                    'message' => 'Veuillez télécharger une pièce jointe valide IMG/PDF'
+                ], 404);
+            }
+
+            $image = $request->file('attachement');
+            $imageName =  Carbon::now()->timestamp.'.'.$image->getClientOriginalExtension();
+            Storage::disk('bonLivraisonAchat')->put($imageName, file_get_contents($image));
+
+            $bonLivraison->update([
+                'attachement' => $imageName
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                                'message' => 'Pièce jointe  ajoute avec succès.',
+
+                            ]);
+
+        /* } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+            'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+
+    } */
 
     public function show(bonLivraison $bonLivraison, $id)
     {

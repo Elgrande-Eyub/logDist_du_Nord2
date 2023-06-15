@@ -22,10 +22,10 @@ return new class extends Migration
             $table->integer('alert_stock')->default(0);
 
             $table->unsignedBigInteger('category_id')->nullable();
-            $table->foreign('category_id')->nullable()->references('id')->on('article_categories')->onDelete('restrict');
+            $table->foreign('category_id')->references('id')->on('article_categories')->onDelete('restrict');
 
             $table->unsignedBigInteger('fournisseur_id');
-            $table->foreign('fournisseur_id')->nullable()->references('id')->on('fournisseurs')->onDelete('restrict');
+            $table->foreign('fournisseur_id')->references('id')->on('fournisseurs')->onDelete('restrict');
 
             $table->timestamps();
             $table->softDeletes();

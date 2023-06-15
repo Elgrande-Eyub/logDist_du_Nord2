@@ -275,7 +275,7 @@ class BonLivraisonVenteController extends Controller
                 }
 
                 $produit = Article::where('id', $article['article_id'])->first();
-
+                $isAlerted = false;
                 if($article['Quantity'] > $CheckStock->actual_stock) {
                     DB::rollBack();
                     return response()->json([
@@ -338,7 +338,7 @@ class BonLivraisonVenteController extends Controller
 
             foreach($detailsCommande as $detail) {
 
-                $articl = Article::where('id', $detail->article_id)->first();
+                $articl = Article::withTrashed()->where('id', $detail->article_id)->first();
                 $article = [
                     'article_id' => $detail->article_id,
                     'reference' => $articl->reference,

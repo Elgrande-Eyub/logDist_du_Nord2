@@ -198,7 +198,7 @@ class FactureController extends Controller
             $articles = [];
 
             foreach($detailsfacture as $detail) {
-                $articl= Article::find($detail->article_id);
+                $articl= Article::withTrashed()->find($detail->article_id);
                 $article = [
                     'article_id' => $detail->article_id,
                     'reference' => $articl->reference,

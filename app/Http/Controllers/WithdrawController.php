@@ -129,7 +129,7 @@ class WithdrawController extends Controller
                 'solde' => 'required',
                 'mode' => 'required',
                 'motif' => 'required',
-                'journal_id' => 'required',
+                // 'journal_id' => 'required',
             ]);
 
             if ($validator->fails()) {

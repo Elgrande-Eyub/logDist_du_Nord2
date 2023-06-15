@@ -228,7 +228,7 @@ class BonretourVenteController extends Controller
 
             foreach($detailsCommande as $detail) {
 
-                $articl = Article::where('id', $detail->article_id)->first();
+                $articl = Article::withTrashed()->where('id', $detail->article_id)->first();
                 $article = [
                     'article_id' => $detail->article_id,
                     'reference' => $articl->reference,
