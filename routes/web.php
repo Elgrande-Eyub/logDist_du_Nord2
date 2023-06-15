@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleViewController;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -20,5 +21,18 @@ Route::get('/', function () {
 });
 
 
-Route::get('/order', [ArticleViewController::class,'index']);
-Route::post('/order', [ArticleViewController::class,'store'])->name('storeOrder');
+Route::get('storage-link', function () {
+
+$clearcache = Artisan::call('cache:clear');
+echo "Cache cleared<br>";
+
+$clearview = Artisan::call('view:clear');
+echo "View cleared<br>";
+
+$clearconfig = Artisan::call('config:cache');
+echo "Config cleared<br>";
+
+ Artisan::call('storage:link');
+ echo "Storage link created successfully.";
+
+});
