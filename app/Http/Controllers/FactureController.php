@@ -40,8 +40,8 @@ class FactureController extends Controller
 
             $factures = facture::join('bon_livraisons', 'factures.bonLivraison_id', '=', 'bon_livraisons.id')
             ->join('fournisseurs','factures.fournisseur_id','=','fournisseurs.id')
-            ->leftJoin('avoirs_achats', 'avoirs_achats.factureAchat_id', '=', 'factures.id')
-            ->select('factures.*', 'bon_livraisons.Numero_bonLivraison', 'avoirs_achats.id as avoir_id','avoirs_achats.id as numero_avoirsAchat','fournisseurs.fournisseur')
+            // ->leftJoin('avoirs_achats', 'avoirs_achats.factureAchat_id', '=', 'factures.id')
+            ->select('factures.*', 'bon_livraisons.Numero_bonLivraison', 'fournisseurs.fournisseur')
             ->get();
 
             //return  factureAchatResource::collection($factures);
