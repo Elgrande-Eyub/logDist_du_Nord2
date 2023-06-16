@@ -214,7 +214,7 @@ class BonLivraisonController extends Controller
         try {
 
             $linkedBonCommandes = bonLivraison::whereNotNull('bonCommande_id')->pluck('bonCommande_id')->toArray();
-$bonCommandes = bonCommande::where('Confirme', 1)
+            $bonCommandes = bonCommande::where('Confirme', 1)
                             ->whereNotIn('id', $linkedBonCommandes)
                             ->get();
 

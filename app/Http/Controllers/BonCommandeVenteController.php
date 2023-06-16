@@ -99,6 +99,17 @@ class BonCommandeVenteController extends Controller
             if ($request->hasFile('attachement')) {
                 $image = $request->file('attachement');
                 $imageName =  Carbon::now()->timestamp.'.'.$image->getClientOriginalExtension();
+
+                $extension = $image->getClientOriginalExtension();
+                $validExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+
+                if (!in_array($extension, $validExtensions)) {
+                    DB::rollBack();
+                    return response()->json([
+                        'message' => 'Veuillez télécharger une pièce jointe valide IMG/PDF'
+                    ], 404);
+                }
+
                 Storage::disk('bonCommandeVente')->put($imageName, file_get_contents($image));
                 $added->update([
                     'attachement' => $imageName
