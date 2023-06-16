@@ -43,7 +43,7 @@ return new class extends Migration
 
             // if facture has Avoirs
             $table->boolean('hasAvoirs')->default(false);
-
+            $table->boolean('isChange')->default(false);
 
             $table->softDeletes();
             $table->timestamps();

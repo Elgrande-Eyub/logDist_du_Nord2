@@ -39,6 +39,12 @@ return new class extends Migration
             $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('restrict');
 
+            $table->unsignedBigInteger('camion_id')->nullable();
+            $table->foreign('camion_id')->references('id')->on('camions')->onDelete('restrict');
+
+            $table->unsignedBigInteger('transporteur_id')->nullable();
+            $table->foreign('transporteur_id')->references('id')->on('employees')->onDelete('restrict')->onUpdate('restrict');
+
             $table->timestamps();
             $table->softDeletes();
         });

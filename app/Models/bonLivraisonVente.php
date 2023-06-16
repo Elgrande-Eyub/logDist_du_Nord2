@@ -28,6 +28,8 @@ class bonLivraisonVente extends Model
         'TVA',
         'remise',
         'warehouse_id',
+        'camion_id',
+        'transporteur_id'
     ];
 
 

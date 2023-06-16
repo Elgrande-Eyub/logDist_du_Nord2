@@ -21,10 +21,13 @@ return new class extends Migration
             $table->float('Total_Rester',8,2)->nullable();
 
             $table->unsignedBigInteger('fournisseur_id')->nullable();
-            $table->foreign('fournisseur_id')->nullable()->references('id')->on('fournisseurs')->onDelete('restrict');
+            $table->foreign('fournisseur_id')->references('id')->on('fournisseurs')->onDelete('restrict');
 
             $table->unsignedBigInteger('client_id')->nullable();
-            $table->foreign('client_id')->nullable()->references('id')->on('clients')->onDelete('restrict');
+            $table->foreign('client_id')->references('id')->on('clients')->onDelete('restrict');
+
+            $table->unsignedBigInteger('vendeur_id')->nullable();
+            $table->foreign('vendeur_id')->references('id')->on('vendeurs')->onDelete('restrict');
 
             $table->softDeletes();
             $table->timestamps();

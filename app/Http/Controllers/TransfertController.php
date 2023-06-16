@@ -30,7 +30,10 @@ class TransfertController extends Controller
                 'warehousesFrom.nom_Warehouse as warehousesFrom',
                 'warehouseTo.nom_Warehouse as warehouseTo',
                 'employees.nom_employee',
-                'camions.*'
+                'camions.matricule',
+                'camions.marque',
+                'camions.modele',
+                'camions.etat',
             )
             ->get();
 
@@ -199,7 +202,10 @@ class TransfertController extends Controller
                 'warehousesFrom.nom_Warehouse as warehousesFrom',
                 'warehouseTo.nom_Warehouse as warehouseTo',
                 'employees.nom_employee',
-                'camions.*'
+                'camions.matricule',
+                'camions.marque',
+                'camions.modele',
+                'camions.etat',
             )
             ->where('transferts.id', $id)
             ->first();

@@ -22,6 +22,7 @@ class Vendeur extends Model
         'dateNaissance',
         'telephone',
         'adresse',
+        'isBlacklist'
     ];
 
 }

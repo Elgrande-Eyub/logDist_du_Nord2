@@ -150,6 +150,14 @@ class FactureController extends Controller
                 ]);
             }
 
+          /*   if($request->isChange){
+
+                $bonlivraison
+
+
+
+            } */
+
             foreach($request->Articles as $article) {
 
                 if($article['Quantity'] <= 0 ){

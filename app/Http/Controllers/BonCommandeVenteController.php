@@ -307,6 +307,12 @@ class BonCommandeVenteController extends Controller
                 ], 404);
             }
 
+            if($bonCommandeVente->Confirme == true) {
+                return response()->json([
+                    'message' => 'bon Commande est Confirmé, ne peut pas être supprimé'
+                ], 409);
+            }
+
             bonCommandeVenteArticle::where('bonCommandeVente_id', $bonCommandeVente->id)->delete();
 
             $bonCommandeVente->delete();

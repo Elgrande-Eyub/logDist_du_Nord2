@@ -11,6 +11,7 @@ use App\Models\bonCommande_article;
 use App\Models\bonLivraison;
 use App\Models\bonLivraison_article;
 use App\Models\bonLivraisonArticle;
+use App\Models\bonretourAchat;
 use App\Models\Company;
 use App\Models\Inventory;
 use App\Models\Fournisseur;
@@ -105,7 +106,6 @@ class BonLivraisonController extends Controller
                 'Total_HT' => $request->Total_HT,
                 'Total_TVA' => $request->Total_TVA,
                 'Total_TTC' => $request->Total_TTC,
-
             ]);
 
             if (!$Added) {
@@ -125,7 +125,29 @@ class BonLivraisonController extends Controller
                 ]);
             }
 
+            // Check if the bon Livraison is a simple BonLivraison or Its a Change of goods
+            if($request->isChange == true) {
+                $isBonRetourExists = bonretourAchat::find($request->bonretourAchat_id);
 
+                if(!$isBonRetourExists) {
+                    DB::rollBack();
+                    return response()->json([
+                        'message' => 'Bon Retour introuvable'
+                    ], 404);
+                }
+
+                if($isBonRetourExists->Confime != true) {
+                    DB::rollBack();
+                    return response()->json([
+                        'message' => 'Le Bon Retour doit être confirmé'
+                    ], 404);
+                }
+
+                $Added->update([
+                    'isChange' => true,
+                    'bonretourAchat_id' => $request->bonretourAchat_id
+                ]);
+            }
 
             foreach($request->Articles as $article) {
 
@@ -146,8 +168,8 @@ class BonLivraisonController extends Controller
 
             }
 
-
             DB::commit();
+
             return response()->json([
                     'message' => 'Création réussie de Bon Livraison',
                     'id' => $Added->id

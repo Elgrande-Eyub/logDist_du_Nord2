@@ -29,7 +29,9 @@ class bonLivraison extends Model
         'TVA',
         'remise',
         'warehouse_id',
-        'attachement'
+        'attachement',
+        'isChange',
+        'bonretourAchat_id'
     ];
 
 

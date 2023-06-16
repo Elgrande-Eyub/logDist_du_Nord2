@@ -154,7 +154,9 @@ class BonLivraisonVenteController extends Controller
                 'Total_HT' => $request->Total_HT,
                 'Total_TVA' => $request->Total_TVA,
                 'Total_TTC' => $request->Total_TTC,
-                'warehouse_id' => $request->warehouse_id
+                'warehouse_id' => $request->warehouse_id,
+                'camion_id' => $request->camion_id,
+                'transporteur_id' => $request->transporteur_id
             ]);
 
             // Check if the Bon Commande was successfully created

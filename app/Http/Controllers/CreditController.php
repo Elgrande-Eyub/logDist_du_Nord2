@@ -16,6 +16,7 @@ class CreditController extends Controller
 
             $credits = credit::leftJoin('clients', 'credits.client_id', '=', 'clients.id')
             ->leftJoin('fournisseurs', 'credits.fournisseur_id', '=', 'fournisseurs.id')
+            ->leftJoin('vendeurs', 'credits.vendeur_id', '=', 'vendeurs.id')
             ->select('credits.*', 'fournisseurs.fournisseur', 'clients.nom_Client')
             ->get();
 
@@ -45,9 +46,9 @@ class CreditController extends Controller
                 ], 400);
             }
 
-            if($request->fournisseur_id == null &&  $request->client_id == null) {
+            if($request->fournisseur_id == null &&  $request->client_id == null &&  $request->vendeur_id == null) {
                 return response()->json([
-                    'message' => 'il faut choisir le fournisseur ou le client'
+                    'message' => 'il faut choisir le fournisseur ou le client ou Vendeur'
                 ], 400);
             }
 
@@ -66,6 +67,7 @@ class CreditController extends Controller
                 'Total_Rester' => $request->montant,
                 'fournisseur_id' => $request->fournisseur_id,
                 'client_id' => $request->client_id,
+                'vendeur_id' => $request->vendeur_id,
             ]);
 
             if (!$Added) {
@@ -119,6 +121,27 @@ class CreditController extends Controller
 
     }
 
+    public function getCreditvendeurs()
+    {
+        try {
+
+            $CreditVendeurs = credit::leftJoin('vendeurs', 'credits.vendeur_id', '=', 'vendeurs.id')
+            ->whereNotNull('credits.vendeur_id')
+            ->where('credits.client_id', '=', null)
+            ->where('credits.fournisseur_id', '=', null)
+            ->select('credits.*', 'vendeurs.nomComplet')
+            ->get();
+
+            return response()->json($CreditVendeurs);
+
+        } catch(Exception $e) {
+            return response()->json([
+               'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+
+    }
+
     public function getCreditFournisseurs()
     {
         try {
@@ -126,6 +149,7 @@ class CreditController extends Controller
             $CreditFournisseur = credit::leftJoin('fournisseurs', 'credits.fournisseur_id', '=', 'fournisseurs.id')
             ->whereNotNull('credits.fournisseur_id')
             ->where('credits.client_id', '=', null)
+            ->where('credits.vendeur_id', '=', null)
             ->select('credits.*', 'fournisseurs.fournisseur')
             ->get();
 
@@ -145,6 +169,7 @@ class CreditController extends Controller
             $CreditClient = credit::leftJoin('clients', 'credits.client_id', '=', 'clients.id')
                 ->whereNotNull('credits.client_id')
                 ->where('credits.fournisseur_id', '=', null)
+                ->where('credits.vendeur_id', '=', null)
                 ->select('credits.*', 'clients.nom_Client')
                 ->get();
 
@@ -154,6 +179,37 @@ class CreditController extends Controller
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
             ], 404);
         }
+    }
+
+
+    public function getCreditVendeur($id)
+    {
+        try {
+
+            $credit = credit::find($id);
+
+            if (!$credit) {
+                return response()->json([
+                    'message' => 'Credit introuvable'
+                ], 404);
+            }
+
+            $CreditFournisseur = credit::leftJoin('vendeurs', 'credits.vendeur_id', '=', 'vendeurs.id')
+            ->whereNotNull('credits.vendeur_id')
+            ->where('credits.client_id', '=', null)
+            ->where('credits.fournisseur_id', '=', null)
+            ->select('credits.*', 'vendeurs.*')
+            ->where('credits.id',$id)
+            ->first();
+
+            return response()->json($CreditFournisseur);
+
+        } catch(Exception $e) {
+            return response()->json([
+               'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+
     }
 
     public function getCreditFournisseur($id)
@@ -210,6 +266,7 @@ class CreditController extends Controller
             ], 404);
         }
     }
+
     public function show($id)
     {
         try {

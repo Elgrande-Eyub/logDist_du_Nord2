@@ -155,7 +155,7 @@ Route::put('boncommande/confirme/{id}',[BonCommandeController::class,'markAsConf
 // Bon livraison Routes ----------------------------------------------------------------------------
 
 Route::apiResource('bonlivraison',BonLivraisonController::class);
-Route::put('/bonlivraison-addattachement/{id}',[BonLivraisonController::class,'addAttachement']);
+// Route::put('/bonlivraison-addattachement/{id}',[BonLivraisonController::class,'addAttachement']);
 Route::get('/getbc',[BonLivraisonController::class,'getBonCommande']); // get all bonCommandes confirmed and not linnked to a bon Livraison
 Route::put('bonlivraison/confirme/{id}',[BonLivraisonController::class,'markAsConfirmed']);
 Route::get('/printbl/{id}/{isDownloaded}',[BonLivraisonController::class,'printbonLivraison']);
@@ -272,8 +272,11 @@ Route::get('getartbyware/{id}',[TransfertController::class,'getInventoryBywareho
 
 Route::apiResource('credit',CreditController::class); // declaration old credit
 Route::put('credit/confirme/{id}',[CreditController::class,'markAsConfirmed']); // Confirme Credit
+
+Route::get('credit-vendeur',[CreditController::class,'getCreditvendeurs']); // get all Credit Vendeurs
 Route::get('credit-fournisseur',[CreditController::class,'getCreditFournisseurs']); // get all Credit fournisseur
 Route::get('credit-client',[CreditController::class,'getCreditClients']); // get All Credit Client
+Route::get('credit-vendeur/{id}',[CreditController::class,'getCreditVendeur']); // get detail of credit Vendeur
 Route::get('credit-fournisseur/{id}',[CreditController::class,'getCreditFournisseur']); // get detail of credit fournissuer
 Route::get('credit-client/{id}',[CreditController::class,'getCreditClient']);// get detail of credit client
 

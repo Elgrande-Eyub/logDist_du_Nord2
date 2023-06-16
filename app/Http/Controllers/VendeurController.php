@@ -16,7 +16,7 @@ class VendeurController extends Controller
             return response()->json($vendeurs);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Something went wrong. Please try again later.'
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 400);
         }
     }
@@ -43,7 +43,7 @@ class VendeurController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => 'Something went wrong. Please try again later.'
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 400);
         }
     }
@@ -82,7 +82,7 @@ class VendeurController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => 'Something went wrong. Please try again later.'
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 400);
         }
     }
@@ -94,7 +94,7 @@ class VendeurController extends Controller
 
             if (!$vendeur) {
                 return response()->json([
-                    'message' => 'Vendeur not found'
+                    'message' => 'Vendeur introuvable'
                 ], 404);
             }
 
@@ -104,7 +104,7 @@ class VendeurController extends Controller
             ], 200);
         } catch (Exception $e) {
             return response()->json([
-                'message' => 'Something went wrong. Please try again later.'
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 400);
         }
     }
@@ -144,7 +144,7 @@ class VendeurController extends Controller
         } catch (Exception $e) {
             DB::rollBack();
             return response()->json([
-                'message' => 'Something went wrong. Please try again later.'
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 400);
         }
     }
@@ -171,7 +171,7 @@ public function destroy($id)
     } catch (Exception $e) {
         DB::rollBack();
         return response()->json([
-            'message' => 'Something went wrong. Please try again later.'
+            'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
         ], 400);
     }
 }

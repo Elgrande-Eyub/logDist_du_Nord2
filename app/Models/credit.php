@@ -21,6 +21,7 @@ class credit extends Model
         'Total_Regler',
         'Total_Rester',
         'fournisseur_id',
-        'client_id'
+        'client_id',
+        'vendeur_id'
     ];
 }

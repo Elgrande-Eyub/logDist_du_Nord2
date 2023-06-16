@@ -190,6 +190,12 @@ class BonConsignationController extends Controller
                 ], 404);
             }
 
+            if($bonConsignation->Confirme == true) {
+                return response()->json([
+                    'message' => 'bon Consignation est Confirmé, ne peut pas être supprimé'
+                ], 409);
+            }
+
             bonConsignationArticle::where('bonConsignation_id', $bonConsignation->id)->delete();
 
             $bonConsignation->delete();

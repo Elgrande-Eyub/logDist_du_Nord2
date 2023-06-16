@@ -18,7 +18,7 @@ class InventoryController extends Controller
         try {
             $Inventory = Inventory::join('articles', 'inventories.article_id', '=', 'articles.id')
             ->leftJoin('warehouses', 'inventories.warehouse_id', '=', 'warehouses.id')
-            ->select('inventories.*', 'articles.article_libelle', 'warehouses.nom_Warehouse')
+            ->select('inventories.*', 'articles.article_libelle','articles.reference', 'warehouses.nom_Warehouse')
             ->get();
             return $Inventory;
         } catch(Exception $e) {
