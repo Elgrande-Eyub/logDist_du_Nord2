@@ -84,11 +84,23 @@ class BonReceptionVenteController extends Controller
         if ($request->hasFile('attachement')) {
             $image = $request->file('attachement');
             $imageName =  Carbon::now()->timestamp.'.'.$image->getClientOriginalExtension();
-            Storage::disk('bonReceptionVente')->put($imageName, file_get_contents($image));
-            $added->update([
+
+            $extension = $image->getClientOriginalExtension();
+            $validExtensions = ['pdf', 'jpg', 'jpeg', 'png','PDF', 'JPG', 'JPEG', 'PNG'];
+
+            if (!in_array($extension, $validExtensions)) {
+                DB::rollBack();
+                return response()->json([
+                    'message' => 'Veuillez télécharger une pièce jointe valide IMG/PDF'
+                ], 404);
+            }
+
+            Storage::disk('bonRetourVente')->put($imageName, file_get_contents($image));
+            $Added->update([
                 'attachement' => $imageName
             ]);
         }
+
 
         foreach ($request->Articles as $article) {
             bonReceptionVenteArticle::create([

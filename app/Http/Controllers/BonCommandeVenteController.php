@@ -101,7 +101,7 @@ class BonCommandeVenteController extends Controller
                 $imageName =  Carbon::now()->timestamp.'.'.$image->getClientOriginalExtension();
 
                 $extension = $image->getClientOriginalExtension();
-                $validExtensions = ['pdf', 'jpg', 'jpeg', 'png'];
+                $validExtensions = ['pdf', 'jpg', 'jpeg', 'png','PDF', 'JPG', 'JPEG', 'PNG'];
 
                 if (!in_array($extension, $validExtensions)) {
                     DB::rollBack();
