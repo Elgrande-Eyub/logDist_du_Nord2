@@ -55,7 +55,7 @@ class BonLivraisonController extends Controller
                 'date_Blivraison' => 'required',
                 'Total_HT' => 'required',
                 'Total_TTC' => 'required',
-                'attachement' => 'nullable|mimes:jpeg,png,jpg,pdf',
+                // 'attachement' => 'nullable|mimes:jpeg,png,jpg,pdf',
             ]);
 
             if ($validator->fails()) {
