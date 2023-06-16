@@ -96,7 +96,7 @@ class BonReceptionVenteController extends Controller
             }
 
             Storage::disk('bonRetourVente')->put($imageName, file_get_contents($image));
-            $Added->update([
+            $added->update([
                 'attachement' => $imageName
             ]);
         }
