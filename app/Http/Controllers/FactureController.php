@@ -302,10 +302,10 @@ class FactureController extends Controller
                 $articles[] = $article;
             }
 
-          return   $factures = facture::join('bon_livraisons', 'factures.bonLivraison_id', '=', 'bon_livraisons.id')
-            ->join('fournisseurs', 'factures.fournisseur_id', '=', 'fournisseurs.id')
-            ->join('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
-            ->select('factures.*', 'bon_livraisons.Numero_bonLivraison', 'fournisseurs.fournisseur as fournisseur', 'bon_commandes.Numero_bonCommande as Numero_bonCommande')
+             $factures = facture::leftjoin('bon_livraisons', 'factures.bonLivraison_id', '=', 'bon_livraisons.id')
+            ->leftjoin('fournisseurs', 'factures.fournisseur_id', '=', 'fournisseurs.id')
+            ->leftjoin('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
+            ->select('factures.*', 'bon_livraisons.Numero_bonLivraison', 'fournisseurs.fournisseur as fournisseur', 'bon_commandes.Numero_bonCommande')
             ->where('factures.id', $id)
             ->first();
 
