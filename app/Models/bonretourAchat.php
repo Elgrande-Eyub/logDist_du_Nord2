@@ -31,6 +31,7 @@ class bonretourAchat extends Model
         'TVA',
         'remise',
         'warehouse_id',
+        'bonLivraisonChange_id'
 
     ];
 }

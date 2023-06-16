@@ -160,6 +160,7 @@ Route::get('/getbc',[BonLivraisonController::class,'getBonCommande']); // get al
 Route::put('bonlivraison/confirme/{id}',[BonLivraisonController::class,'markAsConfirmed']);
 Route::get('/printbl/{id}/{isDownloaded}',[BonLivraisonController::class,'printbonLivraison']);
 Route::get('/printbr/{id}/{isDownloaded}',[BonLivraisonController::class,'printbonReception']);
+Route::get('getchangebr',[BonLivraisonController::class,'getBonRetour']); // get all bon retour are not linked to Bon Change
 
 
 // bon Retour Achat Achat Routes ----------------------------------------------------------------------------

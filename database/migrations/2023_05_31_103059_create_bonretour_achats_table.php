@@ -37,6 +37,9 @@ return new class extends Migration
             $table->unsignedBigInteger('bonLivraison_id')->nullable();
             $table->foreign('bonLivraison_id')->references('id')->on('bon_livraisons')->onDelete('restrict');
 
+            $table->unsignedBigInteger('bonLivraisonChange_id')->nullable();
+            $table->foreign('bonLivraisonChange_id')->references('id')->on('bon_livraisons')->onDelete('restrict');
+
             $table->unsignedBigInteger('warehouse_id')->nullable();
             $table->foreign('warehouse_id')->references('id')->on('warehouses')->onDelete('restrict');
 

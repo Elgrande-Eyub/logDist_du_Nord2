@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Resources\bonCommandeResource;
 use App\Http\Resources\bonLivraisonResource;
 use App\Models\Article;
+use App\Models\avoirsAchat;
 use App\Models\BankAccount;
 use App\Models\bonCommande;
 use App\Models\bonCommande_article;
@@ -156,9 +157,20 @@ class BonLivraisonController extends Controller
                     ], 404);
                 }
 
+                if($isBonRetourExists->bonLivraisonChange_id != null) {
+                    DB::rollBack();
+                    return response()->json([
+                        'message' => 'Le Bon Retour Est deja lie avec another Bon Livraison'
+                    ], 404);
+                }
+
                 $Added->update([
                     'isChange' => true,
                     'bonretourAchat_id' => $request->bonretourAchat_id
+                ]);
+
+                $isBonRetourExists->update([
+                    'bonLivraisonChange_id' => $Added->id
                 ]);
             }
 
@@ -215,6 +227,22 @@ class BonLivraisonController extends Controller
         }
 
     }
+
+    public function getBonRetour()
+    {
+        try {
+            $BonAchats = bonretourAchat::where('bonLivraisonChange_id',null)->get();
+            return response()->json($BonAchats);
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+               'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+
+    }
+
+
    /*  public function addAttachement($id, Request $request)
     {
         // try {
