@@ -270,8 +270,8 @@ class BonCommandeController extends Controller
                 ], 409);
             }
 
-            bonCommande_article::where('bonCommande_id', $BCommandeFounded->id)->delete();
-            $BCommandeFounded->delete();
+            bonCommande_article::where('bonCommande_id', $BCommandeFounded->id)->forceDelete();
+            $BCommandeFounded->forceDelete();
 
             DB::commit();
             return response()->json([
