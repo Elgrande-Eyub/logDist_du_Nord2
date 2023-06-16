@@ -189,7 +189,7 @@ Route::put('/markaspaid-facture/{id}',[FactureController::class,'markAsPaid']);
 
 Route::apiResource('avoirsachat',AvoirsAchatController::class);
 Route::put('avoirsachat/confirme/{id}',[AvoirsAchatController::class,'markAsConfirmed']);
-Route::get('getfactures',[AvoirsAchatController::class,'getFactures']);
+Route::get('getbonretours',[AvoirsAchatController::class,'getBonRetour']);
 Route::get('getarticlesbr/{id}',[AvoirsAchatController::class,'getArticlesBonRetour']);
 Route::put('/markaspaid-avoirsachat/{id}',[AvoirsAchatController::class,'markAsPaid']);
 

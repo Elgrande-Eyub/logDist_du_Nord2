@@ -22,10 +22,9 @@ class AvoirsAchatController extends Controller
 
         try {
 
-            $Avoirs = avoirsAchat::join('factures', 'avoirs_achats.factureAchat_id', '=', 'factures.id')
-            ->join('fournisseurs', 'avoirs_achats.fournisseur_id', '=', 'fournisseurs.id')
-            ->leftJoin('bonretour_achats', 'bonretour_achats.bonLivraison_id', '=', 'factures.bonLivraison_id')
-            ->select('avoirs_achats.*', 'factures.numero_Facture', 'factures.id as facture_id', 'fournisseurs.fournisseur', 'bonretour_achats.Numero_bonRetour', 'bonretour_achats.id as bonRetourAchat_id')
+            $Avoirs = avoirsAchat:: leftjoin('fournisseurs', 'avoirs_achats.fournisseur_id', '=', 'fournisseurs.id')
+            ->leftJoin('bonretour_achats', 'avoirs_achats.bonretourAchat_id', '=', 'bonretour_achats.id')
+            ->select('avoirs_achats.*', 'fournisseurs.fournisseur', 'bonretour_achats.Numero_bonRetour')
             ->get();
 
             return response()->json(['data'=>$Avoirs]);
@@ -47,7 +46,7 @@ class AvoirsAchatController extends Controller
             $validator = Validator::make($request->all(), [
                 'numero_avoirsAchat' => 'required',
                 'date_avoirs' => 'required',
-                'factureAchat_id' =>'required',
+                'bonretourAchat_id' =>'required',
                 'Total_HT' => 'required',
                 'Total_TVA' => 'required',
                 'Total_TTC' => 'required',
@@ -60,16 +59,16 @@ class AvoirsAchatController extends Controller
                 ], 400);
             }
 
-            $facture = facture::find($request->factureAchat_id);
-            if (!$facture) {
+            $bonretourAchat = bonretourAchat::find($request->bonretourAchat_id);
+            if (!$bonretourAchat) {
                 return response()->json([
-                    'message' => 'La facture introuvable'
+                    'message' => 'Le Bon Retour introuvable'
                 ], 400);
             }
 
-            if ($facture->Confirme != true) {
+            if ($bonretourAchat->Confirme != true) {
                 return response()->json([
-                    'message' => 'La facture nest pas Confirmé'
+                    'message' => 'Le Bon Retour nest pas Confirmé'
                 ], 400);
             }
 
@@ -84,9 +83,9 @@ class AvoirsAchatController extends Controller
 
             $Added = avoirsAchat::create([
                 'numero_avoirsAchat' => $request->numero_avoirsAchat,
-                'factureAchat_id' => $request->factureAchat_id,
+                'bonretourAchat_id' => $request->bonretourAchat_id,
                 'raison' => $request->raison,
-                'fournisseur_id' => $facture->fournisseur_id,
+                'fournisseur_id' => $bonretourAchat->fournisseur_id,
                 'Exercice' => $date->format('Y'),
                 'Mois' =>  $date->format('n'),
                 'Confirme' => $request->Confirme,
@@ -218,11 +217,11 @@ class AvoirsAchatController extends Controller
 
     }
 
-    public function getFactures()
+    public function getBonRetour()
     {
         try {
-            $linkedFacture = avoirsAchat::pluck('factureAchat_id')->toArray();
-            $Facture = facture::where('Confirme', 1)
+            $linkedFacture = avoirsAchat::pluck('bonretourAchat_id')->toArray();
+            $Facture = bonretourAchat::where('Confirme', 1)
                                 ->whereNotIn('id', $linkedFacture)
                                 ->get();
 

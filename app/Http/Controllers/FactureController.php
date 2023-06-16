@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Resources\factureAchatResource;
 use App\Http\Resources\FactureAchatResource as ResourcesFactureAchatResource;
 use App\Models\Article;
+use App\Models\avoirsAchat;
 use App\Models\BankAccount;
 use App\Models\bonLivraison;
 use App\Models\bonretourAchat;
 use App\Models\Company;
 use App\Models\facture;
 use App\Models\facture_article;
+use App\Models\factureAvoirsachat;
 use App\Models\Fournisseur;
 use App\Models\Journal;
 use App\Models\Transaction;
@@ -79,7 +81,7 @@ class FactureController extends Controller
     {
         DB::beginTransaction();
 
-        try {
+        // try {
 
             $validator = Validator::make($request->all(), [
                 'numero_Facture' => 'required',
@@ -151,6 +153,13 @@ class FactureController extends Controller
                 ]);
             }
 
+            if($request->isChange && $request->hasAvoirs){
+                DB::rollBack();
+                return response()->json([
+                   'message' => 'un seul peut être vrai (Change ou Avoirs Paye)'
+                ], 404);
+            }
+
              if($request->isChange){
 
                 if($bonLivraison->isChange == false) {
@@ -160,7 +169,7 @@ class FactureController extends Controller
                     ], 404);
                 }
 
-                $BonRetour = bonretourAchat::find($foundBL->bonretourAchat_id);
+                $BonRetour = bonretourAchat::where('id',$bonLivraison->bonretourAchat_id)->first();
 
                 $etat = "En Cours";
                 if($Added->Total_Rester == $BonRetour->Total_TTC){
@@ -173,7 +182,47 @@ class FactureController extends Controller
                     'EtatPaiement' => $etat
                 ]);
 
+            }
 
+            if($request->hasAvoirs){
+
+                if(empty($request->Avoirs)){
+                    DB::rollBack();
+                    return response()->json([
+                       'message' => 'doit etre selecter un/des avoirs pour continue cet operation'
+                    ], 404);
+                }
+
+                $TotalAvoirs = 0;
+                foreach($request->Avoirs as $avoirs){
+
+                    $isExists = avoirsAchat::find($avoirs);
+                    if(!$isExists){
+                        DB::rollBack();
+                        return response()->json([
+                           'message' => 'Avoirs introuvable'
+                        ], 404);
+                    }
+                    $avoirsAchat = avoirsAchat::where('id',$avoirs)->first();
+
+                    factureAvoirsachat::created([
+                        'avoirsAchat_id' => $Added->id,
+                        'factureAchat_id'=> $avoirs
+                    ]);
+
+                    $TotalAvoirs += $avoirsAchat->Total_TTC;
+                }
+
+                $etat = "En Cours";
+                if($TotalAvoirs == $Added->Total_TTC){
+                    $etat ='Paye';
+                }
+
+                $Added->update([
+                    'Total_Rester' => $request->Total_TTC - $TotalAvoirs,
+                    'Total_Regler' => $TotalAvoirs,
+                    'EtatPaiement' => $etat
+                ]);
 
             }
 
@@ -202,12 +251,12 @@ class FactureController extends Controller
                     'id' => $Added->id
                 ]);
 
-        } catch(Exception $e) {
+      /*   } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
-        }
+        } */
     }
 
     public function show($id)

@@ -15,7 +15,7 @@ class avoirsAchat extends Model
     protected $table = 'avoirs_achats';
     protected $fillable = [
         'fournisseur_id',
-        'factureAchat_id',
+        'bonretourAchat_id',
         'numero_avoirsAchat',
         'Exercice',
         'Mois',
