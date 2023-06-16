@@ -204,8 +204,8 @@ class FactureVenteController extends Controller
             // Delete the facture
             $factureFounded->delete();
             // Delete all articles related to facture
-            factureVenteArticle::where('factureVente_id', $factureFounded->id)->delete();
-            Transaction::where('factureVente_id', $factureFounded->id)->delete();
+            factureVenteArticle::where('factureVente_id', $factureFounded->id)->forceDelete();
+            Transaction::where('factureVente_id', $factureFounded->id)->forceDelete();
             DB::commit();
             // Return a success message with the deleted Article
             return response()->json([

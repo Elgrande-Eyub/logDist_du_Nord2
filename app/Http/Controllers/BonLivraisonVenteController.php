@@ -409,8 +409,8 @@ class BonLivraisonVenteController extends Controller
                 ], 409);
             }
 
-            bonLivraisonVenteArticle::where('blVente_id', $BLivraison_Founded->id)->delete();
-            $BLivraison_Founded->delete();
+            bonLivraisonVenteArticle::where('blVente_id', $BLivraison_Founded->id)->forceDelete();
+            $BLivraison_Founded->forceDelete();
 
 
 

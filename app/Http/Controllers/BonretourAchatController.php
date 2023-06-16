@@ -229,7 +229,7 @@ class BonretourAchatController extends Controller
         try {
             $year = Carbon::now()->format('Y');
 
-            $lastRecord = bonretourAchat::latest()->first();
+            $lastRecord = bonretourAchat::withTrashed()->latest()->first();
 
             if (!empty($lastRecord)) {
                 $lastIncrementStringYear = substr($lastRecord->Numero_bonRetour, -4);
@@ -323,8 +323,8 @@ class BonretourAchatController extends Controller
                 ], 409);
             }
 
-            bonretourAchatArticle::where('bonretourAchat_id', $bonretourAchat->id)->delete();
-            $bonretourAchat->delete();
+            bonretourAchatArticle::where('bonretourAchat_id', $bonretourAchat->id)->forceDelete();
+            $bonretourAchat->forceDelete();
 
             DB::commit();
             return response()->json([
