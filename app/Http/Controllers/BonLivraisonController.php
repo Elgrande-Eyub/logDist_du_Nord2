@@ -495,7 +495,7 @@ class BonLivraisonController extends Controller
               ->where('bon_livraisons.id', $id)
               ->first();
 
-              $articles = bonLivraisonArticle::withTrashed()->select('bon_livraison_articles.*', 'articles.*')
+                $articles = bonLivraisonArticle::withTrashed()->select('bon_livraison_articles.*', 'articles.*')
                   ->join('articles', 'bon_livraison_articles.article_id', '=', 'articles.id')
                   ->where('bonLivraison_id', $id)
                   ->get();
