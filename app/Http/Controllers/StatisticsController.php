@@ -35,7 +35,7 @@ class StatisticsController extends Controller
     public function getAchatApayer()
     {
     $AchatApayer = facture::where('Confirme',true)->sum('Total_Rester');
-    return response()->json($$AchatApayer);
+    return response()->json($AchatApayer);
     }
 
     public function getVenteTotal()

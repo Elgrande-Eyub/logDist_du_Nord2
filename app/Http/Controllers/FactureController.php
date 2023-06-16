@@ -7,6 +7,7 @@ use App\Http\Resources\FactureAchatResource as ResourcesFactureAchatResource;
 use App\Models\Article;
 use App\Models\BankAccount;
 use App\Models\bonLivraison;
+use App\Models\bonretourAchat;
 use App\Models\Company;
 use App\Models\facture;
 use App\Models\facture_article;
@@ -150,13 +151,31 @@ class FactureController extends Controller
                 ]);
             }
 
-          /*   if($request->isChange){
+             if($request->isChange){
 
-                $bonlivraison
+                if($bonLivraison->isChange == false) {
+                    DB::rollBack();
+                    return response()->json([
+                       'message' => 'ce bon Livraison nest pas un bon changement'
+                    ], 404);
+                }
+
+                $BonRetour = bonretourAchat::find($foundBL->bonretourAchat_id);
+
+                $etat = "En Cours";
+                if($Added->Total_Rester == $BonRetour->Total_TTC){
+                    $etat ='Paye';
+                }
+
+                $Added->update([
+                    'Total_Rester' => $request->Total_TTC - $BonRetour->Total_TTC,
+                    'Total_Regler' => $BonRetour->Total_TTC,
+                    'EtatPaiement' => $etat
+                ]);
 
 
 
-            } */
+            }
 
             foreach($request->Articles as $article) {
 
