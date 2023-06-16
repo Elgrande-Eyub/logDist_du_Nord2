@@ -50,7 +50,7 @@ class BonCommandeController extends Controller
         try {
             $year = Carbon::now()->format('Y');
 
-            $lastRecord = bonCommande::latest()->first();
+            $lastRecord = bonCommande::withTrashed()->latest()->first();
 
             if (!empty($lastRecord)) {
                 $lastIncrementStringYear = substr($lastRecord->Numero_bonCommande, -4, 4);

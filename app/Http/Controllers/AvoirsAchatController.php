@@ -22,7 +22,7 @@ class AvoirsAchatController extends Controller
 
         try {
 
-            $Avoirs = avoirsAchat:: leftjoin('fournisseurs', 'avoirs_achats.fournisseur_id', '=', 'fournisseurs.id')
+            $Avoirs = avoirsAchat::leftjoin('fournisseurs', 'avoirs_achats.fournisseur_id', '=', 'fournisseurs.id')
             ->leftJoin('bonretour_achats', 'avoirs_achats.bonretourAchat_id', '=', 'bonretour_achats.id')
             ->select('avoirs_achats.*', 'fournisseurs.fournisseur', 'bonretour_achats.Numero_bonRetour')
             ->get();
@@ -60,6 +60,7 @@ class AvoirsAchatController extends Controller
             }
 
             $bonretourAchat = bonretourAchat::find($request->bonretourAchat_id);
+
             if (!$bonretourAchat) {
                 return response()->json([
                     'message' => 'Le Bon Retour introuvable'
@@ -305,10 +306,11 @@ class AvoirsAchatController extends Controller
                 $articles[] = $article;
             }
 
-            $Avoirs = avoirsAchat::withTrashed()->join('factures', 'avoirs_achats.factureAchat_id', '=', 'factures.id')
-            ->join('fournisseurs', 'avoirs_achats.fournisseur_id', '=', 'fournisseurs.id')
-            ->leftJoin('bonretour_achats', 'bonretour_achats.bonLivraison_id', '=', 'factures.bonLivraison_id')
-            ->select('avoirs_achats.*', 'factures.numero_Facture', 'factures.id as facture_id', 'fournisseurs.fournisseur', 'bonretour_achats.Numero_bonRetour', 'bonretour_achats.id as bonRetourAchat_id')
+
+            $Avoirs = avoirsAchat::withTrashed()
+            ->leftjoin('fournisseurs', 'avoirs_achats.fournisseur_id', '=', 'fournisseurs.id')
+            ->leftJoin('bonretour_achats', 'avoirs_achats.bonretourAchat_id', '=', 'bonretour_achats.id')
+            ->select('avoirs_achats.*', 'fournisseurs.fournisseur', 'bonretour_achats.Numero_bonRetour', 'bonretour_achats.id as bonRetourAchat_id')
             ->where('avoirs_achats.id', $id)
             ->first();
 
