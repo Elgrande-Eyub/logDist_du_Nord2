@@ -50,7 +50,7 @@ class BonCommandeVenteController extends Controller
                 'client_id' => 'required',
                 'Numero_bonCommandeVente' => 'required',
                 'date_BCommandeVente' => 'required',
-                'attachement' => 'nullable|mimes:jpeg,pngnjpg,pdf',
+                  // 'attachement' => 'nullable|mimes:jpeg,pngnjpg,pdf',
             ]);
 
             if ($validator->fails()) {

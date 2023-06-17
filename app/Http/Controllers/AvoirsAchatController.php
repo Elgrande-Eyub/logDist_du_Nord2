@@ -50,7 +50,7 @@ class AvoirsAchatController extends Controller
                 'Total_HT' => 'required',
                 'Total_TVA' => 'required',
                 'Total_TTC' => 'required',
-                'attachement' => 'nullable|mimes:jpeg,png,jpg,pdf',
+                // 'attachement' => 'nullable|mimes:jpeg,png,jpg,pdf',
             ]);
 
             if ($validator->fails()) {
