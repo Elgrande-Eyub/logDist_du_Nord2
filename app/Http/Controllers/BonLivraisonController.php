@@ -34,7 +34,7 @@ class BonLivraisonController extends Controller
             $bonLivraison = bonLivraison::leftjoin('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
             ->leftjoin('fournisseurs', 'bon_livraisons.fournisseur_id', '=', 'fournisseurs.id')
             ->leftjoin('bonretour_achats', 'bon_livraisons.bonretourAchat_id', 'bonretour_achats.id')
-            ->select('bon_livraisons.*', 'bon_commandes.Numero_bonCommande', 'fournisseurs.fournisseur',  'bonretour_achats.Numero_bonRetour')
+            ->select('bon_livraisons.*', 'bon_commandes.Numero_bonCommande', 'fournisseurs.fournisseur', 'bonretour_achats.Numero_bonRetour')
             ->get();
 
 
@@ -246,7 +246,7 @@ class BonLivraisonController extends Controller
 
 
 
-                            return response()->json($bonRetours);
+            return response()->json($bonRetours);
 
         } catch(Exception $e) {
             DB::rollBack();
@@ -308,7 +308,7 @@ class BonLivraisonController extends Controller
 
     public function show(bonLivraison $bonLivraison, $id)
     {
-         try {
+        try {
 
             $bonLivraison = bonLivraison::find($id);
             if(!$bonLivraison) {
@@ -340,16 +340,19 @@ class BonLivraisonController extends Controller
                 ->leftjoin('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
                 ->join('warehouses', 'bon_livraisons.warehouse_id', '=', 'warehouses.id')
                 ->leftJoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
-                ->leftjoin('bonretour_achats as bonRetourAchatChange', 'bon_livraisons.bonretourAchat_id', '=','bonRetourAchatChange.id')
-                ->leftjoin('bonretour_achats as bonRetourAchat', 'bonRetourAchat.bonLivraison_id','=', 'bon_livraisons.id')
-                ->select('bon_livraisons.*', 'fournisseurs.fournisseur',
-                 'warehouses.nom_Warehouse',
-                  'bon_commandes.Numero_bonCommande',
-                   'factures.id as facture_id',
-                   'bonRetourAchatChange.id as bonRetourChange_id',
-                     'bonRetourAchatChange.Numero_bonRetour as Numero_bonRetourChange',
-                     'bonRetourAchat.id as BonRetourNormal_id',
-                     'bonRetourAchat.Numero_bonRetour as Numero_bonRetourNormal')
+                ->leftjoin('bonretour_achats as bonRetourAchatChange', 'bon_livraisons.bonretourAchat_id', '=', 'bonRetourAchatChange.id')
+                ->leftjoin('bonretour_achats as bonRetourAchat', 'bonRetourAchat.bonLivraison_id', '=', 'bon_livraisons.id')
+                ->select(
+                    'bon_livraisons.*',
+                    'fournisseurs.fournisseur',
+                    'warehouses.nom_Warehouse',
+                    'bon_commandes.Numero_bonCommande',
+                    'factures.id as facture_id',
+                    'bonRetourAchatChange.id as bonRetourChange_id',
+                    'bonRetourAchatChange.Numero_bonRetour as Numero_bonRetourChange',
+                    'bonRetourAchat.id as BonRetourNormal_id',
+                    'bonRetourAchat.Numero_bonRetour as Numero_bonRetourNormal'
+                )
                 ->where('bon_livraisons.id', $id)
                 ->first();
 
@@ -364,7 +367,7 @@ class BonLivraisonController extends Controller
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
         }
-     }
+    }
 
 
 
@@ -518,10 +521,10 @@ class BonLivraisonController extends Controller
               ->where('bon_livraisons.id', $id)
               ->first();
 
-                $articles = bonLivraisonArticle::withTrashed()->select('bon_livraison_articles.*', 'articles.*')
-                  ->join('articles', 'bon_livraison_articles.article_id', '=', 'articles.id')
-                  ->where('bonLivraison_id', $id)
-                  ->get();
+              $articles = bonLivraisonArticle::withTrashed()->select('bon_livraison_articles.*', 'articles.*')
+                ->join('articles', 'bon_livraison_articles.article_id', '=', 'articles.id')
+                ->where('bonLivraison_id', $id)
+                ->get();
 
               $bank = BankAccount::get()->first();
               $fournisseur = Fournisseur::withTrashed()->find($commande->fournisseur_id);
