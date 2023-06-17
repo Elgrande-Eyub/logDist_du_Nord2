@@ -39,13 +39,13 @@ class FactureController extends Controller
             // $factures = facture::all();
 
             $factures = facture::join('bon_livraisons', 'factures.bonLivraison_id', '=', 'bon_livraisons.id')
-            ->join('fournisseurs','factures.fournisseur_id','=','fournisseurs.id')
+            ->join('fournisseurs', 'factures.fournisseur_id', '=', 'fournisseurs.id')
             // ->leftJoin('avoirs_achats', 'avoirs_achats.factureAchat_id', '=', 'factures.id')
             ->select('factures.*', 'bon_livraisons.Numero_bonLivraison', 'fournisseurs.fournisseur')
             ->get();
 
             //return  factureAchatResource::collection($factures);
-             return response()->json(['data'=>$factures]);
+            return response()->json(['data'=>$factures]);
 
         } catch(Exception $e) {
 
@@ -61,12 +61,35 @@ class FactureController extends Controller
     public function getBonLivraison()
     {
         try {
-             $linkedBonLivraison = facture::whereNot('bonLivraison_id',null)->pluck('bonLivraison_id')->toArray();
-             $bonLivraisons = bonLivraison::where('Confirme', 1)
-                            ->whereNotIn('id', $linkedBonLivraison)
-                            ->get();
+
+            $linkedBonLivraison = facture::whereNot('bonLivraison_id', null)->pluck('bonLivraison_id')->toArray();
+            $bonLivraisons = bonLivraison::where('Confirme', 1)
+                           ->whereNotIn('id', $linkedBonLivraison)
+                           ->get();
 
             return response()->json($bonLivraisons);
+
+        } catch(Exception $e) {
+            DB::rollBack();
+            return response()->json([
+               'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
+            ], 404);
+        }
+
+    }
+
+    public function getBonLivraisonChange()
+    {
+        try {
+
+            $linkedBonLivraison = facture::where('isChange', 1)->whereNotNull('bonLivraison_id')->pluck('bonLivraison_id')->toArray();
+            $bonLivraisons = bonLivraison::where('Confirme', 1)
+                                        ->whereIn('id', $linkedBonLivraison)
+                                        ->where('isChange', 1)
+                                        ->get();
+
+            return response()->json($bonLivraisons);
+
 
 
         } catch(Exception $e) {
@@ -82,7 +105,7 @@ class FactureController extends Controller
     {
         DB::beginTransaction();
 
-         try {
+        try {
 
             $validator = Validator::make($request->all(), [
                 'numero_Facture' => 'required',
@@ -165,14 +188,14 @@ class FactureController extends Controller
                 ]);
             }
 
-            if($request->isChange && $request->hasAvoirs){
+            if($request->isChange && $request->hasAvoirs) {
                 DB::rollBack();
                 return response()->json([
                    'message' => 'un seul peut être vrai (Change ou Avoirs Paye)'
                 ], 404);
             }
 
-             if($request->isChange){
+            if($request->isChange) {
 
                 if($bonLivraison->isChange == false) {
                     DB::rollBack();
@@ -181,10 +204,10 @@ class FactureController extends Controller
                     ], 404);
                 }
 
-                $BonRetour = bonretourAchat::where('id',$bonLivraison->bonretourAchat_id)->first();
+                $BonRetour = bonretourAchat::where('id', $bonLivraison->bonretourAchat_id)->first();
 
                 $etat = "En Cours";
-                if($Added->Total_Rester == $BonRetour->Total_TTC){
+                if($Added->Total_Rester == $BonRetour->Total_TTC) {
                     $etat ='Paye';
                 }
 
@@ -196,9 +219,9 @@ class FactureController extends Controller
 
             }
 
-            if($request->hasAvoirs){
+            if($request->hasAvoirs) {
 
-                if(empty($request->Avoirs)){
+                if(empty($request->Avoirs)) {
                     DB::rollBack();
                     return response()->json([
                        'message' => 'doit etre selecter un/des avoirs pour continue cet operation'
@@ -206,16 +229,16 @@ class FactureController extends Controller
                 }
 
                 $TotalAvoirs = 0;
-                foreach($request->Avoirs as $avoirs){
+                foreach($request->Avoirs as $avoirs) {
 
                     $isExists = avoirsAchat::find($avoirs);
-                    if(!$isExists){
+                    if(!$isExists) {
                         DB::rollBack();
                         return response()->json([
                            'message' => 'Avoirs introuvable'
                         ], 404);
                     }
-                    $avoirsAchat = avoirsAchat::where('id',$avoirs)->first();
+                    $avoirsAchat = avoirsAchat::where('id', $avoirs)->first();
 
                     factureAvoirsachat::created([
                         'avoirsAchat_id' => $Added->id,
@@ -230,7 +253,7 @@ class FactureController extends Controller
                 }
 
                 $etat = "En Cours";
-                if($TotalAvoirs == $Added->Total_TTC){
+                if($TotalAvoirs == $Added->Total_TTC) {
                     $etat ='Paye';
                 }
 
@@ -244,7 +267,7 @@ class FactureController extends Controller
 
             foreach($request->Articles as $article) {
 
-                if($article['Quantity'] <= 0 ){
+                if($article['Quantity'] <= 0) {
                     DB::rollBack();
                     return response()->json([
                         'message' => 'la quantité doit être supérieure à 0'
@@ -303,7 +326,7 @@ class FactureController extends Controller
                 $articles[] = $article;
             }
 
-             $factures = facture::leftjoin('bon_livraisons', 'factures.bonLivraison_id', '=', 'bon_livraisons.id')
+            $factures = facture::leftjoin('bon_livraisons', 'factures.bonLivraison_id', '=', 'bon_livraisons.id')
             ->leftjoin('fournisseurs', 'factures.fournisseur_id', '=', 'fournisseurs.id')
             ->leftjoin('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
             ->select('factures.*', 'bon_livraisons.Numero_bonLivraison', 'fournisseurs.fournisseur as fournisseur', 'bon_commandes.Numero_bonCommande')
