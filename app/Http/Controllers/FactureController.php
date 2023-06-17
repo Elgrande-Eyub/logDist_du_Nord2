@@ -57,15 +57,16 @@ class FactureController extends Controller
         }
 
     }
+
     public function getBonLivraison()
     {
         try {
-            $linkedBonLivraison = facture::pluck('bonLivraison_id')->toArray();
-            $bonLivraison = bonLivraison::where('Confirme', 1)
-                                ->whereNotIn('id', $linkedBonLivraison)
-                                ->get();
+             $linkedBonLivraison = facture::whereNot('bonLivraison_id',null)->pluck('bonLivraison_id')->toArray();
+             $bonLivraisons = bonLivraison::where('Confirme', 1)
+                            ->whereNotIn('id', $linkedBonLivraison)
+                            ->get();
 
-            return response()->json($bonLivraison);
+            return response()->json($bonLivraisons);
 
 
         } catch(Exception $e) {
