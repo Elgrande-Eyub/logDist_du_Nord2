@@ -231,8 +231,23 @@ class BonLivraisonController extends Controller
     public function getBonRetour()
     {
         try {
-            $BonAchats = bonretourAchat::where('bonLivraisonChange_id',null)->get();
-            return response()->json($BonAchats);
+
+            $linkedBonLivraisonChange = bonLivraison::where('isChange', 1)
+            ->where('Confirme', 1)
+            ->whereNotNull('bonretourAchat_id')
+            ->pluck('bonretourAchat_id')
+            ->toArray();
+
+
+            $bonRetours = bonretourAchat::where('Confirme', 1)
+            ->where('bonLivraisonChange_id', null)
+            ->whereNotIn('id', $linkedBonLivraisonChange)
+            ->get();
+
+
+
+                            return response()->json($bonRetours);
+
         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([

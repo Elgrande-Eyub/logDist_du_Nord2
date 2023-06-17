@@ -83,7 +83,7 @@ class FactureController extends Controller
     {
         try {
 
-            $linkedBonLivraison = facture::where('isChange', 1)->whereNotNull('bonLivraison_id')->pluck('bonLivraison_id')->toArray();
+            $linkedBonLivraison = facture::where('Confirme', 1)->where('isChange', 1)->whereNotNull('bonLivraison_id')->pluck('bonLivraison_id')->toArray();
             $bonLivraisons = bonLivraison::where('Confirme', 1)
                                         ->whereNotIn('id', $linkedBonLivraison)
                                         ->where('isChange', 1)
