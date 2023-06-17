@@ -308,7 +308,7 @@ class BonLivraisonController extends Controller
 
     public function show(bonLivraison $bonLivraison, $id)
     {
-        // try {
+         try {
 
             $bonLivraison = bonLivraison::find($id);
             if(!$bonLivraison) {
@@ -357,14 +357,14 @@ class BonLivraisonController extends Controller
             $bonLivraisonArray['Articles'] = $articles;
 
             return response()->json($bonLivraisonArray);
-/*
+
         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
         }
- */    }
+     }
 
 
 
