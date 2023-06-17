@@ -308,7 +308,7 @@ class BonLivraisonController extends Controller
 
     public function show(bonLivraison $bonLivraison, $id)
     {
-        try {
+        // try {
 
             $bonLivraison = bonLivraison::find($id);
             if(!$bonLivraison) {
@@ -340,8 +340,16 @@ class BonLivraisonController extends Controller
                 ->leftjoin('bon_commandes', 'bon_livraisons.bonCommande_id', '=', 'bon_commandes.id')
                 ->join('warehouses', 'bon_livraisons.warehouse_id', '=', 'warehouses.id')
                 ->leftJoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
-                ->leftjoin('bonretour_achats', 'bon_livraisons.bonretourAchat_id', 'bonretour_achats.id')
-                ->select('bon_livraisons.*', 'fournisseurs.fournisseur', 'warehouses.nom_Warehouse', 'bon_commandes.Numero_bonCommande', 'factures.id as facture_id',  'bonretour_achats.Numero_bonRetour')
+                ->leftjoin('bonretour_achats as bonRetourAchatChange', 'bon_livraisons.bonretourAchat_id', '=','bonRetourAchatChange.id')
+                ->leftjoin('bonretour_achats as bonRetourAchat', 'bonRetourAchat.bonLivraison_id','=', 'bon_livraisons.id')
+                ->select('bon_livraisons.*', 'fournisseurs.fournisseur',
+                 'warehouses.nom_Warehouse',
+                  'bon_commandes.Numero_bonCommande',
+                   'factures.id as facture_id',
+                   'bonRetourAchatChange.id as bonRetourChange_id',
+                     'bonRetourAchatChange.Numero_bonRetour as Numero_bonRetourChange',
+                     'bonRetourAchat.id as BonRetourNormal_id',
+                     'bonRetourAchat.Numero_bonRetour as Numero_bonRetourNormal')
                 ->where('bon_livraisons.id', $id)
                 ->first();
 
@@ -349,14 +357,14 @@ class BonLivraisonController extends Controller
             $bonLivraisonArray['Articles'] = $articles;
 
             return response()->json($bonLivraisonArray);
-
+/*
         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
         }
-    }
+ */    }
 
 
 
