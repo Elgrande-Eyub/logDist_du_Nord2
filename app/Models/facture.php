@@ -31,7 +31,9 @@ class facture extends Model
         'Total_Regler',
         'Total_Rester',
         'attachement',
-        'conditionPaiement'
+        'conditionPaiement',
+        'isChange',
+        'hasAvoirs'
     ];
 
 
