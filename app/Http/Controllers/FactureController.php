@@ -201,7 +201,7 @@ class FactureController extends Controller
                 if($bonLivraison->isChange == false) {
                     DB::rollBack();
                     return response()->json([
-                       'message' => 'ce bon Livraison nest pas un bon changement'
+                       'message' => 'ce bon Livraison nest pas un bon de changement'
                     ], 404);
                 }
 
@@ -215,7 +215,8 @@ class FactureController extends Controller
                 $Added->update([
                     'Total_Rester' => $request->Total_TTC - $BonRetour->Total_TTC,
                     'Total_Regler' => $BonRetour->Total_TTC,
-                    'EtatPaiement' => $etat
+                    'EtatPaiement' => $etat,
+                    'isChange' => 1
                 ]);
 
             }
