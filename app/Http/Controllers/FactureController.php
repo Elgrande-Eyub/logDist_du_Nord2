@@ -209,7 +209,7 @@ class FactureController extends Controller
 
                 $etat = "En Cours";
                 if($Added->Total_Rester == $BonRetour->Total_TTC) {
-                    $etat ='Paye';
+                    $etat ='Paye11';
                 }
 
                 $Added->update([
@@ -219,6 +219,7 @@ class FactureController extends Controller
                     'isChange' => $request->isChange
                 ]);
 
+                DB::commit();
             }
 
             if($request->hasAvoirs) {
@@ -263,7 +264,7 @@ class FactureController extends Controller
                     'Total_Rester' => $request->Total_TTC - $TotalAvoirs,
                     'Total_Regler' => $TotalAvoirs,
                     'EtatPaiement' => $etat,
-                    'hasAvoirs' =>$request->hasAvoirs
+                    'hasAvoirs' => $request->hasAvoirs
                 ]);
 
             }
