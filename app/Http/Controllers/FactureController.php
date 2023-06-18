@@ -262,7 +262,8 @@ class FactureController extends Controller
                 $Added->update([
                     'Total_Rester' => $request->Total_TTC - $TotalAvoirs,
                     'Total_Regler' => $TotalAvoirs,
-                    'EtatPaiement' => $etat
+                    'EtatPaiement' => $etat,
+                    'hasAvoirs' =>1
                 ]);
 
             }
