@@ -216,7 +216,7 @@ class FactureController extends Controller
                     'Total_Rester' => $request->Total_TTC - $BonRetour->Total_TTC,
                     'Total_Regler' => $BonRetour->Total_TTC,
                     'EtatPaiement' => $etat,
-                    'isChange' => 1
+                    'isChange' => $request->isChange
                 ]);
 
             }
@@ -263,7 +263,7 @@ class FactureController extends Controller
                     'Total_Rester' => $request->Total_TTC - $TotalAvoirs,
                     'Total_Regler' => $TotalAvoirs,
                     'EtatPaiement' => $etat,
-                    'hasAvoirs' =>1
+                    'hasAvoirs' =>$request->hasAvoirs
                 ]);
 
             }
