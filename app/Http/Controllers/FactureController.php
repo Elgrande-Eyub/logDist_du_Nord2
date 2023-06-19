@@ -80,9 +80,9 @@ class FactureController extends Controller
     }
 
     public function getAvoirsUnlinked($id){
-        try{
+        // try{
 
-            $bonLivraison = bonLivraison::find($id)->first();
+            $bonLivraison = bonLivraison::find($id);
 
             if(!$bonLivraison){
                 return response()->json([
@@ -97,12 +97,12 @@ class FactureController extends Controller
 
             return response()->json($avoirsAchat);
 
-        } catch(Exception $e) {
+       /*  } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
-        }
+        } */
 
     }
 
