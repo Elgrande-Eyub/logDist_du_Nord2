@@ -26,7 +26,7 @@ class BonCommandeController extends Controller
     {
         try {
 
-            $bonCommande = bonCommande::orderByDesc('Numero_bonCommande')
+            $bonCommande = bonCommande::orderByDesc('created_at')
             ->leftjoin('fournisseurs', 'bon_commandes.fournisseur_id', '=', 'fournisseurs.id')
             ->select('bon_commandes.*', 'fournisseurs.fournisseur')
             ->get();

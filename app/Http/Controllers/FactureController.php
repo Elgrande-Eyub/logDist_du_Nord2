@@ -80,7 +80,7 @@ class FactureController extends Controller
     }
 
     public function getAvoirsUnlinked($id){
-        // try{
+         try{
 
             $bonLivraison = bonLivraison::find($id);
 
@@ -97,12 +97,12 @@ class FactureController extends Controller
 
             return response()->json($avoirsAchat);
 
-       /*  } catch(Exception $e) {
+         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
-        } */
+        }
 
     }
 
@@ -366,8 +366,16 @@ class FactureController extends Controller
             ->where('factures.id', $id)
             ->first();
 
+            $FactureAvoirs = factureAvoirsachat::where('factureAchat_id',$id)->get()->toArray();
+            $Avoirs =[];
+            foreach( $FactureAvoirs as $avoirs){
+                // $Avoirs += $avoirs->avoirsAchat_id;
+                array_push($Avoirs, $avoirs->avoirsAchat_id);
+            }
+
             $factureArray = $factures->toArray();
             $factureArray['Articles'] = $articles;
+            $factureArray['Avoirs'] = $Avoirs;
 
             return response()->json(['data' => $factureArray], 200);
 
