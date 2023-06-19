@@ -238,12 +238,16 @@ class BonLivraisonController extends Controller
             ->pluck('bonretourAchat_id')
             ->toArray();
 
-            // $linkedAvoirs =
+            $linkedAvoirs = avoirsAchat::where('Confirme', 1)
+            ->whereNotNull('bonretourAchat_id')
+            ->pluck('bonretourAchat_id')
+            ->toArray();
 
+            $mergedArray = array_merge($linkedBonLivraisonChange, $linkedAvoirs);
 
             $bonRetours = bonretourAchat::where('Confirme', 1)
             ->where('bonLivraisonChange_id', null)
-            ->whereNotIn('id', $linkedBonLivraisonChange)
+            ->whereNotIn('id', $mergedArray)
             ->get();
 
 
