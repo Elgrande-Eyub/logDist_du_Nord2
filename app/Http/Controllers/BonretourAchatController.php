@@ -176,7 +176,7 @@ class BonretourAchatController extends Controller
     {
 
         DB::beginTransaction();
-        // try {
+         try {
             $bonretourAchat = bonretourAchat::find($id);
 
             if(!$bonretourAchat) {
@@ -217,12 +217,12 @@ class BonretourAchatController extends Controller
             DB::commit();
             return response()->json(['message' => 'confirmè avec succès'], 200);
 
-      /*   } catch(Exception $e) {
+         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                 'message' => 'Quelque chose a mal tourné. Veuillez réessayer plus tard.'
             ], 404);
-        } */
+        }
 
     }
 

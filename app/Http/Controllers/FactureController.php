@@ -84,7 +84,7 @@ class FactureController extends Controller
             $bonLivraison = bonLivraison::find($id)->first();
 
             $linkedBonLivraison = avoirsAchat::where('Confirme', 1)
-            ->where('isChange', 1)
+            ->where('fournissuer_id', $bonLivraison->fournisseur_id)
             ->whereNotNull('bonLivraison_id')
             ->pluck('bonLivraison_id')->toArray();
 

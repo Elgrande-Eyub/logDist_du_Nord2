@@ -30,7 +30,7 @@ class ArticleController extends Controller
                 'articles.*',
                 'fournisseurs.fournisseur',
                 'fournisseurs.id as fournisseur_id',
-                'article_categories.id as category_id',
+                // 'article_categories.id as category_id',
                 'article_categories.category'
             )->get();
 

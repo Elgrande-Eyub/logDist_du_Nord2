@@ -250,8 +250,6 @@ class BonLivraisonController extends Controller
             ->whereNotIn('id', $mergedArray)
             ->get();
 
-
-
             return response()->json($bonRetours);
 
         } catch(Exception $e) {
@@ -260,9 +258,7 @@ class BonLivraisonController extends Controller
                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
             ], 404);
         }
-
     }
-
 
    /*  public function addAttachement($id, Request $request)
     {
