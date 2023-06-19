@@ -238,6 +238,8 @@ class BonLivraisonController extends Controller
             ->pluck('bonretourAchat_id')
             ->toArray();
 
+            // $linkedAvoirs =
+
 
             $bonRetours = bonretourAchat::where('Confirme', 1)
             ->where('bonLivraisonChange_id', null)

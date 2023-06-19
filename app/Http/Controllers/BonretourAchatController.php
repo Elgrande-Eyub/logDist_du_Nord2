@@ -155,8 +155,10 @@ class BonretourAchatController extends Controller
     public function getBonLivraison()
     {
         try {
+
             $linkedBonLivraison = bonretourAchat::pluck('bonLivraison_id')->toArray();
             $bonLivraison = bonLivraison::where('Confirme', 1)
+                                ->where('isChange',0)
                                 ->whereNotIn('id', $linkedBonLivraison)
                                 ->get();
 
