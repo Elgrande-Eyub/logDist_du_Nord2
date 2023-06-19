@@ -78,15 +78,24 @@ class FactureController extends Controller
         }
 
     }
+
     public function getAvoirsUnlinked($id){
         try{
 
             $bonLivraison = bonLivraison::find($id)->first();
 
-            $linkedBonLivraison = avoirsAchat::where('Confirme', 1)
+            if(!$bonLivraison){
+                return response()->json([
+                    'message' => 'Bon Livriason introuvable'
+                ], 400);
+            }
+
+            $avoirsAchat = avoirsAchat::where('Confirme', 1)
             ->where('fournissuer_id', $bonLivraison->fournisseur_id)
-            ->whereNotNull('bonLivraison_id')
-            ->pluck('bonLivraison_id')->toArray();
+            ->where('isLinked',0)
+            ->get();
+
+            return response()->json($avoirsAchat);
 
         } catch(Exception $e) {
             DB::rollBack();
@@ -96,6 +105,7 @@ class FactureController extends Controller
         }
 
     }
+
     public function getBonLivraisonChange()
     {
         try {
