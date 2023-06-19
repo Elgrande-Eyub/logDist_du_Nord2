@@ -366,16 +366,20 @@ class FactureController extends Controller
             ->where('factures.id', $id)
             ->first();
 
-            $FactureAvoirs = factureAvoirsachat::where('factureAchat_id',$id)->get()->toArray();
-            $Avoirs =[];
-            foreach( $FactureAvoirs as $avoirs){
-                // $Avoirs += $avoirs->avoirsAchat_id;
-                array_push($Avoirs, $avoirs->avoirsAchat_id);
+            $factureArray = $factures->toArray();
+
+            if($factures->hasAvoirs){
+                $FactureAvoirs = factureAvoirsachat::where('factureAchat_id',$id)->get()->toArray();
+                $Avoirs =[];
+                foreach( $FactureAvoirs as $avoirs){
+                    // $Avoirs += $avoirs->avoirsAchat_id;
+                    array_push($Avoirs, $avoirs->avoirsAchat_id);
+                }
+                $factureArray['Avoirs'] = $Avoirs;
             }
 
-            $factureArray = $factures->toArray();
             $factureArray['Articles'] = $articles;
-            $factureArray['Avoirs'] = $Avoirs;
+
 
             return response()->json(['data' => $factureArray], 200);
 
