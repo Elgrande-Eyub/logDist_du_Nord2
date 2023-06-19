@@ -91,7 +91,7 @@ class FactureController extends Controller
             }
 
             $avoirsAchat = avoirsAchat::where('Confirme', 1)
-            ->where('fournissuer_id', $bonLivraison->fournisseur_id)
+            ->where('fournisseur_id', $bonLivraison->fournisseur_id)
             ->where('isLinked',0)
             ->get();
 
