@@ -154,6 +154,7 @@ class FactureController extends Controller
                 'Confirme' => $request->Confirme,
                 'Commentaire' => $request->Commentaire,
                 'date_Facture' => $request->date_Facture,
+                'conditionPaiement'=> $request->conditionPaiement,
                 'Total_HT' => $request->Total_HT,
                 'remise' => $request->remise,
                 'TVA' => $request->TVA,

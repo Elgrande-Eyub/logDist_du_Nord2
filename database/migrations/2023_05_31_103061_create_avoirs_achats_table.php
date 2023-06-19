@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->string('Exercice')->nullable();
             $table->string('Mois')->nullable();
-            $table->string('EtatPaiement')->nullable()->default('impaye'); // impaye - paye - en cours
+            // $table->string('EtatPaiement')->nullable()->default('impaye'); // impaye - paye - en cours
             $table->string('Commentaire')->nullable();
             $table->dateTime('date_avoirs')->default(Carbon::now()->format('Y-m-d H:i:s'))->nullable();
             $table->boolean('Confirme')->default(false)->nullable();
@@ -31,11 +31,11 @@ return new class extends Migration
             $table->float('Total_TVA',8,2)->nullable();
             $table->float('Total_TTC',8,2)->nullable();
             $table->string('attachement')->nullable();
-            $table->string('raison')->nullable();
+     /*     $table->string('raison')->nullable();
             $table->integer('conditionPaiement')->nullable();
             $table->float('Total_Regler',8,2)->nullable()->default(0);
             $table->float('Total_Rester',8,2)->nullable();
-
+ */
             $table->unsignedBigInteger('fournisseur_id')->nullable();
             $table->foreign('fournisseur_id')->nullable()->references('id')->on('fournisseurs')->onDelete('restrict');
 
