@@ -19,7 +19,8 @@ class avoirsVente extends Model
         'numero_avoirsVente',
         'Exercice',
         'Mois',
-        'EtatPaiement',
+        // 'EtatPaiement',
+        'isLinked',
         'Commentaire',
         'date_avoirs',
         'Confirme',
@@ -28,10 +29,10 @@ class avoirsVente extends Model
         'TVA',
         'remise',
         'Total_TTC',
-        'Total_Regler',
-        'Total_Rester',
+     /*    'Total_Regler',
+        'Total_Rester', */
         'attachement',
         // 'bonretourVente_id',
-        'raison',
+        // 'raison',
     ];
 }

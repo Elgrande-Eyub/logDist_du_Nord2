@@ -20,20 +20,21 @@ class avoirsAchat extends Model
         'numero_avoirsAchat',
         'Exercice',
         'Mois',
-        'EtatPaiement',
+        // 'EtatPaiement',
         'Commentaire',
         'date_Facture',
         'Confirme',
         'Total_HT',
+        'isLinked',
         'Total_TVA',
         'TVA',
         'remise',
         'Total_TTC',
-        'Total_Regler',
-        'Total_Rester',
+        // 'Total_Regler',
+        // 'Total_Rester',
         'attachement',
         // 'bonretourAchat_id',
-        'raison',
-        'conditionPaiement'
+        // 'raison',
+        // 'conditionPaiement'
     ];
 }

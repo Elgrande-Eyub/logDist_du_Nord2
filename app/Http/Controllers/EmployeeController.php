@@ -13,13 +13,12 @@ class EmployeeController extends Controller
     public function index()
     {
         try {
-            // $employees = Employee::all();
-            // return response()->json($employees);
 
+            $employees = Employee::join('employee_roles','employees.role_id','=','employee_roles.id')
+            ->select('employees.*','employee_roles.role_name')
+            ->get();
 
-            $employees = Employee::all();
-
-            return employeeResource::collection($employees);
+            return response()->json($employees);
 
         } catch (Exception $e) {
             return response()->json([

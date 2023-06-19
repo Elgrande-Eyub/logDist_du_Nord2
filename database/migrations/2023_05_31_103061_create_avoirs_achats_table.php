@@ -24,7 +24,8 @@ return new class extends Migration
             // $table->string('EtatPaiement')->nullable()->default('impaye'); // impaye - paye - en cours
             $table->string('Commentaire')->nullable();
             $table->dateTime('date_avoirs')->default(Carbon::now()->format('Y-m-d H:i:s'))->nullable();
-            $table->boolean('Confirme')->default(false)->nullable();
+            $table->boolean('Confirme')->default(false);
+            $table->boolean('isLinked')->default(false);
             $table->float('Total_HT',8,2)->nullable();
             $table->integer('TVA')->nullable();
             $table->float('remise',8,2)->nullable();
