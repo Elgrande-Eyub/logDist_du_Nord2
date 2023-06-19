@@ -287,7 +287,8 @@ class BonretourAchatController extends Controller
             $bonretourAchat  = bonretourAchat::leftjoin('fournisseurs', 'bonretour_achats.fournisseur_id', '=', 'fournisseurs.id')->withTrashed()
             ->join('bon_livraisons', 'bonretour_achats.bonLivraison_id', '=', 'bon_livraisons.id')
             ->join('warehouses', 'bonretour_achats.warehouse_id', '=', 'warehouses.id')
-            ->select('bonretour_achats.*', 'fournisseurs.fournisseur', 'warehouses.nom_Warehouse', 'bon_livraisons.Numero_bonLivraison')
+            ->leftjoin('avoirs_achats','avoirs_achats.bonretourAchat_id','=','bonretour_achats.id')
+            ->select('bonretour_achats.*','avoirs_achats.id as avoirsAchat_id','avoirs_achats.numero_avoirsAchat', 'fournisseurs.fournisseur', 'warehouses.nom_Warehouse', 'bon_livraisons.Numero_bonLivraison')
             ->where('bonretour_achats.id', $id)
             ->first();
 

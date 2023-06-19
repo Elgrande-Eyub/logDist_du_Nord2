@@ -252,7 +252,8 @@ class FactureController extends Controller
                     $TotalAvoirs += $avoirsAchat->Total_TTC;
 
                     $avoirsAchat->update([
-                        'factureChange_id'=> $Added->id
+                        'factureChange_id'=> $Added->id,
+                        'isLinked' => 1
                     ]);
                 }
 
