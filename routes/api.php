@@ -184,8 +184,7 @@ Route::get('/printf/{id}/{isDownloaded}',[FactureController::class,'facturePrint
 Route::put('facture/confirme/{id}',[FactureController::class,'markAsConfirmed']); // Confirme facture
 Route::get('/getblf',[FactureController::class,'getBonLivraison']); // get simple bonlivraison
 Route::get('/getblcf',[FactureController::class,'getBonLivraisonChange']); // get Change Bon Livraison are not linekd to facture
-Route::get('/getunlinkedavoirs',[FactureController::class,'getAvoirsUnlinked']);
-
+Route::get('/getunlinkedavoirs/{id}',[FactureController::class,'getAvoirsUnlinked']);
 Route::put('/markaspaid-facture/{id}',[FactureController::class,'markAsPaid']);
 
 // Avoirs Achat Routes ----------------------------------------------------------------------------
