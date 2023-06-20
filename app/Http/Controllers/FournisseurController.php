@@ -138,7 +138,7 @@ class FournisseurController extends Controller
                     ->limit(10)
                     ->get();
 
-                $Transactions[$commande->facture_id] = $transactions->reverse();
+                $Transactions[$commande] = $transactions->reverse();
             }
 
             $FoundedFournisseurToArray['Transactions'] = $Transactions;
