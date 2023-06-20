@@ -116,9 +116,14 @@ class FournisseurController extends Controller
 
             $Commandes = bonCommande::leftjoin('bon_livraisons', 'bon_commandes.id', '=', 'bon_livraisons.bonCommande_id')
             ->leftjoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
-            ->select('bon_commandes.id as bonCommande_id', 'bon_commandes.Numero_bonCommande',
-                'bon_livraisons.id as bonLivraison_id', 'bon_livraisons.Numero_bonLivraison',
-                'factures.id as facture_id', 'factures.numero_Facture')
+            ->select(
+                'bon_commandes.id as bonCommande_id',
+                'bon_commandes.Numero_bonCommande',
+                'bon_livraisons.id as bonLivraison_id',
+                'bon_livraisons.Numero_bonLivraison',
+                'factures.id as facture_id',
+                'factures.numero_Facture'
+            )
             ->orderByDesc('bon_commandes.created_at')
             ->limit(10)
             ->get();
@@ -126,8 +131,16 @@ class FournisseurController extends Controller
             $FoundedFournisseurToArray['Commandes'] = $Commandes;
             $Transactions= [];
 
-            foreach($Commandes as $facture){
-                $Transactions = Transaction::where('factureAchat_id',$facture->facture_id)->get();
+            foreach($Commandes as $facture) {
+                $Transactions = Transaction::where('factureAchat_id', $facture->facture_id)->
+                select(
+                    'transaction.id',
+                    'transaction.num_transaction',
+                    'transaction.montant',
+                    'transaction.modePaiement'
+                )
+
+                ->get();
             }
 
 
