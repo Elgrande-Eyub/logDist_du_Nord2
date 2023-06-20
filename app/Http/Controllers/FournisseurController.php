@@ -128,21 +128,21 @@ class FournisseurController extends Controller
             $Transactions = [];
 
             foreach ($Commandes as $commande) {
-                $transactions = Transaction::where('factureAchat_id', $commande->facture_id)
+                $factureId = $commande->facture_id;
+                $transactions = Transaction::where('factureAchat_id', $factureId)
                     ->select(
                         'transactions.num_transaction',
                         'transactions.montant',
                         'transactions.modePaiement'
                     )
                     ->limit(10)
-                    ->get();
+                    ->get()
+                    ->reverse();
 
-                foreach ($transactions as $transaction) {
-                    $Transactions[] = $transaction;
-                }
+                $Transactions = array_merge($Transactions, $transactions->toArray());
             }
 
-            $FoundedFournisseurToArray['Transactions'] = array_reverse($Transactions);
+            $FoundedFournisseurToArray['Transactions'] = $Transactions;
 
             // Return the Fournisseur data
             return response()->json([
