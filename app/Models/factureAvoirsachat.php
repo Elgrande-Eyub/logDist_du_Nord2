@@ -16,6 +16,5 @@ class factureAvoirsachat extends Model
     protected $fillable = [
         'avoirsAchat_id',
         'factureAchat_id',
-
     ];
 }

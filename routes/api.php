@@ -21,6 +21,7 @@ use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\CreditController;
 use App\Http\Controllers\DepenseController;
+use App\Http\Controllers\DevisController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\EmployeeRoleController;
 use App\Http\Controllers\FactureController;
@@ -198,6 +199,15 @@ Route::put('/markaspaid-avoirsachat/{id}',[AvoirsAchatController::class,'markAsP
 // Bon Consignation Routes ----------------------------------------------------------------------------
 
 Route::apiResource('bonconsignation',BonConsignationController::class);
+
+// devis Routes ----------------------------------------------------------------------------
+
+Route::apiResource('devis',DevisController::class);
+Route::get('/printbc/{id}/{condition}/{isDownloaded}',[DevisController::class,'printbonCommande']);// print bonCommande
+Route::get('/getnbd',[DevisController::class,'getNumeroDevis']);
+Route::get('devis/month/{MonthId}',[DevisController::class,'getByMonth']); // get bonCommandes by Month
+Route::put('devis/confirme/{id}',[DevisController::class,'markAsConfirmed']); // Confirme BonCommande
+
 
 // bon Commande Ventes Routes ----------------------------------------------------------------------------
 

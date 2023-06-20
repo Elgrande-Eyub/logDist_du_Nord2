@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Article;
 use App\Models\Devis;
 use App\Models\DevisArticle;
 use Carbon\Carbon;
@@ -16,7 +17,7 @@ class DevisController extends Controller
     {
         try {
             $devis = Devis::orderByDesc('created_at')
-                ->leftJoin('clients', 'devis.client_id', '=', 'clients.id')
+                ->leftjoin('clients', 'devis.client_id', '=', 'clients.id')
                 ->select('devis.*', 'clients.nom_Client')
                 ->get();
 
@@ -61,7 +62,7 @@ class DevisController extends Controller
     {
         DB::beginTransaction();
 
-        try {
+         try {
             $validator = Validator::make($request->all(), [
                 'client_id' => 'required',
                 'Numero_Devis' => 'required',
@@ -77,7 +78,7 @@ class DevisController extends Controller
             $found = Devis::where('Numero_Devis', $request->Numero_Devis)->exists();
             if ($found) {
                 return response()->json([
-                    'message' => 'Devis Already Exists'
+                    'message' => 'Devis est déjà existe'
                 ], 409);
             }
 
@@ -93,16 +94,14 @@ class DevisController extends Controller
                 'Confirme' => $request->Confirme,
                 'Commentaire' => $request->Commentaire,
                 'date_Devis' => $request->date_Devis,
-                'Total_HT' => $request->Total_HT, // Update later
-                'Total_TVA' => $request->Total_TVA, // Update later
-                'Total_TTC' => $request->Total_TTC, // Update later
+                'Total_HT' => $request->Total_HT,
+                'Total_TVA' => $request->Total_TVA,
+                'Total_TTC' => $request->Total_TTC,
                 'TVA' => $request->TVA,
                 'remise' => $request->remise,
             ]);
 
-            $articles = $request->articles;
-
-            foreach ($articles as $article) {
+            foreach ($request->Articles as $article) {
                 $devisArticle = new DevisArticle();
                 $devisArticle->devis_id = $added->id;
                 $devisArticle->article_id = $article['article_id'];
@@ -115,9 +114,86 @@ class DevisController extends Controller
             DB::commit();
 
             return response()->json([
-                'message' => 'Devis Created',
+                'message' => 'Création réussie de Devis',
                 'id' => $added->id,
             ]);
+
+         } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
+            ], 500);
+        }
+    }
+
+    public function show($id)
+    {
+        try {
+            $devis = Devis::find($id);
+            if(!$devis) {
+                return response()->json([
+                    'message' => 'Devis introuvable'
+                ], 404);
+            }
+
+            $detailsCommande = DevisArticle::where('devis_id', $devis->id)->withTrashed()->get();
+
+            $articles = [];
+
+            foreach($detailsCommande as $detail) {
+
+                $articl = Article::withTrashed()->find($detail->article_id);
+
+
+                $article = [
+                    'article_id' => $detail->article_id,
+                    'reference' => $articl->reference,
+                    'article_libelle' => $articl->article_libelle,
+                    'Quantity' => $detail->Quantity,
+                    'Prix_unitaire' => $detail->Prix_unitaire,
+                    'Total_HT' => $detail->Total_HT,
+
+                ];
+                $articles[] = $article;
+            }
+
+            $devis = devis::
+            leftjoin('clients', 'devis.client_id', '=', 'clients.id')->withTrashed()
+            ->select('devis.*', 'clients.*')
+            ->where('devis.id', $id)
+            ->first();
+
+            $devisArray = $devis->toArray();
+            $devisArray['Articles'] = $articles;
+
+            return response()->json($devisArray);
+        } catch (Exception $e) {
+            return response()->json([
+                'message' => 'Devis introuvable'
+            ], 404);
+        }
+    }
+
+    public function markAsConfirmed($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $devis = Devis::findOrFail($id);
+
+            if ($devis->Confirme) {
+                return response()->json([
+                    'message' => 'Devis est déjà Confirmé'
+                ], 400);
+            }
+
+            $devis->Confirme = true;
+            $devis->Etat = 'Recu';
+            $devis->save();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Devis se confirmè avec succès']);
 
         } catch (Exception $e) {
             DB::rollback();
@@ -126,4 +202,32 @@ class DevisController extends Controller
             ], 500);
         }
     }
+
+    public function destroy($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $devis = Devis::findOrFail($id);
+
+            if ($devis->Confirme) {
+                return response()->json([
+                    'message' => 'Devis est Confirmé, ne peut pas être supprimé'
+                ], 400);
+            }
+
+            DevisArticle::where('devis_id',$id)->forceDelete();
+            $devis->forceDelete();
+
+            DB::commit();
+
+            return response()->json(['message' => 'Devis nest plus disponible']);
+        } catch (Exception $e) {
+            DB::rollback();
+            return response()->json([
+                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
+            ], 500);
+        }
+    }
+
 }

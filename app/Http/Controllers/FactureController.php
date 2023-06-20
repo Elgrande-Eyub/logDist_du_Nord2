@@ -133,7 +133,7 @@ class FactureController extends Controller
     {
         DB::beginTransaction();
 
-        try {
+         try {
 
             $validator = Validator::make($request->all(), [
                 'numero_Facture' => 'required',
@@ -323,7 +323,7 @@ class FactureController extends Controller
                     'id' => $Added->id
                 ]);
 
-        } catch(Exception $e) {
+         } catch(Exception $e) {
             DB::rollBack();
             return response()->json([
                'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement'
