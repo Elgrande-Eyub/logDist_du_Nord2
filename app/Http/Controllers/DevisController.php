@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\BankAccount;
+use App\Models\client;
+use App\Models\Company;
 use App\Models\Devis;
 use App\Models\DevisArticle;
+use App\Models\Fournisseur;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -230,4 +234,45 @@ class DevisController extends Controller
         }
     }
 
+    public function printbonCommande($id, $isDownloaded)
+    {
+        // try {
+
+            $commande = Devis::withTrashed()->find($id);
+            $articles = DevisArticle::withTrashed()->select('devis_articles.*', 'articles.*')
+                ->join('articles', 'devis_articles.article_id', '=', 'articles.id')
+                ->where('devis_id', $id)
+                ->get();
+
+            $client = client::withTrashed()->find($commande->client_id);
+
+            $company = Company::get()->first();
+            $bank = BankAccount::get()->first();
+
+            $pdf = app('dompdf.wrapper');
+
+            //############ Permitir ver imagenes si falla ################################
+            $contxt = stream_context_create([
+              'ssl' => [
+                  'verify_peer' => false,
+                  'verify_peer_name' => false,
+                  'allow_self_signed' => true,
+              ]
+            ]);
+            $pdf->setPaper('A4', 'portrait');
+            $pdf->getDomPDF()->setHttpContext($contxt);
+
+            $pdf->loadView('Prints.Devis', compact('commande', 'articles', 'client', 'bank', 'company', 'pdf'));
+
+            if($isDownloaded === 'true') {
+                return $pdf->download('Devis_Nº'.$commande->Numero_bonCommande.'.pdf');
+            }
+
+            return $pdf->stream('Devis_'.$commande->Numero_bonCommande.'.pdf');
+
+       /*  } catch (Exception $e) {
+            abort(404);
+        } */
+
+    }
 }

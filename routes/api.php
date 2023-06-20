@@ -203,11 +203,11 @@ Route::apiResource('bonconsignation',BonConsignationController::class);
 // devis Routes ----------------------------------------------------------------------------
 
 Route::apiResource('devis',DevisController::class);
-/* Route::get('/printbc/{id}/{condition}/{isDownloaded}',[DevisController::class,'printbonCommande']);// print bonCommande
+Route::get('/printd/{id}/{isDownloaded}',[DevisController::class,'printbonCommande']);// print bonCommande
 Route::get('/getnbd',[DevisController::class,'getNumeroDevis']);
 Route::get('devis/month/{MonthId}',[DevisController::class,'getByMonth']); // get bonCommandes by Month
 Route::put('devis/confirme/{id}',[DevisController::class,'markAsConfirmed']); // Confirme BonCommande
- */
+
 
 // bon Commande Ventes Routes ----------------------------------------------------------------------------
 
