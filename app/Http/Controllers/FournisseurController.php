@@ -132,14 +132,13 @@ class FournisseurController extends Controller
             $Transactions= [];
 
             foreach($Commandes as $facture) {
-                $Transactions = Transaction::where('factureAchat_id', $facture->facture_id)->
-                select(
-                    'transaction.id',
-                    'transaction.num_transaction',
-                    'transaction.montant',
-                    'transaction.modePaiement'
+                $Transactions = Transaction::where('factureAchat_id', $facture->facture_id)
+                ->select(
+                    'transactions.id',
+                    'transactions.num_transaction',
+                    'transactions.montant',
+                    'transactions.modePaiement'
                 )
-
                 ->get();
             }
 
