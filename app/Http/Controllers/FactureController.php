@@ -240,6 +240,13 @@ class FactureController extends Controller
                     $etat ='Paye';
                 }
 
+                if($Added->Total_Rester < $BonRetour->Total_TTC) {
+                    DB::rollBack();
+                    return response()->json([
+                       'message' => 'une error sur les calcules . sil vous plait contacter-Support'
+                    ], 404);
+                }
+
                 $Added->update([
                     'Total_Rester' => $request->Total_TTC - $BonRetour->Total_TTC,
                     'Total_Regler' => $BonRetour->Total_TTC,
