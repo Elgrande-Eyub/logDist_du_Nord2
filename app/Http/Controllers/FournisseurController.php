@@ -101,14 +101,6 @@ class FournisseurController extends Controller
             // Find the Fournisseur with the given ID
             $FoundedFournisseur = Fournisseur::withTrashed()->find($id);
 
-            $Commandes = bonCommande::leftjoin('bon_livraisons', 'bon_commandes.id', '=', 'bon_livraisons.bonCommande_id')
-            ->leftjoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
-            ->select('bon_commandes.id as bonCommande_id', 'bon_commandes.Numero_bonCommande',
-                'bon_livraisons.id as bonLivraison_id', 'bon_livraisons.Numero_bonLivraison',
-                'factures.id as facture_id', 'factures.numero_Facture')
-            ->orderByDesc('bon_commandes.created_at')
-            ->limit(10)
-            ->get();
 
 
             // Check if the Fournisseur was found
@@ -118,10 +110,24 @@ class FournisseurController extends Controller
                 ], 404);
             }
 
+            $FoundedFournisseurToArray =  $FoundedFournisseur->toArray();
+
+
+            $Commandes = bonCommande::leftjoin('bon_livraisons', 'bon_commandes.id', '=', 'bon_livraisons.bonCommande_id')
+            ->leftjoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
+            ->select('bon_commandes.id as bonCommande_id', 'bon_commandes.Numero_bonCommande',
+                'bon_livraisons.id as bonLivraison_id', 'bon_livraisons.Numero_bonLivraison',
+                'factures.id as facture_id', 'factures.numero_Facture')
+            ->orderByDesc('bon_commandes.created_at')
+            ->limit(10)
+            ->get();
+
+            $FoundedFournisseurToArray['Commandes'] = $Commandes;
+
             // Return the Fournisseur data
             return response()->json([
-                'Fournisseur Requested' => $FoundedFournisseur,
-                'Commandes'=> $Commandes
+                'Fournisseur Requested' => $FoundedFournisseurToArray
+
             ], 200);
 
         } catch(Exception $e) {
