@@ -109,43 +109,45 @@ class FournisseurController extends Controller
                 ], 404);
             }
 
-            $FoundedFournisseurToArray =  $FoundedFournisseur->toArray();
-
+            $FoundedFournisseurToArray = $FoundedFournisseur->toArray();
 
             $Commandes = bonCommande::leftjoin('bon_livraisons', 'bon_commandes.id', '=', 'bon_livraisons.bonCommande_id')
-            ->leftjoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
-            ->select(
-                'bon_commandes.id as bonCommande_id',
-                'bon_commandes.Numero_bonCommande',
-                'bon_livraisons.id as bonLivraison_id',
-                'bon_livraisons.Numero_bonLivraison',
-                'factures.id as facture_id',
-                'factures.numero_Facture'
-            )
-            ->orderByDesc('bon_commandes.created_at')
-            ->limit(10)
-            ->get();
-
-            $FoundedFournisseurToArray['Commandes'] = $Commandes;
-            $Transactions= [];
-
-            foreach($Commandes as $facture) {
-                $Transactions = Transaction::where('factureAchat_id', $facture->facture_id)
+                ->leftjoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
                 ->select(
-                    'transactions.num_transaction',
-                    'transactions.montant',
-                    'transactions.modePaiement'
+                    'bon_commandes.id as bonCommande_id',
+                    'bon_commandes.Numero_bonCommande',
+                    'bon_livraisons.id as bonLivraison_id',
+                    'bon_livraisons.Numero_bonLivraison',
+                    'factures.id as facture_id',
+                    'factures.numero_Facture'
                 )
+                ->orderByDesc('bon_commandes.created_at')
                 ->limit(10)
                 ->get();
+
+            $FoundedFournisseurToArray['Commandes'] = $Commandes;
+            $Transactions = [];
+
+            foreach ($Commandes as $commande) {
+                $transactions = Transaction::where('factureAchat_id', $commande->facture_id)
+                    ->select(
+                        'transactions.num_transaction',
+                        'transactions.montant',
+                        'transactions.modePaiement'
+                    )
+                    ->limit(10)
+                    ->get();
+
+                $Transactions[$commande->facture_id] = $transactions->reverse();
             }
 
-            $FoundedFournisseurToArray['Transactions'] = $Transactions->reverse();
+            $FoundedFournisseurToArray['Transactions'] = $Transactions;
+
             // Return the Fournisseur data
             return response()->json([
                 'Fournisseur Requested' => $FoundedFournisseurToArray
-
             ], 200);
+
 
         } catch(Exception $e) {
 
