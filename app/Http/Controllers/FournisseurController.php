@@ -99,7 +99,6 @@ class FournisseurController extends Controller
     public function show($id)
     {
         try {
-            // Find the Fournisseur with the given ID
             $FoundedFournisseur = Fournisseur::withTrashed()->find($id);
 
             // Check if the Fournisseur was found
@@ -138,15 +137,16 @@ class FournisseurController extends Controller
                     ->limit(10)
                     ->get();
 
-                $Transactions[] = $transactions->reverse();
+                $Transactions = $Transactions->concat($transactions->reverse());
             }
 
-            $FoundedFournisseurToArray['Transactions'] = $Transactions;
+            $FoundedFournisseurToArray['Transactions'] = $Transactions->reverse();
 
             // Return the Fournisseur data
             return response()->json([
                 'Fournisseur Requested' => $FoundedFournisseurToArray
             ], 200);
+
 
 
         } catch(Exception $e) {
