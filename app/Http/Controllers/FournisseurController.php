@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Article;
+use App\Models\bonCommande;
 use App\Models\Fournisseur;
 use Exception;
 use Illuminate\Http\Request;
@@ -100,6 +101,16 @@ class FournisseurController extends Controller
             // Find the Fournisseur with the given ID
             $FoundedFournisseur = Fournisseur::withTrashed()->find($id);
 
+            $Commandes = bonCommande::leftjoin('bon_livraisons', 'bon_commandes.id', '=', 'bon_livraisons.bonCommande_id')
+            ->leftjoin('factures', 'bon_livraisons.id', '=', 'factures.bonLivraison_id')
+            ->select('bon_commandes.id as bonCommande_id', 'bon_commandes.Numero_bonCommande',
+                'bon_livraisons.id as bonLivraison_id', 'bon_livraisons.Numero_bonLivraison',
+                'factures.id as facture_id', 'factures.numero_Facture')
+            ->orderByDesc('bon_commandes.created_at')
+            ->limit(10)
+            ->get();
+
+
             // Check if the Fournisseur was found
             if (!$FoundedFournisseur) {
                 return response()->json([
@@ -109,7 +120,8 @@ class FournisseurController extends Controller
 
             // Return the Fournisseur data
             return response()->json([
-                'Fournisseur Requested' => $FoundedFournisseur
+                'Fournisseur Requested' => $FoundedFournisseur,
+                'Commandes'=> $Commandes
             ], 200);
 
         } catch(Exception $e) {
