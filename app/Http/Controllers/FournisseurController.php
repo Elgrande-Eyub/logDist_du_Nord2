@@ -138,10 +138,10 @@ class FournisseurController extends Controller
                     ->limit(10)
                     ->get();
 
-                $Transactions = $transactions;
+                $Transactions[] = $transactions->reverse();
             }
 
-            $FoundedFournisseurToArray['Transactions'] = $Transactions->reverse();
+            $FoundedFournisseurToArray['Transactions'] = $Transactions;
 
             // Return the Fournisseur data
             return response()->json([
