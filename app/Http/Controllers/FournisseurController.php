@@ -142,7 +142,7 @@ class FournisseurController extends Controller
                 $Transactions = array_merge($Transactions, $transactions->toArray());
             }
 
-            $FoundedFournisseurToArray['Transactions'] = $Transactions;
+            $FoundedFournisseurToArray['Transactions'] =  array_reverse($Transactions);
 
             // Return the Fournisseur data
             return response()->json([
