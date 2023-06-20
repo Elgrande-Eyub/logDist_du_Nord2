@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Article;
 use App\Models\bonCommande;
 use App\Models\Fournisseur;
+use App\Models\Transaction;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -123,7 +124,14 @@ class FournisseurController extends Controller
             ->get();
 
             $FoundedFournisseurToArray['Commandes'] = $Commandes;
+            $Transactions= [];
 
+            foreach($Commandes as $facture){
+                $Transactions = Transaction::where('factureAchat_id',$facture->facture_id)->get();
+            }
+
+
+            $FoundedFournisseurToArray['Transactions'] = $Transactions;
             // Return the Fournisseur data
             return response()->json([
                 'Fournisseur Requested' => $FoundedFournisseurToArray
