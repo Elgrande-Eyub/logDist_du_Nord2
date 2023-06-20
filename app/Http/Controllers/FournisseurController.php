@@ -102,8 +102,6 @@ class FournisseurController extends Controller
             // Find the Fournisseur with the given ID
             $FoundedFournisseur = Fournisseur::withTrashed()->find($id);
 
-
-
             // Check if the Fournisseur was found
             if (!$FoundedFournisseur) {
                 return response()->json([
@@ -134,16 +132,15 @@ class FournisseurController extends Controller
             foreach($Commandes as $facture) {
                 $Transactions = Transaction::where('factureAchat_id', $facture->facture_id)
                 ->select(
-                    'transactions.id',
                     'transactions.num_transaction',
                     'transactions.montant',
                     'transactions.modePaiement'
                 )
+                ->limit(10)
                 ->get();
             }
 
-
-            $FoundedFournisseurToArray['Transactions'] = $Transactions;
+            $FoundedFournisseurToArray['Transactions'] = $Transactions->reverse();
             // Return the Fournisseur data
             return response()->json([
                 'Fournisseur Requested' => $FoundedFournisseurToArray
