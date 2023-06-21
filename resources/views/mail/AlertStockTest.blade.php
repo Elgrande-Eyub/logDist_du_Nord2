@@ -58,7 +58,7 @@ a, a:hover {
 
 			<a  target="_blank" style="text-decoration: none;"
 				href="http://setitagila.ru"><img style="width: 30%" border="0" vspace="0" hspace="0"
-				src="{{ asset('assets/img/logo-light.png') }}"
+				src="{{ $message->embed('assets/img/logo-light.png') }}"
 				alt="Logo" title="Logo" style="
 				color: #000000;
 				font-size: 10px; margin: 0; padding: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none; display: block;" /></a>
@@ -135,7 +135,7 @@ En cliquant sur le lien, vous serez redirigé vers un rapport Excel contenant de
 					padding-right: 20px;"><img
 				border="0" vspace="0" hspace="0" style="padding: 0; margin: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none; display: block;
 					color: #000000;"
-					src="{{ asset('assets/img/outofstock.png') }}"
+					src="{{ $message->embed('assets/img/outofstock.png') }}"
 					alt="H" title="Highly compatible"
 					width="50" height="50"></td>
 
@@ -144,7 +144,7 @@ En cliquant sur le lien, vous serez redirigé vers un rapport Excel contenant de
 					color: #000000;
 					font-family: sans-serif;" class="paragraph">
 						<b style="color: #333333;">Rapture En Stock</b><br/>
-						<span style="font-size: 2rem ;font-family: sans-serif;">10</span>
+						<span style="font-size: 2rem ;font-family: sans-serif;">{{ count($RaptureDeStock) }} Articels</span>
 				</td>
 
 			</tr>
@@ -156,7 +156,7 @@ En cliquant sur le lien, vous serez redirigé vers un rapport Excel contenant de
 					padding-right: 20px;"><img
 				border="0" vspace="0" hspace="0" style="padding: 0; margin: 0; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; border: none; display: block;
 					color: #000000;"
-					src="{{ asset('assets/img/alert.png') }}"
+					src="{{ $message->embed('assets/img/alert.png') }}"
 					alt="D" title="Designer friendly"
 					width="50" height="50"></td>
 
@@ -165,7 +165,7 @@ En cliquant sur le lien, vous serez redirigé vers un rapport Excel contenant de
 					color: #000000;
 					font-family: sans-serif;" class="paragraph">
 						<b style="color: #333333;">Alert en Stock</b><br/>
-						<span style="font-size: 2rem ;font-family: sans-serif;">6</span>
+						<span style="font-size: 2rem ;font-family: sans-serif;">{{ count($AlertDeStock) }} Articels</span>
 				</td>
 
 			</tr>

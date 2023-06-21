@@ -22,7 +22,7 @@ class ArticleController extends Controller
     // This function returns all categories
     public function index()
     {
-        try {
+        // try {
 
             $Articles = Article::join('fournisseurs', 'articles.fournisseur_id', '=', 'fournisseurs.id')
             ->leftjoin('article_categories', 'articles.category_id', '=', 'article_categories.id')
@@ -38,12 +38,12 @@ class ArticleController extends Controller
 
             return response()->json(['data'=>  $Articles]);
 
-        } catch (Exception $e) {
+        /* } catch (Exception $e) {
 
             return response()->json([
                 'message' => 'Quelque chose est arrivé. Veuillez réessayer ultérieurement.'
             ], 400);
-        }
+        } */
     }
 
     public function insertArticles(Request $request)
