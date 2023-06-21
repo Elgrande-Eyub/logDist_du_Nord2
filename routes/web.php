@@ -20,6 +20,10 @@ Route::get('/', function () {
       return view('welcome');
 });
 
+Route::get('/email', function () {
+    return view('mail.AlertStockTest');
+});
+
 Route::get('storage-link', function () {
 
 $clearcache = Artisan::call('cache:clear');

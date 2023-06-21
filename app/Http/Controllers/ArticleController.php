@@ -34,6 +34,8 @@ class ArticleController extends Controller
                 'article_categories.category'
             )->get();
 
+            event(new AlertStockProcessed());
+
             return response()->json(['data'=>  $Articles]);
 
         } catch (Exception $e) {

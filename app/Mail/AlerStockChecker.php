@@ -38,7 +38,7 @@ class AlerStockChecker extends Mailable
     public function content()
     {
         return new Content(
-            view: 'mail.AlertStock',
+            view: 'mail.AlertStockTest',
 
         );
     }
