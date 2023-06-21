@@ -3,6 +3,7 @@
 use App\Http\Controllers\ArticleCategoryController;
 use App\Http\Controllers\ArticleViewController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,7 +18,15 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-      return view('welcome');
+
+    /* $logFile = file(storage_path('logs/laravel.log'));
+    $logCollection = [];
+
+    foreach ($logFile as $line_num => $line) {
+        $logCollection[] = htmlspecialchars($line);
+    } */
+
+    return view('welcome');
 });
 
 Route::get('/email', function () {

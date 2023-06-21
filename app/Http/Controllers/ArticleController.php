@@ -34,8 +34,9 @@ class ArticleController extends Controller
                 'article_categories.category'
             )->get();
 
-            event(new AlertStockProcessed());
-
+            // event(new AlertStockProcessed());
+            // Log::info('Article has been Showen');
+            // Log::channel()->info('Article has been Showen');
             return response()->json(['data'=>  $Articles]);
 
         /* } catch (Exception $e) {
